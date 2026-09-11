@@ -191,6 +191,12 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             if hasattr(policy_nn, "reset"):
                 policy_nn.reset(dones)
 
+        # torch.inference_mode() returns inference tensors for the reduction
+        # results above.  Clone them before the per-environment bookkeeping
+        # below, which performs indexed updates when an episode terminates.
+        min_rot = min_rot.clone()
+        max_obj_dist = max_obj_dist.clone()
+
         done_ids = torch.nonzero(dones, as_tuple=False).reshape(-1)
         total_steps += 1
         for idx_t in done_ids:
