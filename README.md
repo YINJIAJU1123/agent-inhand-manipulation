@@ -84,9 +84,10 @@ python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-Reorient-Cylinder-v0
 # Semantic surface teacher (cube faces; preserves the 21-DoF Revo3 action interface)
 python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 --num_envs 4096 --headless
 
-# Camera-enabled collector (camera frames are exposed by capture_camera(); the
-# default PPO observation remains the semantic state teacher observation)
-python  scripts/rsl_rl/play.py --task BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0 --num_envs 1 --headless
+# Camera-enabled collector: instantiate the task in a custom collector and
+# call env.unwrapped.capture_camera() after reset/step.  No visual checkpoint
+# is provided yet; the default PPO observation remains the semantic state
+# teacher observation.
 ```
 
 The visual task uses the repository asset `assets/urdf/objects/cube_multicolor.urdf`
@@ -94,7 +95,8 @@ The visual task uses the repository asset `assets/urdf/objects/cube_multicolor.u
 `/World/envs/env_*/SemanticCamera`. The camera sensor is intentionally kept out
 of the default PPO observation so existing state-teacher checkpoints remain
 compatible; custom collectors should call `env.capture_camera()` after each
-step and fuse the frames with a visual-language encoder.
+step and fuse the frames with a visual-language encoder. Isaac Lab's app
+launcher must be started with `--enable_cameras` for RGB/depth rendering.
 
 Evaluate:
 
