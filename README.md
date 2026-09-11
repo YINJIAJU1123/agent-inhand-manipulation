@@ -13,6 +13,7 @@ Isaac Lab environments, robot assets, and pretrained checkpoints for BrainCo dex
 | Robot | Framework | Public task ID | Checkpoint | Demo |
 | --- | --- | --- | --- | --- |
 | Revo3 | Direct | `BrainCo-Direct-Revo3-Repose-Cube-v0` | `checkpoints/BrainCo-Direct-Revo3-Repose-Cube-v0.pt` | <img src="image/BrainCo-Direct-Revo3-Repose-Cube-v0.gif" width="320"/> |
+| Revo3 | Direct | `BrainCo-Direct-Revo3-SemanticReorient-Cube-v0` | trained locally | goal-face-conditioned teacher for language/vision student |
 | Revo3 | Direct | `BrainCo-Direct-Revo3-Reorient-Cylinder-v0` | `checkpoints/BrainCo-Direct-Revo3-Reorient-Cylinder-v0.pt` | <img src="image/BrainCo-Direct-Revo3-Reorient-Cylinder-v0.gif" width="320"/> |
 | Revo3 | Dexsuite | `BrainCo-Dexsuite-Revo3-Right-Lift-v0` | `checkpoints/BrainCo-Dexsuite-Revo3-Right-Lift-v0.pt` | <img src="image/BrainCo-Dexsuite-Revo3-Right-Lift-v0.gif" width="320"/> |
 | Revo3 | HORA | `BrainCo-Direct-Revo3-HoraRotate-Ball-v0` | `checkpoints/hora/revo3_right_ball_stage1_best.pth` | <img src="image/BrainCo-Direct-Revo3-HoraRotate-Ball-v0.gif" width="320"/> |
@@ -78,6 +79,9 @@ Train:
 ```bash
 python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-Repose-Cube-v0 --num_envs 8192 --headless
 python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-Reorient-Cylinder-v0 --num_envs 4096 --headless
+
+# Semantic surface teacher (cube faces; preserves the 21-DoF Revo3 action interface)
+python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 --num_envs 4096 --headless
 ```
 
 Evaluate:
