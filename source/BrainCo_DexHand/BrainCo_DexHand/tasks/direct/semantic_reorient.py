@@ -23,6 +23,9 @@ class SemanticReorientEnv(InHandManipulationEnv):
         super().__init__(cfg, render_mode, **kwargs)
         self.target_face = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
         self.target_face_onehot = torch.zeros((self.num_envs, 6), dtype=torch.float, device=self.device)
+        # The parent constructor performs an initial reset before these buffers
+        # exist.  Initialize the semantic goal for that first rollout too.
+        self._reset_target_pose(torch.arange(self.num_envs, device=self.device))
 
     def _reset_target_pose(self, env_ids):
         # DirectRLEnv may reset once during the parent constructor, before our
