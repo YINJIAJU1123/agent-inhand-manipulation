@@ -7,6 +7,9 @@ and for the later vision-language student.  The camera output is exposed by
 PPO observation, so existing state-teacher checkpoints stay compatible.
 """
 
+from pathlib import Path
+
+from isaaclab.assets import RigidObjectCfg
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.sensors import TiledCameraCfg
 from isaaclab.utils import configclass
@@ -47,6 +50,27 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
         ),
         width=128,
         height=128,
+    )
+    # Use the repository's six-color cube for visual collection.  The
+    # collision mesh and inertial parameters are embedded in this URDF.  The
+    # state teacher retains the Nucleus cube and is therefore checkpoint
+    # compatible; only this camera-enabled data-collection task uses it.
+    object_cfg: RigidObjectCfg = RigidObjectCfg(
+        prim_path="/World/envs/env_.*/object",
+        spawn=sim_utils.UrdfFileCfg(
+            asset_path=str(
+                Path(__file__).resolve().parents[6]
+                / "assets"
+                / "urdf"
+                / "objects"
+                / "cube_multicolor.urdf"
+            ),
+            fix_base=False,
+            merge_fixed_joints=True,
+        ),
+        init_state=RigidObjectCfg.InitialStateCfg(
+            pos=(0.0, -0.11, 0.56), rot=(1.0, 0.0, 0.0, 0.0)
+        ),
     )
     # This keeps the observation interface equal to the semantic state
     # teacher.  A multimodal runner should fuse ``capture_camera()`` output.

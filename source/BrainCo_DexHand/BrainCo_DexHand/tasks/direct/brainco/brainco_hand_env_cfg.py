@@ -23,7 +23,9 @@ class BrainCoHandEnvCfg(DirectRLEnvCfg):
     decimation = 4
     episode_length_s = 10.0
     action_space = 21
-    observation_space = 147  # (full)
+    # compute_full_observations() concatenates 152 values (the old 147 value
+    # was inherited from an earlier hand layout).
+    observation_space = 152  # (full)
     state_space = 0
     asymmetric_obs = False
     obs_type = "full"
