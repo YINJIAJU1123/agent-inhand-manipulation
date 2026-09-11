@@ -1,0 +1,14 @@
+{
+  "asset": "cube_multicolor.urdf",
+  "scale_m": 0.05,
+  "face_order_local_normals": ["+x", "-x", "+y", "-y", "+z", "-z"],
+  "faces": [
+    {"face_id": 0, "normal": "+x", "color": "red", "marker": "triangle"},
+    {"face_id": 1, "normal": "-x", "color": "green", "marker": "circle"},
+    {"face_id": 2, "normal": "+y", "color": "blue", "marker": "cross"},
+    {"face_id": 3, "normal": "-y", "color": "yellow", "marker": "square"},
+    {"face_id": 4, "normal": "+z", "color": "cyan", "marker": "star"},
+    {"face_id": 5, "normal": "-z", "color": "white", "marker": "dot"}
+  ],
+  "notes": "The current mesh renders face colors. Marker names are task-level semantic labels and can be baked into a texture/material in the visual-stage asset."
+}

@@ -10,6 +10,7 @@ from BrainCo_DexHand.algo.agentic import (
     VisualLanguageStudent,
     VisualStudentBatch,
     consequence_loss,
+    evidence_loss,
     score_action_chunks,
 )
 
@@ -27,6 +28,9 @@ def test_visual_student_static_language_and_padding():
     assert out["action"].shape == (b, 21)
     assert out["evidence_logits"].shape == (b, 3)
     assert torch.all((out["action"] >= -1) & (out["action"] <= 1))
+    aux = evidence_loss(out, torch.rand(b, 3), torch.rand(b))
+    aux.backward()
+    assert torch.isfinite(aux)
 
 
 def test_consequence_predictor_loss_and_scoring():

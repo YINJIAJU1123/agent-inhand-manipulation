@@ -5,7 +5,7 @@ it possible to pre-train them from exported RevoLab rollouts and unit-test the
 data contract without starting Isaac Sim.
 """
 
-from .visual_student import VisualStudentBatch, VisualLanguageStudent
+from .visual_student import VisualStudentBatch, VisualLanguageStudent, evidence_loss
 from .consequence_predictor import (
     ConsequenceBatch,
     ConsequencePredictor,
@@ -16,6 +16,7 @@ from .consequence_predictor import (
 __all__ = [
     "VisualStudentBatch",
     "VisualLanguageStudent",
+    "evidence_loss",
     "ConsequenceBatch",
     "ConsequencePredictor",
     "consequence_loss",

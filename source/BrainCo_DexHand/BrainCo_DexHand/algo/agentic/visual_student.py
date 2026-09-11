@@ -14,6 +14,7 @@ from typing import Optional
 
 import torch
 from torch import Tensor, nn
+import torch.nn.functional as F
 
 
 @dataclass
@@ -156,3 +157,35 @@ class VisualLanguageStudent(nn.Module):
             "stop_logit": stop_logit,
             "memory": memory,
         }
+
+
+def evidence_loss(
+    outputs: dict[str, Tensor],
+    targets: Tensor,
+    stop_target: Tensor | None = None,
+    weights: Tensor | None = None,
+) -> Tensor:
+    """Auxiliary BCE loss for simulator or human evidence labels.
+
+    ``targets`` contains visibility, occlusion and confirmation confidence in
+    ``[0,1]`` with shape ``[B,3]``.  A fourth ``stop_target`` in ``[0,1]`` can
+    supervise the low-frequency hold/stop decision.  The loss is kept
+    separate from PPO so it can be applied during offline representation
+    pre-training and then blended into the on-policy objective.
+    """
+
+    if targets.ndim != 2 or targets.shape[-1] != 3:
+        raise ValueError("targets must have shape [B,3]")
+    logits = outputs.get("evidence_logits")
+    if logits is None or logits.shape != targets.shape:
+        raise ValueError("outputs must contain evidence_logits with shape [B,3]")
+    loss = F.binary_cross_entropy_with_logits(logits, targets.to(logits), reduction="none")
+    if weights is not None:
+        loss = loss * weights.to(device=loss.device, dtype=loss.dtype).view(1, -1)
+    loss = loss.mean()
+    if stop_target is not None:
+        stop_logit = outputs.get("stop_logit")
+        if stop_logit is None or stop_logit.shape != stop_target.shape:
+            raise ValueError("stop_target must match outputs['stop_logit']")
+        loss = loss + F.binary_cross_entropy_with_logits(stop_logit, stop_target.to(stop_logit))
+    return loss
