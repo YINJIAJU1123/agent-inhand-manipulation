@@ -260,7 +260,11 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         "mean_time_s": mean("time_s"),
         "per_face": {},
     }
-    for face, stats in sorted(face_stats.items()):
+    # Emit all six cube faces, including faces not sampled when a very small
+    # evaluation budget is used.  This makes dashboards and CI comparisons
+    # stable across runs.
+    for face in range(6):
+        stats = face_stats[face]
         n = stats["episodes"]
         report["per_face"][str(face)] = {
             "episodes": n,
