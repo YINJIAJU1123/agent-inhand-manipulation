@@ -14,6 +14,7 @@ Isaac Lab environments, robot assets, and pretrained checkpoints for BrainCo dex
 | --- | --- | --- | --- | --- |
 | Revo3 | Direct | `BrainCo-Direct-Revo3-Repose-Cube-v0` | `checkpoints/BrainCo-Direct-Revo3-Repose-Cube-v0.pt` | <img src="image/BrainCo-Direct-Revo3-Repose-Cube-v0.gif" width="320"/> |
 | Revo3 | Direct | `BrainCo-Direct-Revo3-SemanticReorient-Cube-v0` | trained locally | goal-face-conditioned teacher for language/vision student |
+| Revo3 | Direct | `BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0` | data-collection config | fixed RGB-D camera; use `capture_camera()` for visual student data |
 | Revo3 | Direct | `BrainCo-Direct-Revo3-Reorient-Cylinder-v0` | `checkpoints/BrainCo-Direct-Revo3-Reorient-Cylinder-v0.pt` | <img src="image/BrainCo-Direct-Revo3-Reorient-Cylinder-v0.gif" width="320"/> |
 | Revo3 | Dexsuite | `BrainCo-Dexsuite-Revo3-Right-Lift-v0` | `checkpoints/BrainCo-Dexsuite-Revo3-Right-Lift-v0.pt` | <img src="image/BrainCo-Dexsuite-Revo3-Right-Lift-v0.gif" width="320"/> |
 | Revo3 | HORA | `BrainCo-Direct-Revo3-HoraRotate-Ball-v0` | `checkpoints/hora/revo3_right_ball_stage1_best.pth` | <img src="image/BrainCo-Direct-Revo3-HoraRotate-Ball-v0.gif" width="320"/> |
@@ -82,7 +83,18 @@ python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-Reorient-Cylinder-v0
 
 # Semantic surface teacher (cube faces; preserves the 21-DoF Revo3 action interface)
 python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 --num_envs 4096 --headless
+
+# Camera-enabled collector (camera frames are exposed by capture_camera(); the
+# default PPO observation remains the semantic state teacher observation)
+python  scripts/rsl_rl/play.py --task BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0 --num_envs 1 --headless
 ```
+
+The visual task uses the repository asset `assets/urdf/objects/cube_multicolor.urdf`
+(`cube_multicolor.obj`/`.mtl`) and a fixed 128x128 RGB-D `TiledCamera` at
+`/World/envs/env_*/SemanticCamera`. The camera sensor is intentionally kept out
+of the default PPO observation so existing state-teacher checkpoints remain
+compatible; custom collectors should call `env.capture_camera()` after each
+step and fuse the frames with a visual-language encoder.
 
 Evaluate:
 
