@@ -57,6 +57,9 @@ def main(env_cfg, agent_cfg):
     runner = OnPolicyRunner(env, agent_cfg.to_dict(), log_dir=None, device=agent_cfg.device)
     runner.load(retrieve_file_path(args_cli.checkpoint), map_location=agent_cfg.device)
     policy = runner.get_inference_policy(device=env.unwrapped.device)
+    policy_nn = getattr(runner.alg, "policy", None)
+    if policy_nn is None:
+        policy_nn = getattr(runner.alg, "actor_critic", None)
     obs = env.get_observations()
 
     frames, actions, proprio, labels = [], [], [], []
@@ -77,8 +80,8 @@ def main(env_cfg, agent_cfg):
             else:
                 action = policy(obs)
             obs, _, dones, _ = env.step(action)
-            if hasattr(runner.alg.policy, "reset"):
-                runner.alg.policy.reset(dones)
+            if policy_nn is not None and hasattr(policy_nn, "reset"):
+                policy_nn.reset(dones)
         done_tensor = dones[0] if isinstance(dones, tuple) else dones
         completed += int(torch.as_tensor(done_tensor).sum().item())
         step += 1
