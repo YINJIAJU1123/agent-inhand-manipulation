@@ -137,7 +137,10 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
 
     device = env.unwrapped.device
     num_envs = env.unwrapped.num_envs
-    max_steps = args_cli.max_steps or int(env.unwrapped.max_episode_length)
+    env_max_steps = getattr(env.unwrapped, "max_episode_length", None)
+    if env_max_steps is None:
+        env_max_steps = int(round(float(env.unwrapped.cfg.episode_length_s) / float(env.unwrapped.step_dt)))
+    max_steps = args_cli.max_steps or int(env_max_steps)
     tolerance = float(env.unwrapped.cfg.success_tolerance)
     success_reward_threshold = 0.5 * float(env.unwrapped.cfg.reach_goal_bonus)
     face_stats = _empty_face_stats()
@@ -153,6 +156,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
 
     obs = env.get_observations()
     start_time = time.time()
+    total_steps = 0
     while simulation_app.is_running() and episodes_done < args_cli.episodes:
         face_before = episode_face.clone()
         with torch.inference_mode():
@@ -188,6 +192,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
                 policy_nn.reset(dones)
 
         done_ids = torch.nonzero(dones, as_tuple=False).reshape(-1)
+        total_steps += 1
         for idx_t in done_ids:
             idx = int(idx_t.item())
             face = int(face_before[idx].item())
@@ -226,6 +231,10 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             episode_face[idx] = env.unwrapped.target_face[idx]
             if episodes_done >= args_cli.episodes:
                 break
+
+        if total_steps >= max_steps * max(1, args_cli.episodes):
+            print(f"[WARN] Reached safety cap ({total_steps} vector steps) before collecting all episodes.")
+            break
 
         if args_cli.real_time:
             elapsed = time.time() - start_time
