@@ -84,10 +84,11 @@ python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-Reorient-Cylinder-v0
 # Semantic surface teacher (cube faces; preserves the 21-DoF Revo3 action interface)
 python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 --num_envs 4096 --headless
 
-# Camera-enabled collector: instantiate the task in a custom collector and
-# call env.unwrapped.capture_camera() after reset/step.  No visual checkpoint
-# is provided yet; the default PPO observation remains the semantic state
-# teacher observation.
+# Collect RGB-D trajectories with a semantic state-teacher checkpoint
+python scripts/rsl_rl/collect_visual_rollouts.py \
+  --task BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0 \
+  --checkpoint logs/rsl_rl/semantic_reorient/<run>/model_250.pt \
+  --episodes 100 --num_envs 64 --headless --output data/visual_rollouts.pt
 ```
 
 The visual task uses the repository asset `assets/urdf/objects/cube_multicolor.urdf`
@@ -103,6 +104,12 @@ Evaluate:
 ```bash
 python  scripts/rsl_rl/play.py --task BrainCo-Direct-Revo3-Repose-Cube-v0 --checkpoint checkpoints/BrainCo-Direct-Revo3-Repose-Cube-v0.pt --num_envs 1
 python  scripts/rsl_rl/play.py --task BrainCo-Direct-Revo3-Reorient-Cylinder-v0 --checkpoint checkpoints/BrainCo-Direct-Revo3-Reorient-Cylinder-v0.pt --num_envs 1
+
+# Per-face semantic evaluation (writes a JSON report)
+python scripts/rsl_rl/evaluate_semantic_reorient.py \
+  --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 \
+  --checkpoint logs/rsl_rl/semantic_reorient/<run>/model_250.pt \
+  --num_envs 256 --episodes 100 --headless --report eval_semantic.json
 ```
 
 ## Grasping
