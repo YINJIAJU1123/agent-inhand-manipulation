@@ -40,20 +40,24 @@ Observed packages in the development Python environment:
 
 These are inventory values, not a tested installation lockfile. IsaacLab was
 mounted as a source directory without its own Git metadata, so the exact
-source revision still needs to be established. The RGB-D collector currently
-fails during Isaac Sim RTX scene startup, before task execution. CUDA device
-visibility alone does not establish that rendering works.
+source revision still needs to be established. The standalone camera smoke
+test now completes successfully in the release image; this validates sensor
+startup and semantic reset checks, not a trained visual-language policy.
 
 ## Docker Hub publication
 
 The local CLI is authenticated through GitHub browser authorization. The
 `yinjiaju00/vlmrotation` repository was created as **private** on 2026-09-12.
-Visibility can be changed separately when public release is intended.
+The validated image is published as
+`yinjiaju00/vlmrotation:20260912-0de1542` with registry digest
+`sha256:6070967a5ce68e74af4325ee355007928120de744392ea05f6e3db852afbad86`
+(amd64 OCI image index). Visibility can be changed separately when public
+release is intended.
 
 An LXD export cannot be directly pushed as a Docker image. A Docker/OCI image
 must first be built with its dependencies included, and its camera smoke test
-must pass before it is tagged as validated. The intended repository is
-`yinjiaju00/vlmrotation`; it has not yet received a validated image.
+must pass before it is tagged as validated. The release image above passed the
+smoke test with exit code 0 and no OOM.
 
 For a Docker account linked through GitHub, run `docker login` without a
 username argument to start browser device authorization. A separate Docker
