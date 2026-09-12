@@ -73,7 +73,13 @@ def main(env_cfg, agent_cfg):
             # resample a target face during ``step`` when an episode ends.
             if hasattr(env.unwrapped, "capture_camera") and step % max(args_cli.stride, 1) == 0:
                 camera = env.unwrapped.capture_camera()
-                frames.append({k: v.detach().cpu() for k, v in camera.items()})
+                # RGB stays uint8; depth is losslessly representable at the
+                # millimetre-scale precision needed here and is stored as
+                # float16 to keep multi-episode shards manageable.
+                frames.append({
+                    k: (v.detach().cpu().half() if k == "depth" else v.detach().cpu())
+                    for k, v in camera.items()
+                })
                 action = policy(obs)
                 actions.append(action.detach().cpu())
                 # Store only robot state that is observable at deployment.
@@ -110,6 +116,7 @@ def main(env_cfg, agent_cfg):
             "task": args_cli.task,
             "episodes": completed,
             "stride": args_cli.stride,
+            "depth_dtype": "float16",
         },
         args_cli.output,
     )
