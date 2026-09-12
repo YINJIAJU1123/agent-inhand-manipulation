@@ -64,13 +64,13 @@ This repository is distributed as an Isaac Lab extension package, not as a stand
 
 A validated amd64 image (Isaac Sim 5.1.0, Isaac Lab 2.3.2 and this source
 overlay) is available at
-`yinjiaju00/vlmrotation:20260912-0de1542`. The repository is currently private;
+`yinjiaju00/vlmrotation:20260913-3041a21`. The repository is currently private;
 authenticate first, then run the RGB-D smoke test with a GPU:
 
 ```bash
 docker login
-docker pull yinjiaju00/vlmrotation:20260912-0de1542
-docker run --rm --gpus all yinjiaju00/vlmrotation:20260912-0de1542 \
+docker pull yinjiaju00/vlmrotation:20260913-3041a21
+docker run --rm --gpus all yinjiaju00/vlmrotation:20260913-3041a21 \
   scripts/rsl_rl/smoke_visual_camera.py --headless --output /tmp/vlmrotation-smoke
 ```
 

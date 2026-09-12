@@ -54,6 +54,10 @@ The validated image is published as
 (amd64 OCI image index). Visibility can be changed separately when public
 release is intended.
 
+The latest source overlay (including the privileged-state-free rollout
+collector) is `yinjiaju00/vlmrotation:20260913-3041a21` with OCI index digest
+`sha256:9c6832a052ebe31fd7a1f1c4a7e233e3f0f88ec3946966b2bb2506075a1088ed`.
+
 An LXD export cannot be directly pushed as a Docker image. A Docker/OCI image
 must first be built with its dependencies included, and its camera smoke test
 must pass before it is tagged as validated. The release image above passed the
