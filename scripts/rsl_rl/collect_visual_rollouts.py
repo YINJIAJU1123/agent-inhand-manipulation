@@ -18,7 +18,6 @@ import cli_args  # isort: skip
 
 parser = argparse.ArgumentParser(description="Collect RGB-D rollouts for visual Revo3 training.")
 parser.add_argument("--task", type=str, default="BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0")
-parser.add_argument("--checkpoint", type=str, required=True)
 parser.add_argument("--episodes", type=int, default=100)
 parser.add_argument("--num_envs", type=int, default=64)
 parser.add_argument("--stride", type=int, default=1, help="Record every Nth environment step.")
@@ -26,6 +25,8 @@ parser.add_argument("--output", type=str, default="data/visual_rollouts.pt")
 cli_args.add_rsl_rl_args(parser)
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
+if not args_cli.checkpoint:
+    parser.error("--checkpoint is required")
 args_cli.enable_cameras = True
 sys.argv = [sys.argv[0]] + hydra_args
 
