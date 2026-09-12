@@ -7,26 +7,28 @@ defined in
 | quantity | value |
 | --- | --- |
 | position (world frame) | `(0.00, -0.72, 0.95) m` |
-| orientation | `+32°` about world X, quaternion `(w,x,y,z)=(0.9613, 0.2756, 0, 0)` |
+| orientation | OpenGL convention; `+57.4074°` about X; quaternion `(w,x,y,z)=(0.87711507, 0.48028028, 0, 0)` |
 | image size | `128 × 128` RGB + metric depth |
 | focal length / aperture | `28 mm` / `20.955 mm` |
 | approximate horizontal field of view | `41°` |
 
 The hand/object is around `(0, -0.11, 0.56) m` at reset.  Therefore this
-camera observes the manipulation from the front and slightly above, with the
-optical axis aimed downward by about 32°.  It is deliberately not a camera
-directly above the hand: a strict overhead view hides the contact geometry
-between the fingers and makes front-facing markers harder to read.  The
-elevated 3/4 view exposes several object faces while retaining finger and
-palm context.  It is also easy to reproduce in a real setup as a fixed
-camera-on-tripod (eye-to-hand) configuration.
+camera is geometrically aimed at the reset object center from the front and
+above, 32.5926° below the horizon. Isaac Lab's OpenGL camera points along -Z;
+its `world` convention instead points along +X. The quaternion above must be
+used with `convention="opengl"`.
 
-This choice is supported by prior in-hand work.  HORA/Shadow Hand used a
-camera cage with cameras above and at angled views, while *Visual Dexterity*
-showed that a single commodity depth camera can support object reorientation.
-More recent monocular work such as *ViserDex* uses a wrist-mounted camera;
-that is a useful future ablation, but it changes the viewpoint as the hand
-moves and is not the default here.
+This pose is a candidate for comparing object visibility with finger context.
+It has not yet passed a rendered framing/occlusion check. Do not treat the
+choice as a measured improvement over overhead cameras. Render several grasp
+states and object orientations before collecting training data, then compare
+an overhead view using the same visibility criteria.
+
+Prior work provides examples of sensor arrangements rather than this exact
+pose: *Learning dexterous in-hand manipulation* (OpenAI/Shadow Hand, distinct
+from HORA) used three RGB cameras; *Visual Dexterity* used a single commodity
+depth camera. *ViserDex* studies monocular RGB reorientation. None of these
+references establishes the coordinates above as optimal for Revo3.
 
 The pose is kept fixed during data collection so that viewpoint is not a hidden
 source of supervision.  Camera randomization should be introduced only as a

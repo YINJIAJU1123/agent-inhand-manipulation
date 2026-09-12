@@ -1,4 +1,14 @@
-# BrainCo Isaac Lab
+# Agent In-hand Manipulation
+
+Research fork of [BrainCoTech/RevoLab](https://github.com/BrainCoTech/RevoLab)
+for goal-conditioned Revo3 reorientation and visual-language control.
+Upstream assets and license notices are retained.
+
+Current status: a state-conditioned RL teacher has preliminary evaluation
+reports; the visual student and rollout collector are experimental. The camera
+optical axis has been checked geometrically, but rendered validation and visual
+training are pending an Isaac Sim RTX startup failure. No validated Docker Hub
+image or visual-policy checkpoint has been published yet.
 
 Isaac Lab environments, robot assets, and pretrained checkpoints for BrainCo dexterous manipulation tasks. Including:
 
@@ -93,7 +103,7 @@ python scripts/rsl_rl/collect_visual_rollouts.py \
 
 The visual task uses an Isaac primitive cube and a fixed 128x128 RGB-D
 `TiledCamera` at `/World/envs/env_*/SemanticCamera`.  The camera is an elevated
-front 3/4 eye-to-hand view at `(0, -0.72, 0.95)` m, tilted down by 32 degrees;
+front eye-to-hand view at `(0, -0.72, 0.95)` m, tilted down by 32.59 degrees;
 the exact rationale and field of view are documented in
 [`docs/camera_placement.md`](docs/camera_placement.md).  The sensor is
 intentionally kept out of the default PPO observation so existing state-teacher

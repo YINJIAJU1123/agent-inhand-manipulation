@@ -34,15 +34,16 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
         prim_path="/World/envs/env_.*/SemanticCamera",
         # Fixed eye-to-hand camera, mounted in front of and above the hand.
         # The object starts near (0, -0.11, 0.56).  From
-        # (0, -0.72, 0.95), a +32 degree rotation about X sends the optical
-        # axis along +Y and slightly downward, centering the hand/object while
-        # retaining visible top faces.  This is an elevated 3/4 view, not a
-        # strict overhead view; it follows the above/angled views used in
-        # prior in-hand reorientation setups.
+        # (0, -0.72, 0.95), OpenGL -Z must point along (0, 0.61, -0.39).
+        # This requires +57.4074 degrees about X in the OpenGL convention,
+        # giving 32.5926 degrees of depression below the horizon.
+        # Isaac Lab's "world" convention points along +X instead: using the
+        # same quaternion in that convention would miss the object.
+        # Image framing and occlusion still require a rendered validation.
         offset=TiledCameraCfg.OffsetCfg(
             pos=(0.0, -0.72, 0.95),
-            rot=(0.9612617, 0.27563736, 0.0, 0.0),
-            convention="world",
+            rot=(0.877115072743617, 0.48028028188336, 0.0, 0.0),
+            convention="opengl",
         ),
         data_types=["rgb", "depth"],
         spawn=sim_utils.PinholeCameraCfg(

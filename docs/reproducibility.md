@@ -1,65 +1,70 @@
 # Reproducibility and publishing
 
-## Code
+## Code publication from the local computer
 
-The working tree is ready to publish as `main`:
-
-```bash
-git remote add origin https://github.com/YINJIAJU1123/agent-inhand-manipulation.git
-git push -u origin main
-```
-
-The same tree can be transferred without GitHub credentials with
-`git archive --format=tar.gz HEAD`; this is useful on the 5090 host where the
-LXD environment is running.
-
-If the 5090 host cannot authenticate to GitHub, run the following on a local
-computer that has GitHub CLI or an SSH key configured:
+Keep `origin` pointing to upstream RevoLab and use a separate remote for this
+research repository. A local GitHub SSH identity can push without installing
+GitHub credentials on the GPU server:
 
 ```bash
-scp jiaju@10.3.100.20:/home/jiaju/agent-inhand-manipulation-src-latest.tar.gz .
-mkdir agent-inhand-manipulation && tar -xzf agent-inhand-manipulation-src-latest.tar.gz -C agent-inhand-manipulation
-cd agent-inhand-manipulation
-git init && git add -A && git commit -m "initial VLM rotation research code"
-git branch -M main
-git remote add origin https://github.com/YINJIAJU1123/agent-inhand-manipulation.git
-gh auth login                 # or configure a GitHub SSH key
-git push -u origin main
+git remote add agent-github git@github.com:YINJIAJU1123/agent-inhand-manipulation.git
+git push agent-github main
 ```
 
-## VLMrotation environment
+If the remote already exists, use `git remote set-url agent-github ...` instead.
+The working checkout and its Git history are the source of publication; a
+source archive is only a transfer alternative, not a replacement for history.
 
-The new LXD instance is named `VLMrotation`.  It is based on `Yin-handover-2204` and uses
-the `handover` directory storage pool.  The root filesystem currently occupies
-about 47 GB at
-`/var/lib/lxd/storage-pools/handover/containers/VLMrotation`; the RevoLab,
-IsaacLab and Python environments are separate bind mounts.  This explains why
-an image export is large even though the code checkout is small.
+## Environment status
 
-To create a portable LXD image on the 5090 host:
+The development LXD instance is named `VLMrotation` and was cloned from an
+Ubuntu 22.04 environment. Its root filesystem occupies approximately 47 GB.
+RevoLab, IsaacLab, RSL-RL, the Python interpreter and the Isaac Sim environment
+are provided by host bind mounts. A root-filesystem export does **not** include
+these dependencies and is not yet a self-contained reproducibility artifact.
 
-```bash
-lxc publish VLMrotation --alias vlmrotation-20260912
-lxc image export vlmrotation-20260912 /path/to/vlmrotation-20260912
-```
+Observed packages in the development Python environment:
 
-The exported image can then be placed in an online object store or a private
-registry.  Docker Hub/GHCR/Hugging Face uploads require an account token; no
-token is embedded in this repository.  Keep the large checkpoint and rollout
-shards outside Git (for example in an object store or a dataset repository) and
-record their URL and SHA256 in the experiment manifest.
+| Package | Installed version |
+| --- | --- |
+| Python | 3.11 |
+| Isaac Sim | 5.1.0.0 |
+| Isaac Lab package | 0.54.3 |
+| RSL-RL | 3.1.1 |
+| PyTorch | 2.7.0+cu128 |
+| torchvision | 0.22.0+cu128 |
+| Gymnasium | 1.2.1 |
+| NumPy | 1.26.0 |
+| Hydra | 1.3.6 |
+| transformers | 4.57.6 |
 
-For a Docker image that has already been loaded on the local computer, the
-Docker Hub publication commands are:
+These are inventory values, not a tested installation lockfile. IsaacLab was
+mounted as a source directory without its own Git metadata, so the exact
+source revision still needs to be established. The RGB-D collector currently
+fails during Isaac Sim RTX scene startup, before task execution. CUDA device
+visibility alone does not establish that rendering works.
+
+## Docker Hub publication
+
+An LXD export cannot be directly pushed as a Docker image. A Docker/OCI image
+must first be built with its dependencies included, and its camera smoke test
+must pass before it is tagged as validated. The intended repository is
+`yinjiaju00/vlmrotation`; it has not yet received a validated image.
+
+For a Docker account linked through GitHub, run `docker login` without a
+username argument to start browser device authorization. A separate Docker
+password is not required. Browser sign-in alone does not authenticate the CLI.
+
+After an image exists and has passed validation, publish it with an immutable
+version tag and record the returned digest:
 
 ```bash
 docker login
-docker tag vlmrotation:20260912 yinjiaju00/vlmrotation:20260912
-docker push yinjiaju00/vlmrotation:20260912
+docker tag vlmrotation:<validated-version> yinjiaju00/vlmrotation:<validated-version>
+docker push yinjiaju00/vlmrotation:<validated-version>
 ```
 
-Use a public repository for the free Docker Personal plan.  A private image
-requires the single private repository included in that plan; a 47-GB Isaac
-Sim image may still be impractical to upload, so publishing a Dockerfile plus
-downloadable environment manifest is usually the better reproducibility
-artifact.
+Keep credentials, personal files, runtime logs, datasets and experiment
+checkpoints outside the image build context. Preserve upstream license notices.
+Record code revision, dependency pins, image digest and smoke-test results
+together; a Dockerfile or LXD snapshot alone is not proof of reproducibility.
