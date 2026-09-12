@@ -76,7 +76,12 @@ def main(env_cfg, agent_cfg):
                 frames.append({k: v.detach().cpu() for k, v in camera.items()})
                 action = policy(obs)
                 actions.append(action.detach().cpu())
-                proprio.append(obs["policy"].detach().cpu())
+                # Store only robot state that is observable at deployment.
+                # ``obs["policy"]`` contains object pose and goal error for
+                # the privileged state teacher and must not become student
+                # input by accident.
+                student_proprio = env.unwrapped.compute_student_proprio()
+                proprio.append(student_proprio.detach().cpu())
                 labels.append(env.unwrapped.target_face.detach().cpu())
             else:
                 action = policy(obs)
@@ -93,7 +98,12 @@ def main(env_cfg, agent_cfg):
             "frames": frames,
             "actions": actions,
             "policy_observations": proprio,
+            "student_proprio": proprio,
             "target_face": labels,
+            "instruction_templates": [
+                "show the {face} marker",
+                "show the {face} marker and keep it visible",
+            ],
             "task": args_cli.task,
             "episodes": completed,
             "stride": args_cli.stride,

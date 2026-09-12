@@ -495,6 +495,26 @@ class InHandManipulationEnv(DirectRLEnv):
         )
         return states
 
+    def compute_student_proprio(self):
+        """Return state available to a visual-language student.
+
+        This deliberately omits object pose, goal pose, and orientation error,
+        which are privileged inputs used by the state teacher.  Robot joint and
+        fingertip kinematics plus the previous action remain available for
+        closed-loop control alongside RGB-D observations.
+        """
+        return torch.cat(
+            (
+                unscale(self.hand_dof_pos, self.hand_dof_lower_limits, self.hand_dof_upper_limits),
+                self.cfg.vel_obs_scale * self.hand_dof_vel,
+                self.fingertip_pos.view(self.num_envs, self.num_fingertips * 3),
+                self.fingertip_rot.view(self.num_envs, self.num_fingertips * 4),
+                self.fingertip_velocities.view(self.num_envs, self.num_fingertips * 6),
+                self.actions,
+            ),
+            dim=-1,
+        )
+
 
 @torch.jit.script
 def scale(x, lower, upper):
