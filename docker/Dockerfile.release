@@ -1,0 +1,16 @@
+# Release overlay for a dependency image that has already passed the local
+# Isaac Sim sensor smoke. The full from-scratch recipe remains Dockerfile.
+ARG DEPENDENCY_IMAGE=vlmrotation:build-candidate
+FROM ${DEPENDENCY_IMAGE}
+USER root
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ARG SOURCE_REV=unknown
+WORKDIR /workspace/RevoLab
+COPY . /workspace/RevoLab
+LABEL org.opencontainers.image.source="https://github.com/YINJIAJU1123/agent-inhand-manipulation" \
+      org.opencontainers.image.revision="${SOURCE_REV}" \
+      org.opencontainers.image.description="Validated Revo3 RGB-D Isaac Sim environment overlay"
+RUN /isaac-sim/python.sh -m pip install --no-deps -e /workspace/RevoLab/source/BrainCo_DexHand && \
+    printf '%s\n' "${SOURCE_REV}" > /opt/vlmrotation/source-revision.txt
+ENTRYPOINT ["/isaac-sim/python.sh", "-u"]
+CMD ["scripts/rsl_rl/smoke_visual_camera.py", "--headless", "--output", "/tmp/vlmrotation-smoke"]

@@ -113,3 +113,9 @@ returns a nonzero status for Python test failures before that shutdown.
 `/opt/vlmrotation/installed-packages.txt` records resolved packages inside the
 image; source revisions are stored beside it. Image contents exclude credentials,
 experiment logs, datasets and checkpoints through an allowlisted build context.
+
+`docker/Dockerfile.release` is a small overlay used when the dependency image
+has already been built and tested locally. It copies only the current source,
+reinstalls the editable project and updates its revision metadata; it does not
+copy host Python or NVIDIA libraries. The complete from-scratch recipe remains
+`docker/Dockerfile`.
