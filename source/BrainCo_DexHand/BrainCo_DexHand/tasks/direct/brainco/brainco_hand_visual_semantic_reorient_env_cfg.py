@@ -32,12 +32,16 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
     )
     tiled_camera: TiledCameraCfg = TiledCameraCfg(
         prim_path="/World/envs/env_.*/SemanticCamera",
-        # Camera looks from the front (negative world-y) at the hand/object.
-        # Isaac cameras look along local -Z; +90 degrees about X points this
-        # axis toward +Y and keeps world +Z approximately upright.
+        # Fixed eye-to-hand camera, mounted in front of and above the hand.
+        # The object starts near (0, -0.11, 0.56).  From
+        # (0, -0.72, 0.95), a +32 degree rotation about X sends the optical
+        # axis along +Y and slightly downward, centering the hand/object while
+        # retaining visible top faces.  This is an elevated 3/4 view, not a
+        # strict overhead view; it follows the above/angled views used in
+        # prior in-hand reorientation setups.
         offset=TiledCameraCfg.OffsetCfg(
-            pos=(0.0, -0.72, 0.72),
-            rot=(0.70710678, 0.70710678, 0.0, 0.0),
+            pos=(0.0, -0.72, 0.95),
+            rot=(0.9612617, 0.27563736, 0.0, 0.0),
             convention="world",
         ),
         data_types=["rgb", "depth"],

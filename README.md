@@ -91,13 +91,16 @@ python scripts/rsl_rl/collect_visual_rollouts.py \
   --episodes 100 --num_envs 64 --headless --output data/visual_rollouts.pt
 ```
 
-The visual task uses the repository asset `assets/urdf/objects/cube_multicolor.urdf`
-(`cube_multicolor.obj`/`.mtl`) and a fixed 128x128 RGB-D `TiledCamera` at
-`/World/envs/env_*/SemanticCamera`. The camera sensor is intentionally kept out
-of the default PPO observation so existing state-teacher checkpoints remain
-compatible; custom collectors should call `env.capture_camera()` after each
-step and fuse the frames with a visual-language encoder. Isaac Lab's app
-launcher must be started with `--enable_cameras` for RGB/depth rendering.
+The visual task uses an Isaac primitive cube and a fixed 128x128 RGB-D
+`TiledCamera` at `/World/envs/env_*/SemanticCamera`.  The camera is an elevated
+front 3/4 eye-to-hand view at `(0, -0.72, 0.95)` m, tilted down by 32 degrees;
+the exact rationale and field of view are documented in
+[`docs/camera_placement.md`](docs/camera_placement.md).  The sensor is
+intentionally kept out of the default PPO observation so existing state-teacher
+checkpoints remain compatible; custom collectors should call
+`env.capture_camera()` after each step and fuse the frames with a
+vision-language encoder. Isaac Lab's app launcher must be started with
+`--enable_cameras` for RGB/depth rendering.
 
 Evaluate:
 
