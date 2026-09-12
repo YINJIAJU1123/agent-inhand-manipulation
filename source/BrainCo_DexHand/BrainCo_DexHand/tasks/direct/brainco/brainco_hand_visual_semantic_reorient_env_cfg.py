@@ -65,6 +65,38 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
             "target_dot": sim_utils.SphereCfg(radius=0.01),
         },
     )
+    # Camera-visible semantic patches.  Each patch is a thin colored square
+    # on one cube face; the visual environment updates their world poses from
+    # the simulated object pose.  They have no collision geometry.
+    face_marker_cfg = VisualizationMarkersCfg(
+        prim_path="/Visuals/semantic_face_markers",
+        markers={
+            "red": sim_utils.CuboidCfg(
+                size=(0.028, 0.028, 0.003),
+                visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.85, 0.05, 0.05)),
+            ),
+            "green": sim_utils.CuboidCfg(
+                size=(0.028, 0.028, 0.003),
+                visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.05, 0.75, 0.15)),
+            ),
+            "blue": sim_utils.CuboidCfg(
+                size=(0.028, 0.028, 0.003),
+                visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.05, 0.25, 0.9)),
+            ),
+            "yellow": sim_utils.CuboidCfg(
+                size=(0.028, 0.028, 0.003),
+                visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.95, 0.75, 0.05)),
+            ),
+            "magenta": sim_utils.CuboidCfg(
+                size=(0.028, 0.028, 0.003),
+                visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.8, 0.05, 0.75)),
+            ),
+            "cyan": sim_utils.CuboidCfg(
+                size=(0.028, 0.028, 0.003),
+                visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.05, 0.8, 0.85)),
+            ),
+        },
+    )
     # Use an Isaac primitive for the camera task.  This avoids depending on
     # the optional URDF importer extension in headless Isaac Sim workers.
     # A textured six-face USD/OBJ can replace this spawn later without

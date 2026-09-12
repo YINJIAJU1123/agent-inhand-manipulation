@@ -103,7 +103,10 @@ def main(env_cfg, agent_cfg):
                 "show the {face} marker",
                 "show the {face} marker and keep it visible",
             ],
-            "face_names": ["right", "left", "front", "back", "top", "bottom"],
+            # The visual scene renders these colors as six face patches.  The
+            # language target is therefore grounded in RGB evidence rather
+            # than being a hidden face-id token.
+            "face_names": ["red", "green", "blue", "yellow", "magenta", "cyan"],
             "task": args_cli.task,
             "episodes": completed,
             "stride": args_cli.stride,
