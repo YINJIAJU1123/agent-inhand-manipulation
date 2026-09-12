@@ -7,13 +7,12 @@ and for the later vision-language student.  The camera output is exposed by
 PPO observation, so existing state-teacher checkpoints stay compatible.
 """
 
-from pathlib import Path
-
 from isaaclab.assets import RigidObjectCfg
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.sensors import TiledCameraCfg
 from isaaclab.utils import configclass
 import isaaclab.sim as sim_utils
+from isaaclab.sim.spawners.materials.physics_materials_cfg import RigidBodyMaterialCfg
 
 from .brainco_hand_semantic_reorient_env_cfg import BrainCoHandSemanticReorientEnvCfg
 
@@ -51,32 +50,18 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
         width=128,
         height=128,
     )
-    # Use the repository's six-color cube for visual collection.  The
-    # collision mesh and inertial parameters are embedded in this URDF.  The
-    # state teacher retains the Nucleus cube and is therefore checkpoint
-    # compatible; only this camera-enabled data-collection task uses it.
-    object_cfg: RigidObjectCfg = RigidObjectCfg(
-        prim_path="/World/envs/env_.*/object",
-        spawn=sim_utils.UrdfFileCfg(
-            asset_path=str(
-                Path(__file__).resolve().parents[6]
-                / "assets"
-                / "urdf"
-                / "objects"
-                / "cube_multicolor.urdf"
-            ),
-            fix_base=False,
-            merge_fixed_joints=True,
-            # The cube URDF has no joints, but IsaacLab still validates the
-            # converter drive gains.  Explicit zero gains make this config
-            # valid across IsaacLab versions.
-            joint_drive=sim_utils.UrdfConverterCfg.JointDriveCfg(
-                gains=sim_utils.UrdfConverterCfg.JointDriveCfg.PDGainsCfg(stiffness=0.0, damping=0.0)
-            ),
-        ),
-        init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(0.0, -0.11, 0.56), rot=(1.0, 0.0, 0.0, 0.0)
-        ),
+    # Use an Isaac primitive for the camera task.  This avoids depending on
+    # the optional URDF importer extension in headless Isaac Sim workers.
+    # A textured six-face USD/OBJ can replace this spawn later without
+    # changing the camera or policy interfaces.
+    object_cfg: RigidObjectCfg = BrainCoHandSemanticReorientEnvCfg.object_cfg.replace(
+        spawn=sim_utils.CuboidCfg(
+            size=(0.07, 0.07, 0.07),
+            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.15, 0.45, 0.85)),
+            physics_material=RigidBodyMaterialCfg(static_friction=1.0, dynamic_friction=1.0),
+            mass_props=sim_utils.MassPropertiesCfg(density=400.0),
+            rigid_props=sim_utils.RigidBodyPropertiesCfg(disable_gravity=False, enable_gyroscopic_forces=True),
+        )
     )
     # This keeps the observation interface equal to the semantic state
     # teacher.  A multimodal runner should fuse ``capture_camera()`` output.
