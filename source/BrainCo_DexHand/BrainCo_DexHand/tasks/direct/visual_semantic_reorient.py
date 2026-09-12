@@ -47,7 +47,6 @@ class VisualSemanticReorientEnv(SemanticReorientEnv):
              [0.0, 1.0, 0.0, 0.0]],
             device=self.device,
         )
-        self._update_face_markers()
         self._camera_frame_index = 0
 
     def _update_face_markers(self) -> None:
