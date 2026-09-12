@@ -1,0 +1,55 @@
+{
+  "checkpoint": "/home/jiaju/DexManipulation/RevoLab/logs/rsl_rl/brainco_hand/2026-09-11_18-22-24/model_999.pt",
+  "drop_rate": 0.0,
+  "episodes": 600,
+  "mean_min_orientation_error_rad": 0.5020197420070569,
+  "mean_steps": 142.185,
+  "mean_time_s": 4.739500000000005,
+  "num_envs": 256,
+  "per_face": {
+    "0": {
+      "drop_rate": 0.0,
+      "episodes": 112,
+      "mean_min_orientation_error_rad": 0.7246083019833479,
+      "mean_steps": 164.70535714285714,
+      "success_rate": 0.5625
+    },
+    "1": {
+      "drop_rate": 0.0,
+      "episodes": 101,
+      "mean_min_orientation_error_rad": 0.34718229820822727,
+      "mean_steps": 127.78217821782178,
+      "success_rate": 0.8415841584158416
+    },
+    "2": {
+      "drop_rate": 0.0,
+      "episodes": 113,
+      "mean_min_orientation_error_rad": 0.4126330086615233,
+      "mean_steps": 133.42477876106196,
+      "success_rate": 0.7522123893805309
+    },
+    "3": {
+      "drop_rate": 0.0,
+      "episodes": 93,
+      "mean_min_orientation_error_rad": 0.43605503231607456,
+      "mean_steps": 140.1505376344086,
+      "success_rate": 0.7311827956989247
+    },
+    "4": {
+      "drop_rate": 0.0,
+      "episodes": 91,
+      "mean_min_orientation_error_rad": 0.654418367933441,
+      "mean_steps": 146.25274725274724,
+      "success_rate": 0.6483516483516484
+    },
+    "5": {
+      "drop_rate": 0.0,
+      "episodes": 90,
+      "mean_min_orientation_error_rad": 0.4250842644108666,
+      "mean_steps": 139.3111111111111,
+      "success_rate": 0.7777777777777778
+    }
+  },
+  "success_rate": 0.7166666666666667,
+  "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0"
+}
