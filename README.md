@@ -5,10 +5,16 @@ for goal-conditioned Revo3 reorientation and visual-language control.
 Upstream assets and license notices are retained.
 
 Current status: a state-conditioned RL teacher has preliminary evaluation
-reports; the visual student and rollout collector are experimental. The camera
-optical axis has been checked geometrically, but rendered validation and visual
-training are pending an Isaac Sim RTX startup failure. No validated Docker Hub
-image or visual-policy checkpoint has been published yet.
+reports; the visual student and rollout collector are experimental. A standalone
+Docker build now renders 256×256 RGB-D frames and passes six-face goal-reset
+checks. See [camera validation](docs/camera_placement.md) and
+[reproduction instructions](docs/reproducibility.md). This establishes sensor
+operation, not a trained visual-language policy or validated 5090 deployment.
+
+The semantic goal reset was corrected on 2026-09-12: target tokens now clear
+previous face bits, and side-face rotations map the named face to world +Z.
+Earlier evaluation reports belong to the previous goal implementation and must
+be re-evaluated before using its checkpoint for a labeled visual dataset.
 
 Isaac Lab environments, robot assets, and pretrained checkpoints for BrainCo dexterous manipulation tasks. Including:
 

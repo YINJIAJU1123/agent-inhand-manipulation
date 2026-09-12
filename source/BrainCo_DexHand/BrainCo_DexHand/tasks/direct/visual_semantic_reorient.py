@@ -26,6 +26,9 @@ class VisualSemanticReorientEnv(SemanticReorientEnv):
 
     def __init__(self, cfg: BrainCoHandVisualSemanticReorientEnvCfg, render_mode=None, **kwargs):
         super().__init__(cfg, render_mode, **kwargs)
+        # Goal orientation and debug geometry are privileged teacher state.
+        # Do not let their rendered appearance leak into visual observations.
+        self.goal_markers.set_visibility(False)
         self._camera_frame_index = 0
 
     def _setup_scene(self):
@@ -68,6 +71,6 @@ class VisualSemanticReorientEnv(SemanticReorientEnv):
         A future multimodal runner can override this method and concatenate an
         encoded camera feature with the state observation.  Keeping raw images
         out of the default policy observation avoids accidentally feeding
-        privileged-state checkpoints a 128x128 image tensor.
+        privileged-state checkpoints an image tensor.
         """
         return super()._get_observations()

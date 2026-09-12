@@ -1,0 +1,34 @@
+{
+  "task": "BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0",
+  "passed": true,
+  "rgb_shape": [
+    256,
+    256,
+    3
+  ],
+  "rgb_std": 83.17656531376133,
+  "valid_depth_fraction": 0.64599609375,
+  "camera_offset": {
+    "pos": [
+      0.0,
+      -0.72,
+      0.95
+    ],
+    "rot": [
+      0.877115072743617,
+      0.48028028188336,
+      0.0,
+      0.0
+    ],
+    "convention": "opengl"
+  },
+  "goal_faces_checked": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "scope": "RGB-D sensor smoke only; inspect framing and occlusion manually"
+}

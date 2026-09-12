@@ -46,6 +46,10 @@ visibility alone does not establish that rendering works.
 
 ## Docker Hub publication
 
+The local CLI is authenticated through GitHub browser authorization. The
+`yinjiaju00/vlmrotation` repository was created as **private** on 2026-09-12.
+Visibility can be changed separately when public release is intended.
+
 An LXD export cannot be directly pushed as a Docker image. A Docker/OCI image
 must first be built with its dependencies included, and its camera smoke test
 must pass before it is tagged as validated. The intended repository is
@@ -68,3 +72,44 @@ Keep credentials, personal files, runtime logs, datasets and experiment
 checkpoints outside the image build context. Preserve upstream license notices.
 Record code revision, dependency pins, image digest and smoke-test results
 together; a Dockerfile or LXD snapshot alone is not proof of reproducibility.
+
+## Standalone Docker build candidate
+
+`docker/Dockerfile` builds from the official full Isaac Sim 5.1.0 image, pinned
+by digest. It includes released Isaac Lab v2.3.2 at revision
+`37ddf626871758333d6ed89cf64ad702aef127d0` (package version 0.54.2), project
+sources and assets. This is a newly pinned environment, not a byte-for-byte
+copy of the source directory used in the old LXD instance (package 0.54.3).
+
+```bash
+docker build -f docker/Dockerfile --build-arg SOURCE_REV="$(git rev-parse HEAD)" \
+  -t vlmrotation:local .
+docker run --name vlmrotation-smoke --gpus all --shm-size=2g \
+  -e ACCEPT_EULA=Y -e NVIDIA_DRIVER_CAPABILITIES=all vlmrotation:local
+docker cp vlmrotation-smoke:/tmp/vlmrotation-smoke ./outputs/camera-smoke
+```
+
+The Isaac Sim runtime is governed by NVIDIA's license included in the base
+image; `ACCEPT_EULA=Y` records acceptance when running it. The host must provide
+a compatible NVIDIA driver and NVIDIA Container Toolkit. No host Python or
+IsaacLab installation is mounted. First startup may compile shaders for several
+minutes. Internet access may still be needed for external IsaacLab assets.
+
+The default command checks actual RGB-D output and repeated semantic goal
+resets, then writes `rgb.png`, `depth.npy` and `report.json`. A sensor pass does
+not prove policy performance, readable semantic markings or language grounding.
+The current cube is unmarked, and its goal normal is world +Z, not the camera
+view direction. These task changes and corrected-teacher evaluation must precede
+semantic data collection.
+
+The 2026-09-12 Docker sensor test produced 256×256 RGB-D, exercised all six
+goal faces over 128 goal resets, and exited successfully on an RTX 5060 Laptop
+GPU with driver 570.211.01. See `docs/validation/camera-20260912.json` and the
+corresponding image. This is a local sensor test, not a 5090 training benchmark.
+The complete Kit extension shutdown path segfaulted after successful rendering;
+the smoke uses Isaac Sim's default fast shutdown on success and explicitly
+returns a nonzero status for Python test failures before that shutdown.
+
+`/opt/vlmrotation/installed-packages.txt` records resolved packages inside the
+image; source revisions are stored beside it. Image contents exclude credentials,
+experiment logs, datasets and checkpoints through an allowlisted build context.

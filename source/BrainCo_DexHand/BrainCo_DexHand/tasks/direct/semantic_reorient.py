@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import torch
 
-from isaaclab.utils.math import quat_from_angle_axis, quat_from_euler_xyz, quat_mul, sample_uniform
+from isaaclab.utils.math import quat_from_euler_xyz, quat_mul, sample_uniform
 
 from .inhand_manipulation_env import InHandManipulationEnv
 
@@ -44,16 +44,18 @@ class SemanticReorientEnv(InHandManipulationEnv):
         # Quaternion convention is (w, x, y, z).
         base = torch.zeros((n, 4), device=self.device)
         base[:, 0] = 1.0
-        base[face == 0] = quat_from_euler_xyz(zero[face == 0], half_pi[face == 0], zero[face == 0])
-        base[face == 1] = quat_from_euler_xyz(zero[face == 1], neg_half_pi[face == 1], zero[face == 1])
-        base[face == 2] = quat_from_euler_xyz(neg_half_pi[face == 2], zero[face == 2], zero[face == 2])
-        base[face == 3] = quat_from_euler_xyz(half_pi[face == 3], zero[face == 3], zero[face == 3])
+        base[face == 0] = quat_from_euler_xyz(zero[face == 0], neg_half_pi[face == 0], zero[face == 0])
+        base[face == 1] = quat_from_euler_xyz(zero[face == 1], half_pi[face == 1], zero[face == 1])
+        base[face == 2] = quat_from_euler_xyz(half_pi[face == 2], zero[face == 2], zero[face == 2])
+        base[face == 3] = quat_from_euler_xyz(neg_half_pi[face == 3], zero[face == 3], zero[face == 3])
         base[face == 5] = quat_from_euler_xyz(pi[face == 5], zero[face == 5], zero[face == 5])
         yaw = sample_uniform(-3.141592653589793, 3.141592653589793, (n,), device=self.device)
         yaw_q = quat_from_euler_xyz(zero, zero, yaw)
         self.goal_rot[env_ids] = quat_mul(yaw_q, base)
         self.target_face[env_ids] = face
-        self.target_face_onehot[env_ids].zero_()
+        # Advanced indexing returns a copy; .zero_() on that copy would leave
+        # previous target bits set after repeated goal resets.
+        self.target_face_onehot[env_ids] = 0.0
         self.target_face_onehot[env_ids, face] = 1.0
 
         # Keep the existing visual goal marker for debugging and evaluation.

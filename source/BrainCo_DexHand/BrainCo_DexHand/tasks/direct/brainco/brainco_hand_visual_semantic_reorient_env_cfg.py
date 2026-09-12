@@ -8,6 +8,7 @@ PPO observation, so existing state-teacher checkpoints stay compatible.
 """
 
 from isaaclab.assets import RigidObjectCfg
+from isaaclab.markers import VisualizationMarkersCfg
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.sensors import TiledCameraCfg
 from isaaclab.utils import configclass
@@ -47,25 +48,40 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
         ),
         data_types=["rgb", "depth"],
         spawn=sim_utils.PinholeCameraCfg(
-            focal_length=28.0,
+            focal_length=40.0,
             focus_distance=0.72,
             horizontal_aperture=20.955,
             clipping_range=(0.05, 2.0),
         ),
-        width=128,
-        height=128,
+        width=256,
+        height=256,
+    )
+    # Debug markers remain available to the parent task but are hidden by the
+    # visual environment. Local primitives avoid an external USD download.
+    goal_object_cfg = VisualizationMarkersCfg(
+        prim_path="/Visuals/goal_marker",
+        markers={
+            "goal": sim_utils.CuboidCfg(size=(0.07, 0.07, 0.07)),
+            "target_dot": sim_utils.SphereCfg(radius=0.01),
+        },
     )
     # Use an Isaac primitive for the camera task.  This avoids depending on
     # the optional URDF importer extension in headless Isaac Sim workers.
     # A textured six-face USD/OBJ can replace this spawn later without
     # changing the camera or policy interfaces.
-    object_cfg: RigidObjectCfg = BrainCoHandSemanticReorientEnvCfg.object_cfg.replace(
+    object_cfg: RigidObjectCfg = BrainCoHandSemanticReorientEnvCfg().object_cfg.replace(
         spawn=sim_utils.CuboidCfg(
             size=(0.07, 0.07, 0.07),
             visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.15, 0.45, 0.85)),
             physics_material=RigidBodyMaterialCfg(static_friction=1.0, dynamic_friction=1.0),
             mass_props=sim_utils.MassPropertiesCfg(density=400.0),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(disable_gravity=False, enable_gyroscopic_forces=True),
+            collision_props=sim_utils.CollisionPropertiesCfg(),
+            rigid_props=sim_utils.RigidBodyPropertiesCfg(
+                disable_gravity=False, enable_gyroscopic_forces=True,
+                solver_position_iteration_count=8, solver_velocity_iteration_count=0,
+                sleep_threshold=0.005, stabilization_threshold=0.0025,
+                max_depenetration_velocity=1000.0,
+            ),
         )
     )
     # This keeps the observation interface equal to the semantic state
