@@ -67,6 +67,12 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
             ),
             fix_base=False,
             merge_fixed_joints=True,
+            # The cube URDF has no joints, but IsaacLab still validates the
+            # converter drive gains.  Explicit zero gains make this config
+            # valid across IsaacLab versions.
+            joint_drive=sim_utils.UrdfConverterCfg.JointDriveCfg(
+                gains=sim_utils.UrdfConverterCfg.JointDriveCfg.PDGainsCfg(stiffness=0.0, damping=0.0)
+            ),
         ),
         init_state=RigidObjectCfg.InitialStateCfg(
             pos=(0.0, -0.11, 0.56), rot=(1.0, 0.0, 0.0, 0.0)
