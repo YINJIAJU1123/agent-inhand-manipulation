@@ -97,7 +97,6 @@ def main(env_cfg, agent_cfg):
         {
             "frames": frames,
             "actions": actions,
-            "policy_observations": proprio,
             "student_proprio": proprio,
             "target_face": labels,
             "instruction_templates": [
