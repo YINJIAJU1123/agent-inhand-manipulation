@@ -15,18 +15,17 @@ LXD environment is running.
 
 ## VLMrotation environment
 
-The new LXD instance is currently named `VLMrotation2` because the original
-name was occupied during cloning.  It is based on `Yin-handover-2204` and uses
+The new LXD instance is named `VLMrotation`.  It is based on `Yin-handover-2204` and uses
 the `handover` directory storage pool.  The root filesystem currently occupies
 about 47 GB at
-`/var/lib/lxd/storage-pools/handover/containers/VLMrotation2`; the RevoLab,
+`/var/lib/lxd/storage-pools/handover/containers/VLMrotation`; the RevoLab,
 IsaacLab and Python environments are separate bind mounts.  This explains why
 an image export is large even though the code checkout is small.
 
 To create a portable LXD image on the 5090 host:
 
 ```bash
-lxc publish VLMrotation2 --alias vlmrotation-20260912
+lxc publish VLMrotation --alias vlmrotation-20260912
 lxc image export vlmrotation-20260912 /path/to/vlmrotation-20260912
 ```
 
