@@ -104,6 +104,7 @@ def main(env_cfg, agent_cfg):
                 "show the {face} marker",
                 "show the {face} marker and keep it visible",
             ],
+            "face_names": ["right", "left", "front", "back", "top", "bottom"],
             "task": args_cli.task,
             "episodes": completed,
             "stride": args_cli.stride,
