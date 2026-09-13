@@ -14,6 +14,8 @@ from BrainCo_DexHand.algo.agentic import (
     score_action_chunks,
     batch_instructions,
     encode_face_goal,
+    StructuredGoalEncoder,
+    FrozenTextFeatureAdapter,
 )
 
 
@@ -25,6 +27,13 @@ def test_language_goal_contract_is_compositional_and_stable():
     assert batch_instructions(ids) == [
         "show the red marker", "show the cyan marker", "show the blue marker"
     ]
+
+
+def test_language_feature_adapters_share_policy_contract():
+    torch.manual_seed(2)
+    goal = StructuredGoalEncoder(6, 32)(torch.eye(6))
+    text = FrozenTextFeatureAdapter(768, 32)(torch.randn(6, 768))
+    assert goal.shape == text.shape == (6, 32)
 
 
 def test_visual_student_static_language_and_padding():

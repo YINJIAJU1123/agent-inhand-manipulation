@@ -13,6 +13,7 @@ from .consequence_predictor import (
     score_action_chunks,
 )
 from .language_goal import FACE_NAMES, LANGUAGE_GOAL_DIM, batch_instructions, encode_face_goal, instruction
+from .language_encoder import FrozenTextFeatureAdapter, StructuredGoalEncoder
 
 __all__ = [
     "VisualStudentBatch",
@@ -27,4 +28,6 @@ __all__ = [
     "batch_instructions",
     "encode_face_goal",
     "instruction",
+    "StructuredGoalEncoder",
+    "FrozenTextFeatureAdapter",
 ]
