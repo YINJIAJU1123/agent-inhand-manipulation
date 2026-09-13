@@ -49,6 +49,10 @@ import BrainCo_DexHand  # noqa: F401, E402
 @hydra_task_config(args_cli.task, "rsl_rl_cfg_entry_point")
 def main(env_cfg, agent_cfg):
     env_cfg.scene.num_envs = args_cli.num_envs
+    # Preserve terminal success/drop labels for filtering imperfect teacher
+    # demonstrations downstream.  These labels are metadata only; they are
+    # never exposed to the visual student as observations.
+    env_cfg.record_eval_metrics = True
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
     env_cfg.log_dir = os.path.dirname(os.path.abspath(args_cli.checkpoint))
     env = gym.make(args_cli.task, cfg=env_cfg, render_mode=None)
@@ -65,6 +69,7 @@ def main(env_cfg, agent_cfg):
 
     frames, actions, proprio, labels, instructions = [], [], [], [], []
     episode_ids, step_indices, terminal_flags = [], [], []
+    transition_success, transition_drop = [], []
     episode_id = torch.zeros(env.unwrapped.num_envs, dtype=torch.long, device=env.unwrapped.device)
     step_index = torch.zeros_like(episode_id)
     completed = 0
@@ -74,7 +79,8 @@ def main(env_cfg, agent_cfg):
             # Keep each frame/label/proprio sample aligned with the action
             # computed from that same observation.  The environment may
             # resample a target face during ``step`` when an episode ends.
-            if hasattr(env.unwrapped, "capture_camera") and step % max(args_cli.stride, 1) == 0:
+            captured = hasattr(env.unwrapped, "capture_camera") and step % max(args_cli.stride, 1) == 0
+            if captured:
                 camera = env.unwrapped.capture_camera()
                 # RGB stays uint8; depth is losslessly representable at the
                 # millimetre-scale precision needed here and is stored as
@@ -102,6 +108,11 @@ def main(env_cfg, agent_cfg):
             else:
                 action = policy(obs).clamp(-1.0, 1.0)
             obs, _, dones, _ = env.step(action)
+            if captured:
+                metrics = env.unwrapped.extras.get("semantic_metrics", {})
+                if metrics:
+                    transition_success.append(metrics["goal_reached"].detach().cpu().clone())
+                    transition_drop.append(metrics["dropped"].detach().cpu().clone())
             if policy_nn is not None and hasattr(policy_nn, "reset"):
                 policy_nn.reset(dones)
         done_tensor = dones[0] if isinstance(dones, tuple) else dones
@@ -127,6 +138,8 @@ def main(env_cfg, agent_cfg):
             "episode_id": episode_ids,
             "step_index": step_indices,
             "terminal": terminal_flags,
+            "transition_goal_reached": transition_success,
+            "transition_dropped": transition_drop,
             "instruction_templates": [
                 "show the {face} marker",
                 "show the {face} marker and keep it visible",
