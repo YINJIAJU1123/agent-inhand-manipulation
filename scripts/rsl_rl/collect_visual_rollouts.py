@@ -80,7 +80,11 @@ def main(env_cfg, agent_cfg):
                     k: (v.detach().cpu().half() if k == "depth" else v.detach().cpu())
                     for k, v in camera.items()
                 })
-                action = policy(obs)
+                # RSL-RL executes actions clipped to [-1, 1].  Store exactly
+                # that action, rather than the unbounded Gaussian mean
+                # returned by the policy, so behavior cloning sees the
+                # command that actually reached the environment.
+                action = policy(obs).clamp(-1.0, 1.0)
                 actions.append(action.detach().cpu())
                 # Store only robot state that is observable at deployment.
                 # ``obs["policy"]`` contains object pose and goal error for
@@ -90,7 +94,7 @@ def main(env_cfg, agent_cfg):
                 proprio.append(student_proprio.detach().cpu())
                 labels.append(env.unwrapped.target_face.detach().cpu())
             else:
-                action = policy(obs)
+                action = policy(obs).clamp(-1.0, 1.0)
             obs, _, dones, _ = env.step(action)
             if policy_nn is not None and hasattr(policy_nn, "reset"):
                 policy_nn.reset(dones)
