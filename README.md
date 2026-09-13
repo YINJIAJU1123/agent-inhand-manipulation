@@ -114,8 +114,8 @@ Train:
 python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-Repose-Cube-v0 --num_envs 8192 --headless
 python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-Reorient-Cylinder-v0 --num_envs 4096 --headless
 
-# Semantic surface teacher (cube faces; preserves the 21-DoF Revo3 action interface)
-python  scripts/rsl_rl/train.py --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 --num_envs 4096 --headless
+# Language-conditioned privileged teacher (structured goal; preserves 21-DoF action)
+./scripts/rsl_rl/train_language_teacher.sh
 
 # Collect RGB-D trajectories with a semantic state-teacher checkpoint
 python scripts/rsl_rl/collect_visual_rollouts.py \
@@ -123,6 +123,13 @@ python scripts/rsl_rl/collect_visual_rollouts.py \
   --checkpoint logs/rsl_rl/semantic_reorient/<run>/model_250.pt \
   --episodes 100 --num_envs 64 --headless --output data/visual_rollouts.pt
 ```
+
+The teacher's language contract is deliberately small at this stage: the six
+face ids are encoded as a one-hot goal vector and rendered into instructions
+such as `show the red marker`.  This keeps the RL problem stable while making
+the goal interface identical for the later CLIP/SigLIP visual student.  The
+contract and templates live in
+`source/BrainCo_DexHand/BrainCo_DexHand/algo/agentic/language_goal.py`.
 
 The visual task uses an Isaac primitive cube and a fixed 128x128 RGB-D
 `TiledCamera` at `/World/envs/env_*/SemanticCamera`.  The camera is an elevated
