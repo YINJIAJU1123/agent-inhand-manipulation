@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader, Dataset, random_split
 
 
 class RolloutDataset(Dataset):
-    def __init__(self, path: str, max_samples: int | None = None):
+    def __init__(self, path: str, max_samples: int | None = None, history: int = 1):
         data = torch.load(path, map_location="cpu", weights_only=False)
         images, proprio, language, actions = [], [], [], []
         for frame, prop, label, action in zip(
@@ -34,7 +34,21 @@ class RolloutDataset(Dataset):
             proprio.append(prop.to(torch.float32))
             language.append(torch.nn.functional.one_hot(label.long(), num_classes=6).float())
             actions.append(action.to(torch.float32))
-        self.images = torch.cat(images)
+        frame_images = images
+        # Stack recent frames from the same environment.  At an episode
+        # boundary (detected by a changed target label), pad with the current
+        # image instead of leaking the previous task into the new sample.
+        stacked = []
+        labels_cat = torch.cat(language)
+        for t, current in enumerate(frame_images):
+            hist = []
+            for h in range(max(1, history)):
+                prev = max(0, t - (history - 1 - h))
+                while prev < t and not torch.equal(labels_cat[prev * current.shape[0]], labels_cat[t * current.shape[0]]):
+                    prev += 1
+                hist.append(frame_images[prev])
+            stacked.append(torch.cat(hist, dim=1))
+        self.images = torch.cat(stacked)
         self.proprio = torch.cat(proprio)
         self.language = torch.cat(language)
         self.actions = torch.cat(actions)
@@ -51,10 +65,10 @@ class RolloutDataset(Dataset):
 
 
 class VisualBC(nn.Module):
-    def __init__(self, proprio_dim: int = 128, action_dim: int = 21):
+    def __init__(self, proprio_dim: int = 128, action_dim: int = 21, history: int = 1):
         super().__init__()
         self.visual = nn.Sequential(
-            nn.Conv2d(4, 32, 5, stride=2, padding=2), nn.ELU(),
+            nn.Conv2d(4 * history, 32, 5, stride=2, padding=2), nn.ELU(),
             nn.Conv2d(32, 64, 5, stride=2, padding=2), nn.ELU(),
             nn.Conv2d(64, 128, 3, stride=2, padding=1), nn.ELU(),
             nn.Conv2d(128, 128, 3, stride=2, padding=1), nn.ELU(),
@@ -75,17 +89,18 @@ def main():
     parser.add_argument("--epochs", type=int, default=5)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--max-samples", type=int, default=0)
+    parser.add_argument("--history", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
     torch.manual_seed(args.seed)
-    dataset = RolloutDataset(args.data, args.max_samples or None)
+    dataset = RolloutDataset(args.data, args.max_samples or None, history=args.history)
     n_train = max(1, int(0.8 * len(dataset)))
     n_val = len(dataset) - n_train
     train_set, val_set = random_split(dataset, [n_train, n_val], generator=torch.Generator().manual_seed(args.seed))
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers=0)
     val_loader = DataLoader(val_set, batch_size=args.batch_size, shuffle=False, num_workers=0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = VisualBC(proprio_dim=dataset.proprio.shape[-1], action_dim=dataset.actions.shape[-1]).to(device)
+    model = VisualBC(proprio_dim=dataset.proprio.shape[-1], action_dim=dataset.actions.shape[-1], history=args.history).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=1e-4)
     loss_fn = nn.MSELoss()
     history = []
@@ -103,7 +118,7 @@ def main():
         row = {"epoch": epoch + 1, "train_mse": train_loss / n_train, "val_mse": val_loss / max(n_val, 1)}
         history.append(row); print(json.dumps(row), flush=True)
     out = Path(args.output); out.parent.mkdir(parents=True, exist_ok=True)
-    torch.save({"model": model.cpu().state_dict(), "proprio_dim": dataset.proprio.shape[-1], "action_dim": dataset.actions.shape[-1], "history": history}, out)
+    torch.save({"model": model.cpu().state_dict(), "proprio_dim": dataset.proprio.shape[-1], "action_dim": dataset.actions.shape[-1], "history": args.history, "metrics": history}, out)
     report = {"data": args.data, "samples": len(dataset), "train_samples": n_train, "val_samples": n_val, "device": str(device), "history": history, "model": str(out)}
     out.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))

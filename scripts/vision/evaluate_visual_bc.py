@@ -37,7 +37,8 @@ def main():
     env = gym.make(task, cfg=cfg)
     raw = env.unwrapped
     ckpt = torch.load(args.checkpoint, map_location=raw.device, weights_only=False)
-    model = VisualBC(ckpt["proprio_dim"], ckpt["action_dim"]).to(raw.device)
+    history = int(ckpt.get("history", 1))
+    model = VisualBC(ckpt["proprio_dim"], ckpt["action_dim"], history=history).to(raw.device)
     model.load_state_dict(ckpt["model"])
     model.eval()
     obs, _ = env.reset()
@@ -46,13 +47,17 @@ def main():
     episode_success = torch.zeros(args.num_envs, dtype=torch.bool, device=raw.device)
     episode_face = raw.target_face.clone()
     episode_steps = torch.zeros(args.num_envs, dtype=torch.long, device=raw.device)
+    image_history = []
     safety_cap = args.max_steps * args.episodes
     with torch.inference_mode():
         while app.is_running() and len(records) < args.episodes and steps < safety_cap:
             camera = raw.capture_camera()
             rgb = camera["rgb"].to(torch.float32) / 255.0
             depth = camera["depth"].to(torch.float32).clamp(0.0, 2.0) / 2.0
-            image = torch.cat((rgb, depth), dim=-1).permute(0, 3, 1, 2)
+            current_image = torch.cat((rgb, depth), dim=-1).permute(0, 3, 1, 2)
+            image_history.append(current_image)
+            image_history = image_history[-max(history, 1):]
+            image = torch.cat(([image_history[0]] * (history - len(image_history))) + image_history, dim=1)
             language = torch.nn.functional.one_hot(raw.target_face, num_classes=6).float()
             proprio = raw.compute_student_proprio()
             action = model(image, language, proprio).clamp(-1.0, 1.0)
@@ -70,6 +75,10 @@ def main():
                 episode_success[index] = False
                 episode_steps[index] = 0
                 episode_face[index] = raw.target_face[index]
+                # Do not carry frames from the previous object/task across a
+                # reset for this environment slot.
+                for old in image_history[:-1]:
+                    old[index].copy_(current_image[index])
                 if len(records) >= args.episodes:
                     break
             steps += 1
