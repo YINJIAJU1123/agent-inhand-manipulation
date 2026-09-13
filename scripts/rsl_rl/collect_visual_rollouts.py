@@ -64,6 +64,9 @@ def main(env_cfg, agent_cfg):
     obs = env.get_observations()
 
     frames, actions, proprio, labels, instructions = [], [], [], [], []
+    episode_ids, step_indices, terminal_flags = [], [], []
+    episode_id = torch.zeros(env.unwrapped.num_envs, dtype=torch.long, device=env.unwrapped.device)
+    step_index = torch.zeros_like(episode_id)
     completed = 0
     step = 0
     while simulation_app.is_running() and completed < args_cli.episodes:
@@ -94,12 +97,22 @@ def main(env_cfg, agent_cfg):
                 proprio.append(student_proprio.detach().cpu())
                 labels.append(env.unwrapped.target_face.detach().cpu())
                 instructions.append(env.unwrapped.current_instructions())
+                episode_ids.append(episode_id.detach().cpu().clone())
+                step_indices.append(step_index.detach().cpu().clone())
             else:
                 action = policy(obs).clamp(-1.0, 1.0)
             obs, _, dones, _ = env.step(action)
             if policy_nn is not None and hasattr(policy_nn, "reset"):
                 policy_nn.reset(dones)
         done_tensor = dones[0] if isinstance(dones, tuple) else dones
+        if step % max(args_cli.stride, 1) == 0 and frames:
+            # This flag belongs to the transition/action captured above.  It
+            # is appended after stepping so reset transitions remain explicit.
+            terminal_flags.append(torch.as_tensor(done_tensor).detach().cpu().clone())
+        done_tensor = torch.as_tensor(done_tensor, device=episode_id.device).bool().reshape(-1)
+        step_index += 1
+        step_index[done_tensor] = 0
+        episode_id[done_tensor] += 1
         completed += int(torch.as_tensor(done_tensor).sum().item())
         step += 1
 
@@ -111,6 +124,9 @@ def main(env_cfg, agent_cfg):
             "student_proprio": proprio,
             "target_face": labels,
             "instructions": instructions,
+            "episode_id": episode_ids,
+            "step_index": step_indices,
+            "terminal": terminal_flags,
             "instruction_templates": [
                 "show the {face} marker",
                 "show the {face} marker and keep it visible",
