@@ -32,6 +32,7 @@ from collections import defaultdict
 from isaaclab.app import AppLauncher
 
 import cli_args  # isort: skip
+from evaluation_protocol import EpisodeQuota
 
 
 parser = argparse.ArgumentParser(description="Evaluate a SemanticReorient RSL-RL checkpoint.")
@@ -103,6 +104,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # training environment keeps its original setting (0 = continue goals).
     env_cfg.scene.num_envs = args_cli.num_envs
     env_cfg.max_consecutive_success = 1
+    env_cfg.record_eval_metrics = True
     env_cfg.seed = args_cli.seed if args_cli.seed is not None else agent_cfg.seed
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
     agent_cfg = cli_args.update_rsl_rl_cfg(agent_cfg, args_cli)
@@ -137,6 +139,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
 
     device = env.unwrapped.device
     num_envs = env.unwrapped.num_envs
+    quota = EpisodeQuota(args_cli.episodes, num_envs)
     env_max_steps = getattr(env.unwrapped, "max_episode_length", None)
     if env_max_steps is None:
         env_max_steps = int(round(float(env.unwrapped.cfg.episode_length_s) / float(env.unwrapped.step_dt)))
@@ -150,6 +153,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     min_rot = torch.full((num_envs,), float("inf"), dtype=torch.float32, device=device)
     max_obj_dist = torch.zeros(num_envs, dtype=torch.float32, device=device)
     episode_success = torch.zeros(num_envs, dtype=torch.bool, device=device)
+    episode_drop = torch.zeros_like(episode_success)
     # Face at the beginning of the current transition.  SemanticReorientEnv
     # changes this buffer immediately after a successful reward.
     episode_face = env.unwrapped.target_face.clone()
@@ -157,7 +161,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     obs = env.get_observations()
     start_time = time.time()
     total_steps = 0
-    while simulation_app.is_running() and episodes_done < args_cli.episodes:
+    while simulation_app.is_running() and not quota.complete:
         face_before = episode_face.clone()
         with torch.inference_mode():
             # Track the best state before stepping.  This remains valid even
@@ -170,23 +174,24 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             # dot-product formulation for an evaluation-only metric.
             dot = torch.abs(torch.sum(current_rot * goal_rot, dim=-1)).clamp(max=1.0)
             rot_dist = 2.0 * torch.acos(dot)
-            min_rot = torch.minimum(min_rot, rot_dist)
+            min_rot = torch.where(episode_success, min_rot, torch.minimum(min_rot, rot_dist))
             obj_dist = torch.linalg.vector_norm(env.unwrapped.object_pos - env.unwrapped.in_hand_pos, dim=-1)
             max_obj_dist = torch.maximum(max_obj_dist, obj_dist)
             actions = policy(obs)
-            obs, rewards, dones, _ = env.step(actions)
+            obs, rewards, dones, info = env.step(actions)
             dones = _to_bool_tensor(dones, device)
             rewards = rewards if isinstance(rewards, torch.Tensor) else torch.as_tensor(rewards, device=device)
             rewards = rewards.reshape(-1)
             episode_steps += 1
 
-            # A successful transition receives the configured success bonus.
-            # Record it against face_before because the env samples the next
-            # target face during reward computation.
-            success_now = rewards >= success_reward_threshold
+            metrics = info["semantic_metrics"]
+            min_rot = torch.where(
+                episode_success, min_rot, torch.minimum(min_rot, metrics["orientation_error"])
+            )
+            max_obj_dist = torch.maximum(max_obj_dist, metrics["object_distance"])
+            episode_drop |= metrics["dropped"]
+            success_now = metrics["goal_reached"] & ~metrics["dropped"]
             episode_success |= success_now
-            if success_now.any():
-                min_rot = torch.where(success_now, torch.minimum(min_rot, torch.full_like(min_rot, tolerance)), min_rot)
 
             if hasattr(policy_nn, "reset"):
                 policy_nn.reset(dones)
@@ -201,16 +206,18 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         total_steps += 1
         for idx_t in done_ids:
             idx = int(idx_t.item())
+            if not quota.accept(idx):
+                continue
             face = int(face_before[idx].item())
-            success = bool(episode_success[idx].item())
-            # A terminal episode without success is either a timeout or a
-            # fall.  max_obj_dist separates the two for the drop metric.
-            dropped = (not success) and bool(max_obj_dist[idx].item() >= float(env.unwrapped.cfg.fall_dist))
+            dropped = bool(episode_drop[idx].item())
+            success = bool(episode_success[idx].item()) and not dropped
             error = float(min_rot[idx].item())
             if not error < float("inf"):
                 error = float("nan")
             steps = int(episode_steps[idx].item())
             record = {
+                "env_id": idx,
+                "trial_in_slot": quota.counts[idx],
                 "face": face,
                 "success": success,
                 "drop": dropped,
@@ -234,17 +241,18 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             min_rot[idx] = float("inf")
             max_obj_dist[idx] = 0.0
             episode_success[idx] = False
+            episode_drop[idx] = False
             episode_face[idx] = env.unwrapped.target_face[idx]
             if episodes_done >= args_cli.episodes:
                 break
 
-        if total_steps >= max_steps * max(1, args_cli.episodes):
+        if total_steps >= (max_steps + 2) * max(quota.quotas):
             print(f"[WARN] Reached safety cap ({total_steps} vector steps) before collecting all episodes.")
             break
 
         if args_cli.real_time:
             elapsed = time.time() - start_time
-            expected = episode_steps.float().mean().item() * float(env.unwrapped.step_dt)
+            expected = total_steps * float(env.unwrapped.step_dt)
             if expected > elapsed:
                 time.sleep(expected - elapsed)
 
@@ -259,6 +267,13 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         "checkpoint": os.path.abspath(resume_path),
         "num_envs": num_envs,
         "episodes": total,
+        "requested_episodes": args_cli.episodes,
+        "complete": quota.complete,
+        "protocol": "fixed_per_environment_quota_v2",
+        "seed": env_cfg.seed,
+        "episode_quotas": quota.quotas,
+        "episodes_per_slot": quota.counts,
+        "records": all_records,
         "success_rate": sum(int(r["success"]) for r in all_records) / max(total, 1),
         "drop_rate": sum(int(r["drop"]) for r in all_records) / max(total, 1),
         "mean_min_orientation_error_rad": mean("min_orientation_error_rad"),
@@ -284,6 +299,8 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     def json_safe(value):
         if isinstance(value, float) and value != value:
             return None
+        if isinstance(value, list):
+            return [json_safe(v) for v in value]
         if isinstance(value, dict):
             return {k: json_safe(v) for k, v in value.items()}
         return value

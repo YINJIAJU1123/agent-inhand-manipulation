@@ -13,6 +13,7 @@ class BrainCoHandSemanticReorientEnvCfg(_CubeCfg):
     # The original implementation concatenates 152 state values.  We append
     # a six-dimensional target-face token for this teacher.
     observation_space = 158
+    record_eval_metrics = False
     scene: InteractiveSceneCfg = InteractiveSceneCfg(
         num_envs=4096, env_spacing=0.75, replicate_physics=True, clone_in_fabric=False
     )

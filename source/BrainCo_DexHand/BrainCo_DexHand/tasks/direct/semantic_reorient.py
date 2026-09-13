@@ -13,7 +13,7 @@ import torch
 
 from isaaclab.utils.math import quat_from_euler_xyz, quat_mul, sample_uniform
 
-from .inhand_manipulation_env import InHandManipulationEnv
+from .inhand_manipulation_env import InHandManipulationEnv, rotation_distance
 from BrainCo_DexHand.algo.agentic.language_goal import (
     FACE_NAMES,
     batch_instructions,
@@ -83,6 +83,20 @@ class SemanticReorientEnv(InHandManipulationEnv):
         # semantic goal token for the teacher policy.
         obs = super().compute_full_observations()
         return torch.cat((obs, self.target_face_onehot), dim=-1)
+
+    def _get_rewards(self):
+        if self.cfg.record_eval_metrics:
+            # DirectRLEnv resets slots before returning step(). Preserve the
+            # terminal state here; next-step observations may be a new trial.
+            error = rotation_distance(self.object_rot, self.goal_rot)
+            distance = torch.linalg.vector_norm(self.object_pos - self.in_hand_pos, dim=-1)
+            self.extras["semantic_metrics"] = {
+                "orientation_error": error.clone(),
+                "object_distance": distance.clone(),
+                "goal_reached": (error <= self.cfg.success_tolerance).clone(),
+                "dropped": (distance >= self.cfg.fall_dist).clone(),
+            }
+        return super()._get_rewards()
 
     @property
     def language_goal(self) -> torch.Tensor:
