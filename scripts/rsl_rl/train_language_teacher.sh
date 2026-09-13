@@ -4,7 +4,14 @@ set -euo pipefail
 # Language-conditioned privileged teacher.  The task uses a six-dimensional
 # structured goal vector (the same contract later rendered as text or encoded
 # by CLIP/SigLIP) and keeps Revo3's 21-D action interface unchanged.
-GPU_ID="${GPU_ID:-0}"
+# Respect either launch convention.  In particular, do not silently reset an
+# outer CUDA_VISIBLE_DEVICES assignment to GPU 0: that can collide with an
+# unrelated job on a multi-GPU host.
+if [[ -z "${GPU_ID:-}" && -n "${CUDA_VISIBLE_DEVICES:-}" ]]; then
+  GPU_ID="${CUDA_VISIBLE_DEVICES%%,*}"
+else
+  GPU_ID="${GPU_ID:-0}"
+fi
 NUM_ENVS="${NUM_ENVS:-4096}"
 MAX_ITERS="${MAX_ITERS:-1000}"
 
@@ -17,6 +24,7 @@ export OMNI_KIT_ACCEPT_EULA=YES
 export PYTHONUNBUFFERED=1
 export TMPDIR="${TMPDIR:-$HOME/tmp}"
 mkdir -p "$TMPDIR/isaaclab/logs" "$ROOT_DIR/logs/language_teacher"
+echo "[INFO] language teacher: GPU_ID=$GPU_ID NUM_ENVS=$NUM_ENVS MAX_ITERS=$MAX_ITERS"
 
 exec python scripts/rsl_rl/train.py \
   --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 \
