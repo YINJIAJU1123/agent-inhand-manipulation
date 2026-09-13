@@ -12,7 +12,19 @@ from BrainCo_DexHand.algo.agentic import (
     consequence_loss,
     evidence_loss,
     score_action_chunks,
+    batch_instructions,
+    encode_face_goal,
 )
+
+
+def test_language_goal_contract_is_compositional_and_stable():
+    ids = torch.tensor([0, 5, 2])
+    goal = encode_face_goal(ids)
+    assert goal.shape == (3, 6)
+    assert torch.allclose(goal.sum(dim=-1), torch.ones(3))
+    assert batch_instructions(ids) == [
+        "show the red marker", "show the cyan marker", "show the blue marker"
+    ]
 
 
 def test_visual_student_static_language_and_padding():

@@ -14,6 +14,11 @@ import torch
 from isaaclab.utils.math import quat_from_euler_xyz, quat_mul, sample_uniform
 
 from .inhand_manipulation_env import InHandManipulationEnv
+from BrainCo_DexHand.algo.agentic.language_goal import (
+    FACE_NAMES,
+    batch_instructions,
+    encode_face_goal,
+)
 
 
 class SemanticReorientEnv(InHandManipulationEnv):
@@ -22,7 +27,7 @@ class SemanticReorientEnv(InHandManipulationEnv):
     def __init__(self, cfg, render_mode=None, **kwargs):
         super().__init__(cfg, render_mode, **kwargs)
         self.target_face = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
-        self.target_face_onehot = torch.zeros((self.num_envs, 6), dtype=torch.float, device=self.device)
+        self.target_face_onehot = torch.zeros((self.num_envs, len(FACE_NAMES)), dtype=torch.float, device=self.device)
         # The parent constructor performs an initial reset before these buffers
         # exist.  Initialize the semantic goal for that first rollout too.
         self._reset_target_pose(torch.arange(self.num_envs, device=self.device))
@@ -55,8 +60,7 @@ class SemanticReorientEnv(InHandManipulationEnv):
         self.target_face[env_ids] = face
         # Advanced indexing returns a copy; .zero_() on that copy would leave
         # previous target bits set after repeated goal resets.
-        self.target_face_onehot[env_ids] = 0.0
-        self.target_face_onehot[env_ids, face] = 1.0
+        self.target_face_onehot[env_ids] = encode_face_goal(face)
 
         # Keep the existing visual goal marker for debugging and evaluation.
         goal_pos = self.goal_pos + self.scene.env_origins
@@ -79,3 +83,12 @@ class SemanticReorientEnv(InHandManipulationEnv):
         # semantic goal token for the teacher policy.
         obs = super().compute_full_observations()
         return torch.cat((obs, self.target_face_onehot), dim=-1)
+
+    @property
+    def language_goal(self) -> torch.Tensor:
+        """Structured language goal consumed by the teacher and student."""
+        return self.target_face_onehot
+
+    def current_instructions(self) -> list[str]:
+        """Human-readable instructions for logs and rollout metadata."""
+        return batch_instructions(self.target_face)

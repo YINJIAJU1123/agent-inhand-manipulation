@@ -63,7 +63,7 @@ def main(env_cfg, agent_cfg):
         policy_nn = getattr(runner.alg, "actor_critic", None)
     obs = env.get_observations()
 
-    frames, actions, proprio, labels = [], [], [], []
+    frames, actions, proprio, labels, instructions = [], [], [], [], []
     completed = 0
     step = 0
     while simulation_app.is_running() and completed < args_cli.episodes:
@@ -93,6 +93,7 @@ def main(env_cfg, agent_cfg):
                 student_proprio = env.unwrapped.compute_student_proprio()
                 proprio.append(student_proprio.detach().cpu())
                 labels.append(env.unwrapped.target_face.detach().cpu())
+                instructions.append(env.unwrapped.current_instructions())
             else:
                 action = policy(obs).clamp(-1.0, 1.0)
             obs, _, dones, _ = env.step(action)
@@ -109,6 +110,7 @@ def main(env_cfg, agent_cfg):
             "actions": actions,
             "student_proprio": proprio,
             "target_face": labels,
+            "instructions": instructions,
             "instruction_templates": [
                 "show the {face} marker",
                 "show the {face} marker and keep it visible",

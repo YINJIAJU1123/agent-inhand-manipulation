@@ -12,6 +12,7 @@ from .consequence_predictor import (
     consequence_loss,
     score_action_chunks,
 )
+from .language_goal import FACE_NAMES, LANGUAGE_GOAL_DIM, batch_instructions, encode_face_goal, instruction
 
 __all__ = [
     "VisualStudentBatch",
@@ -21,4 +22,9 @@ __all__ = [
     "ConsequencePredictor",
     "consequence_loss",
     "score_action_chunks",
+    "FACE_NAMES",
+    "LANGUAGE_GOAL_DIM",
+    "batch_instructions",
+    "encode_face_goal",
+    "instruction",
 ]
