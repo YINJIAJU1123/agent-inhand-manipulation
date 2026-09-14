@@ -20,6 +20,10 @@ class BrainCoHandSemanticReorientEnvCfg(_CubeCfg):
 
     # Encourage stable control during the target-facing maneuver.
     action_penalty_scale = -0.0004
+    # The original teacher issued near full-range position commands.  Smooth
+    # the commanded targets and explicitly discourage frame-to-frame jumps.
+    act_moving_average = 0.35
+    action_slew_penalty_scale = -0.01
     reach_goal_bonus = 300.0
     success_tolerance = 0.16
     fall_penalty = -25.0

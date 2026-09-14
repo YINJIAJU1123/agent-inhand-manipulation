@@ -136,4 +136,8 @@ class BrainCoHandEnvCfg(DirectRLEnvCfg):
     max_consecutive_success = 0
     av_factor = 0.1
     act_moving_average = 1.0
+    # Optional penalty on changes between consecutive normalized commands.
+    # Semantic reorientation enables this for the smooth-control teacher;
+    # legacy tasks keep the original zero value.
+    action_slew_penalty_scale = 0.0
     force_torque_obs_scale = 10.0

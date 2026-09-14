@@ -148,6 +148,11 @@ class InHandManipulationEnv(DirectRLEnv):
 
         self.num_hand_dofs = self.hand.num_joints
 
+        # Keep an explicit previous command for smoothness regularization and
+        # initialize the action history before the first observation is built.
+        self.actions = torch.zeros((self.num_envs, self.cfg.action_space), dtype=torch.float, device=self.device)
+        self.prev_actions = torch.zeros_like(self.actions)
+
         # buffers for position targets
         self.hand_dof_targets = torch.zeros((self.num_envs, self.num_hand_dofs), dtype=torch.float, device=self.device)
         self.prev_targets = torch.zeros((self.num_envs, self.num_hand_dofs), dtype=torch.float, device=self.device)
@@ -227,6 +232,8 @@ class InHandManipulationEnv(DirectRLEnv):
         light_cfg.func("/World/Light", light_cfg)
 
     def _pre_physics_step(self, actions: torch.Tensor) -> None:
+        if hasattr(self, "actions"):
+            self.prev_actions = self.actions.clone()
         self.actions = actions.clone()
 
     def _apply_action(self) -> None:
@@ -293,6 +300,8 @@ class InHandManipulationEnv(DirectRLEnv):
             self.cfg.rot_eps,
             self.actions,
             self.cfg.action_penalty_scale,
+            self.prev_actions,
+            self.cfg.action_slew_penalty_scale,
             self.cfg.success_tolerance,
             self.cfg.reach_goal_bonus,
             self.cfg.fall_dist,
@@ -373,6 +382,9 @@ class InHandManipulationEnv(DirectRLEnv):
         self.prev_targets[env_ids] = dof_pos
         self.cur_targets[env_ids] = dof_pos
         self.hand_dof_targets[env_ids] = dof_pos
+        if hasattr(self, "actions"):
+            self.actions[env_ids] = 0.0
+            self.prev_actions[env_ids] = 0.0
 
         self.hand.set_joint_position_target(dof_pos, env_ids=env_ids)
         self.hand.write_joint_state_to_sim(dof_pos, dof_vel, env_ids=env_ids)
@@ -556,6 +568,8 @@ def compute_rewards(
     rot_eps: float,
     actions: torch.Tensor,
     action_penalty_scale: float,
+    prev_actions: torch.Tensor,
+    action_slew_penalty_scale: float,
     success_tolerance: float,
     reach_goal_bonus: float,
     fall_dist: float,
@@ -569,9 +583,16 @@ def compute_rewards(
     rot_rew = 1.0 / (torch.abs(rot_dist) + rot_eps) * rot_reward_scale
 
     action_penalty = torch.sum(actions**2, dim=-1)
+    action_slew_penalty = torch.sum((actions - prev_actions) ** 2, dim=-1)
 
-    # Total reward is: position distance + orientation alignment + action regularization + success bonus + fall penalty
-    reward = dist_rew + rot_rew + action_penalty * action_penalty_scale
+    # Total reward is: position distance + orientation alignment + action
+    # regularization + slew regularization + success bonus + fall penalty.
+    reward = (
+        dist_rew
+        + rot_rew
+        + action_penalty * action_penalty_scale
+        + action_slew_penalty * action_slew_penalty_scale
+    )
 
     # Find out which envs hit the goal and update successes count
     goal_resets = torch.where(torch.abs(rot_dist) <= success_tolerance, torch.ones_like(reset_goal_buf), reset_goal_buf)
