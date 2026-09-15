@@ -37,6 +37,7 @@ Observed packages in the development Python environment:
 | NumPy | 1.26.0 |
 | Hydra | 1.3.6 |
 | transformers | 4.57.6 |
+| huggingface-hub | 0.36.2 (must remain <1.0 for transformers 4.57.x) |
 
 These are inventory values, not a tested installation lockfile. IsaacLab was
 mounted as a source directory without its own Git metadata, so the exact
