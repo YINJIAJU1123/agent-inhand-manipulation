@@ -84,10 +84,12 @@ def main() -> None:
         "language_features": torch.cat(text_features),
         "student_proprio": torch.cat(data["student_proprio"]),
         "actions": torch.cat(data["actions"]),
+        "teacher_actions": torch.cat(data.get("teacher_actions", data["actions"])),
         "target_face": torch.cat(data["target_face"]),
         "episode_id": torch.cat(data["episode_id"]),
         "step_index": torch.cat(data["step_index"]),
         "env_id": torch.cat(data.get("env_id", [torch.zeros_like(x) for x in data["episode_id"]])),
+        "terminal": torch.cat(data.get("terminal", [torch.zeros_like(x) for x in data["episode_id"]])).bool(),
         "model": args.model,
         "source": args.data,
     }

@@ -74,7 +74,7 @@ def main(env_cfg, agent_cfg):
         policy_nn = getattr(runner.alg, "actor_critic", None)
     obs = env.get_observations()
 
-    frames, actions, proprio, labels, instructions = [], [], [], [], []
+    frames, actions, teacher_actions, proprio, labels, instructions = [], [], [], [], [], []
     episode_ids, step_indices, env_ids, terminal_flags = [], [], [], []
     environment_ids = torch.arange(env.unwrapped.num_envs, device=env.unwrapped.device)
     transition_success, transition_drop = [], []
@@ -97,12 +97,16 @@ def main(env_cfg, agent_cfg):
                     k: (v.detach().cpu().half() if k == "depth" else v.detach().cpu())
                     for k, v in camera.items()
                 })
-                # RSL-RL executes actions clipped to [-1, 1].  Store exactly
-                # that action, rather than the unbounded Gaussian mean
-                # returned by the policy, so behavior cloning sees the
-                # command that actually reached the environment.
-                action = policy(obs).clamp(-1.0, 1.0)
-                actions.append(action.detach().cpu())
+                # Preserve the raw command for the environment. The replay
+                # target is stored below as a bounded projection so the first
+                # student has the same [-1,1] action contract as its head.
+                raw_action = policy(obs)
+                action = raw_action if agent_cfg.clip_actions is None else raw_action.clamp(-1.0, 1.0)
+                # The student head is bounded for safe deployment. Keep both
+                # the unbounded teacher output and its [-1,1] projection so
+                # the replay target matches the deployed student contract.
+                teacher_actions.append(raw_action.detach().cpu())
+                actions.append(raw_action.clamp(-1.0, 1.0).detach().cpu())
                 # Store only robot state that is observable at deployment.
                 # ``obs["policy"]`` contains object pose and goal error for
                 # the privileged state teacher and must not become student
@@ -115,7 +119,8 @@ def main(env_cfg, agent_cfg):
                 step_indices.append(step_index.detach().cpu().clone())
                 env_ids.append(environment_ids.detach().cpu().clone())
             else:
-                action = policy(obs).clamp(-1.0, 1.0)
+                raw_action = policy(obs)
+                action = raw_action if agent_cfg.clip_actions is None else raw_action.clamp(-1.0, 1.0)
             obs, _, dones, _ = env.step(action)
             if captured:
                 metrics = env.unwrapped.extras.get("semantic_metrics", {})
@@ -141,6 +146,7 @@ def main(env_cfg, agent_cfg):
         {
             "frames": frames,
             "actions": actions,
+            "teacher_actions": teacher_actions,
             "student_proprio": proprio,
             "target_face": labels,
             "instructions": instructions,
@@ -162,6 +168,7 @@ def main(env_cfg, agent_cfg):
             "episodes": completed,
             "stride": args_cli.stride,
             "depth_dtype": "float16",
+            "action_storage": "bounded_projection_of_teacher_output",
         },
         args_cli.output,
     )
