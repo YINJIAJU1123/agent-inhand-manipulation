@@ -20,6 +20,8 @@ from isaaclab.app import AppLauncher
 parser = argparse.ArgumentParser()
 parser.add_argument("--checkpoint", required=True)
 parser.add_argument("--model", default="google/siglip2-base-patch16-224")
+parser.add_argument("--cached-features", default=None,
+                    help="Optional offline feature cache. Skips live VLM encoding and uses per-face mean features.")
 parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--max-steps", type=int, default=300)
@@ -27,7 +29,7 @@ parser.add_argument("--vision-stride", type=int, default=4, help="Run the frozen
 parser.add_argument("--report", required=True)
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
-args.enable_cameras = True
+args.enable_cameras = args.cached_features is None
 app = AppLauncher(args).app
 
 import gymnasium as gym  # noqa: E402
@@ -70,14 +72,29 @@ def main():
     ).to(device)
     policy.load_state_dict(ckpt["model"])
     policy.eval()
-    processor = AutoProcessor.from_pretrained(args.model, use_fast=False)
-    vlm = AutoModel.from_pretrained(args.model).to(device).eval()
     face_names = ["red", "green", "blue", "yellow", "magenta", "cyan"]
     text_prompts = [f"show the {x} marker" for x in face_names]
-    with torch.inference_mode():
-        text_inputs = processor(text=text_prompts, return_tensors="pt", padding=True, truncation=True)
-        text_inputs = {k: v.to(device) for k, v in text_inputs.items() if torch.is_tensor(v)}
-        text_features = torch.nn.functional.normalize(vlm.get_text_features(**text_inputs).float(), dim=-1)
+    processor = None
+    vlm = None
+    cached_image_by_face = cached_text_by_face = None
+    if args.cached_features:
+        cached = torch.load(args.cached_features, map_location="cpu", weights_only=False)
+        cached_image_by_face = torch.stack([
+            cached["image_features"][cached["target_face"] == face].float().mean(dim=0)
+            for face in range(len(face_names))
+        ]).to(device)
+        cached_text_by_face = torch.stack([
+            cached["language_features"][cached["target_face"] == face].float().mean(dim=0)
+            for face in range(len(face_names))
+        ]).to(device)
+        text_features = cached_text_by_face
+    else:
+        processor = AutoProcessor.from_pretrained(args.model, use_fast=False)
+        vlm = AutoModel.from_pretrained(args.model).to(device).eval()
+        with torch.inference_mode():
+            text_inputs = processor(text=text_prompts, return_tensors="pt", padding=True, truncation=True)
+            text_inputs = {k: v.to(device) for k, v in text_inputs.items() if torch.is_tensor(v)}
+            text_features = torch.nn.functional.normalize(vlm.get_text_features(**text_inputs).float(), dim=-1)
 
     obs, _ = env.reset()
     n = raw.num_envs
@@ -96,7 +113,9 @@ def main():
     max_vector_steps = args.max_steps * math.ceil(args.episodes / max(n, 1))
     while app.is_running() and done_count < args.episodes and step_count < max_vector_steps:
         with torch.inference_mode():
-            if step_count % max(args.vision_stride, 1) == 0:
+            if cached_image_by_face is not None:
+                image_features = cached_image_by_face[raw.target_face]
+            elif step_count % max(args.vision_stride, 1) == 0:
                 camera = raw.capture_camera()
                 rgb = camera["rgb"][..., :3].to(torch.uint8)
                 images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
@@ -171,6 +190,7 @@ def main():
     report = {
         "task": task, "checkpoint": os.path.abspath(args.checkpoint), "model": args.model,
         "vision_stride": args.vision_stride,
+        "cached_features": args.cached_features,
         "episodes": len(records), "vector_steps": step_count,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
         "drop_rate": sum(x["drop"] for x in records) / max(len(records), 1),
