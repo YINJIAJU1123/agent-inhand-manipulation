@@ -32,3 +32,5 @@ class BrainCoHandSemanticReorientEnvCfg(_CubeCfg):
     # useful for the first language/vision pilot because "show the red face"
     # then has a single, reproducible terminal pose.
     goal_yaw: Optional[float] = None
+    # Optional deterministic face for balanced visual-language collection.
+    fixed_target_face: Optional[int] = None

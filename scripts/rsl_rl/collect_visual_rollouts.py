@@ -23,6 +23,7 @@ parser.add_argument("--num_envs", type=int, default=64)
 parser.add_argument("--stride", type=int, default=1, help="Record every Nth environment step.")
 parser.add_argument("--output", type=str, default="data/visual_rollouts.pt")
 parser.add_argument("--seed", type=int, default=0)
+parser.add_argument("--target-face", type=int, default=-1, choices=[-1, 0, 1, 2, 3, 4, 5])
 cli_args.add_rsl_rl_args(parser)
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
@@ -56,6 +57,8 @@ def main(env_cfg, agent_cfg):
     # the first visual student.
     env_cfg.max_consecutive_success = 1
     env_cfg.seed = args_cli.seed
+    if args_cli.target_face >= 0:
+        env_cfg.fixed_target_face = args_cli.target_face
     # Preserve terminal success/drop labels for filtering imperfect teacher
     # demonstrations downstream.  These labels are metadata only; they are
     # never exposed to the visual student as observations.

@@ -41,7 +41,10 @@ class SemanticReorientEnv(InHandManipulationEnv):
         # orientation maps the selected local normal to world +z; a random
         # yaw makes the task genuinely SO(3)-valued rather than a face lookup.
         n = len(env_ids)
-        face = torch.randint(0, 6, (n,), device=self.device)
+        if self.cfg.fixed_target_face is None:
+            face = torch.randint(0, 6, (n,), device=self.device)
+        else:
+            face = torch.full((n,), int(self.cfg.fixed_target_face), dtype=torch.long, device=self.device)
         zero = torch.zeros(n, device=self.device)
         half_pi = torch.full((n,), 1.5707963267948966, device=self.device)
         neg_half_pi = -half_pi
