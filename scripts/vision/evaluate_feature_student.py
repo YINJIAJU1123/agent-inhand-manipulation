@@ -26,6 +26,8 @@ parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--max-steps", type=int, default=300)
 parser.add_argument("--vision-stride", type=int, default=4, help="Run the frozen VLM every N control steps.")
+parser.add_argument("--action-scale", type=float, default=1.0,
+                    help="Scale the bounded student command before sending it to the hand.")
 parser.add_argument("--report", required=True)
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
@@ -129,7 +131,7 @@ def main():
             proprio = raw.compute_student_proprio().float()
             prop_hist = torch.cat((prop_hist[:, 1:], proprio[:, None]), dim=1)
             out = policy(VisualStudentBatch(image_hist, face_text, prop_hist))
-            action = out["action"].clamp(-1.0, 1.0)
+            action = (args.action_scale * out["action"]).clamp(-1.0, 1.0)
             _, _, terminated, truncated, info = env.step(action)
             done = (terminated | truncated).to(device=device, dtype=torch.bool)
             metrics = info["semantic_metrics"]
@@ -194,6 +196,7 @@ def main():
     report = {
         "task": task, "checkpoint": os.path.abspath(args.checkpoint), "model": args.model,
         "vision_stride": args.vision_stride,
+        "action_scale": args.action_scale,
         "cached_features": args.cached_features,
         "episodes": len(records), "vector_steps": step_count,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
