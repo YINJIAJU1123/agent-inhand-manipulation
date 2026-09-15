@@ -9,6 +9,8 @@ with an image/language embedding without changing the action interface.
 
 from __future__ import annotations
 
+import math
+
 import torch
 
 from isaaclab.utils.math import quat_from_euler_xyz, quat_mul, sample_uniform
@@ -21,6 +23,47 @@ from BrainCo_DexHand.algo.agentic.language_goal import (
 )
 
 
+def required_goal_hold_steps(goal_hold_time_s: float, step_dt: float) -> int:
+    """Convert a continuous hold duration to environment steps."""
+
+    if goal_hold_time_s < 0.0:
+        raise ValueError("goal_hold_time_s must be non-negative")
+    if step_dt <= 0.0:
+        raise ValueError("step_dt must be positive")
+    if goal_hold_time_s == 0.0:
+        return 0
+    return max(1, int(math.ceil(goal_hold_time_s / step_dt)))
+
+
+def advance_goal_hold(
+    hold_steps: torch.Tensor,
+    success_latched: torch.Tensor,
+    goal_reached: torch.Tensor,
+    dropped: torch.Tensor,
+    required_steps: int,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Advance continuous-goal-hold state for a batch of environments.
+
+    Returns next hold count, success latch, completed-hold predicate, and a
+    one-step success event.  The event fires only on entry to the completed
+    state, preventing duplicate bonuses while a frozen goal remains visible.
+    """
+
+    if required_steps < 0:
+        raise ValueError("required_steps must be non-negative")
+    if hold_steps.shape != success_latched.shape:
+        raise ValueError("hold_steps and success_latched must have the same shape")
+    if goal_reached.shape != hold_steps.shape or dropped.shape != hold_steps.shape:
+        raise ValueError("goal predicates must match hold state shape")
+
+    qualified = goal_reached & ~dropped
+    next_steps = torch.where(qualified, hold_steps + 1, torch.zeros_like(hold_steps))
+    hold_complete = qualified if required_steps == 0 else qualified & (next_steps >= required_steps)
+    success_event = hold_complete & ~success_latched
+    next_latched = torch.where(qualified, hold_complete, torch.zeros_like(success_latched))
+    return next_steps, next_latched, hold_complete, success_event
+
+
 class SemanticReorientEnv(InHandManipulationEnv):
     """Revo3 cube reorientation conditioned on a target surface id."""
 
@@ -28,6 +71,16 @@ class SemanticReorientEnv(InHandManipulationEnv):
         super().__init__(cfg, render_mode, **kwargs)
         self.target_face = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
         self.target_face_onehot = torch.zeros((self.num_envs, len(FACE_NAMES)), dtype=torch.float, device=self.device)
+        self.goal_hold_steps = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
+        self.goal_success_latched = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
+        self._step_goal_reached = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
+        self._step_dropped = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
+        self._step_hold_complete = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
+        self._step_success_event = torch.zeros(self.num_envs, dtype=torch.bool, device=self.device)
+        self._step_orientation_error = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
+        self._step_object_distance = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
+        self._step_target_face = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
+        self._step_goal_rotation = torch.zeros((self.num_envs, 4), dtype=torch.float, device=self.device)
         # The parent constructor performs an initial reset before these buffers
         # exist.  Initialize the semantic goal for that first rollout too.
         self._reset_target_pose(torch.arange(self.num_envs, device=self.device))
@@ -83,6 +136,13 @@ class SemanticReorientEnv(InHandManipulationEnv):
         )
         self.goal_markers.visualize(marker_pos, marker_rot, marker_indices=marker_indices)
         self.reset_goal_buf[env_ids] = 0
+        if hasattr(self, "goal_hold_steps"):
+            self.goal_hold_steps[env_ids] = 0
+            self.goal_success_latched[env_ids] = False
+            self._step_goal_reached[env_ids] = False
+            self._step_dropped[env_ids] = False
+            self._step_hold_complete[env_ids] = False
+            self._step_success_event[env_ids] = False
 
     def compute_full_observations(self):
         # Preserve the exact RevoLab state observation and append an explicit
@@ -90,19 +150,106 @@ class SemanticReorientEnv(InHandManipulationEnv):
         obs = super().compute_full_observations()
         return torch.cat((obs, self.target_face_onehot), dim=-1)
 
+    def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
+        """Update hold state and compute done flags before reward/reset."""
+
+        self._compute_intermediate_values()
+        self._step_orientation_error = rotation_distance(self.object_rot, self.goal_rot)
+        self._step_object_distance = torch.linalg.vector_norm(self.object_pos - self.in_hand_pos, dim=-1)
+        # Snapshot the goal before `_get_rewards` can reset successful slots.
+        self._step_target_face = self.target_face.clone()
+        self._step_goal_rotation = self.goal_rot.clone()
+        self._step_goal_reached = self._step_orientation_error <= self.cfg.success_tolerance
+        self._step_dropped = self._step_object_distance >= self.cfg.fall_dist
+        required_steps = required_goal_hold_steps(float(self.cfg.goal_hold_time_s), float(self.step_dt))
+        (
+            self.goal_hold_steps,
+            self.goal_success_latched,
+            self._step_hold_complete,
+            self._step_success_event,
+        ) = advance_goal_hold(
+            self.goal_hold_steps,
+            self.goal_success_latched,
+            self._step_goal_reached,
+            self._step_dropped,
+            required_steps,
+        )
+
+        out_of_reach = self._step_dropped
+        time_out = self.episode_length_buf >= self.max_episode_length - 1
+        if self.cfg.max_consecutive_success > 0 and not self.cfg.freeze_goal_for_episode:
+            time_out = time_out | (
+                self.successes + self._step_success_event.to(self.successes.dtype)
+                >= self.cfg.max_consecutive_success
+            )
+        return out_of_reach, time_out
+
     def _get_rewards(self):
+        """Compute rewards using the current state before DirectRLEnv resets."""
+
+        goal_dist = self._step_object_distance
+        rot_dist = self._step_orientation_error
+        dist_rew = goal_dist * self.cfg.dist_reward_scale
+        rot_rew = 1.0 / (torch.abs(rot_dist) + self.cfg.rot_eps) * self.cfg.rot_reward_scale
+        action_penalty = torch.sum(self.actions**2, dim=-1)
+        action_slew_penalty = torch.sum((self.actions - self.prev_actions) ** 2, dim=-1)
+        reward = (
+            dist_rew
+            + rot_rew
+            + action_penalty * self.cfg.action_penalty_scale
+            + action_slew_penalty * self.cfg.action_slew_penalty_scale
+        )
+
+        self.successes = self.successes + self._step_success_event.to(self.successes.dtype)
+        reward = torch.where(
+            self._step_success_event,
+            reward + self.cfg.reach_goal_bonus,
+            reward,
+        )
+        reward = torch.where(
+            self._step_dropped,
+            reward + self.cfg.fall_penalty,
+            reward,
+        )
+
         if self.cfg.record_eval_metrics:
-            # DirectRLEnv resets slots before returning step(). Preserve the
-            # terminal state here; next-step observations may be a new trial.
-            error = rotation_distance(self.object_rot, self.goal_rot)
-            distance = torch.linalg.vector_norm(self.object_pos - self.in_hand_pos, dim=-1)
             self.extras["semantic_metrics"] = {
-                "orientation_error": error.clone(),
-                "object_distance": distance.clone(),
-                "goal_reached": (error <= self.cfg.success_tolerance).clone(),
-                "dropped": (distance >= self.cfg.fall_dist).clone(),
+                "orientation_error": self._step_orientation_error.clone(),
+                "object_distance": self._step_object_distance.clone(),
+                "goal_reached": self._step_goal_reached.clone(),
+                "dropped": self._step_dropped.clone(),
+                "hold_complete": self._step_hold_complete.clone(),
+                "hold_steps": self.goal_hold_steps.clone(),
+                "success_event": self._step_success_event.clone(),
+                "target_face": self._step_target_face.clone(),
+                "goal_rotation": self._step_goal_rotation.clone(),
             }
-        return super()._get_rewards()
+
+        # Only completed holds trigger target changes.  A frozen-goal run
+        # keeps the target and continues until timeout/drop for stability eval.
+        self.reset_goal_buf[:] = self._step_success_event
+        if self.cfg.freeze_goal_for_episode:
+            self.reset_goal_buf.zero_()
+        goal_env_ids = self.reset_goal_buf.nonzero(as_tuple=False).squeeze(-1)
+        if len(goal_env_ids) > 0:
+            self._reset_target_pose(goal_env_ids)
+
+        # Keep the base task's exponentially averaged success statistic for
+        # existing RSL-RL dashboards.  `reset_buf` was computed immediately
+        # before this reward call and therefore still refers to the current
+        # (pre-reset) transition.
+        num_resets = torch.sum(self.reset_buf)
+        finished_successes = torch.sum(self.successes * self.reset_buf.to(self.successes.dtype))
+        self.consecutive_successes[:] = torch.where(
+            num_resets > 0,
+            self.cfg.av_factor * finished_successes / num_resets
+            + (1.0 - self.cfg.av_factor) * self.consecutive_successes,
+            self.consecutive_successes,
+        )
+        if "log" not in self.extras:
+            self.extras["log"] = dict()
+        self.extras["log"]["consecutive_successes"] = self.successes.mean()
+        return reward
 
     @property
     def language_goal(self) -> torch.Tensor:

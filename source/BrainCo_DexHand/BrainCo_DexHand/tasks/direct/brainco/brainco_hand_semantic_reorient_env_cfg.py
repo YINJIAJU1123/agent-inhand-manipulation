@@ -28,6 +28,11 @@ class BrainCoHandSemanticReorientEnvCfg(_CubeCfg):
     reach_goal_bonus = 300.0
     success_tolerance = 0.16
     fall_penalty = -25.0
+    # Zero preserves the original one-step success behavior. Positive values
+    # require continuous pose validity before awarding a success bonus.
+    goal_hold_time_s: float = 0.0
+    # Keep one target for a complete episode when evaluating stability.
+    freeze_goal_for_episode: bool = False
     # None samples a random in-plane yaw (the SO(3) teacher).  A fixed yaw is
     # useful for the first language/vision pilot because "show the red face"
     # then has a single, reproducible terminal pose.
