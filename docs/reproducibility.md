@@ -17,6 +17,33 @@ source archive is only a transfer alternative, not a replacement for history.
 
 ## Environment status
 
+### Verified RTX 5090 development container (2026-09-15)
+
+The existing remote development environment is **LXD**, not Docker. On
+`jiaju@10.3.100.20`, `sudo lxc list` lists both `VLMrotation` and
+`Yin-handover-2204` as running. A missing `docker` command on this host does
+not mean that these environments or their files were removed.
+
+| Item | Verified value |
+| --- | --- |
+| Project container | `VLMrotation` |
+| Container IPv4 | `10.99.0.140` (recheck before direct network access) |
+| Base container | `Yin-handover-2204` |
+| GPU assignment | PCI `0000:61:00.0`, one RTX 5090, 32607 MiB |
+| Python | `/opt/isaaclab-env/bin/python` |
+| Container source | `/workspace/RevoLab` |
+| Host source mount | `/home/jiaju/DexManipulation/RevoLab` |
+| IsaacLab mount | `/workspace/IsaacLab` |
+
+Use `sudo lxc exec VLMrotation -- <command>` to inspect or run this
+environment. No Docker daemon installation is required for this path. The
+container's `nvidia-smi` succeeds, and its Python reports PyTorch
+`2.7.0+cu128`, CUDA available, and `NVIDIA GeForce RTX 5090`. The host's
+standalone `nvidia-smi` reports an NVML mismatch, but that observation must
+not be substituted for the independently verified container result. These
+checks validate CUDA access only; a fresh camera smoke and full policy
+evaluation still need to complete before reporting a new success rate.
+
 The development LXD instance is named `VLMrotation` and was cloned from an
 Ubuntu 22.04 environment. Its root filesystem occupies approximately 47 GB.
 RevoLab, IsaacLab, RSL-RL, the Python interpreter and the Isaac Sim environment
