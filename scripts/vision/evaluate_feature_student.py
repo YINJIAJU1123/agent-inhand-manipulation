@@ -12,6 +12,7 @@ import json
 import math
 import os
 import sys
+import traceback
 from collections import defaultdict
 from pathlib import Path
 
@@ -46,16 +47,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from train_feature_student import VisualLanguageStudent, VisualStudentBatch  # noqa: E402
 
 
-def _features(model, processor, images, texts, device):
+def _features(model, processor, images, device, text_features):
     image_inputs = processor(images=images, return_tensors="pt")
     image_inputs = {k: v.to(device) for k, v in image_inputs.items() if torch.is_tensor(v)}
     image_features = model.get_image_features(**image_inputs)
-    text_inputs = processor(text=texts, return_tensors="pt", padding=True, truncation=True)
-    text_inputs = {k: v.to(device) for k, v in text_inputs.items() if torch.is_tensor(v)}
-    text_features = model.get_text_features(**text_inputs)
     return (
         torch.nn.functional.normalize(image_features.float(), dim=-1),
-        torch.nn.functional.normalize(text_features.float(), dim=-1),
+        text_features,
     )
 
 
@@ -118,14 +116,15 @@ def main():
     records = []
     max_vector_steps = args.max_steps * math.ceil(args.episodes / max(n, 1))
     while app.is_running() and done_count < args.episodes and step_count < max_vector_steps:
-        with torch.inference_mode():
+        # Keep state tensors mutable across episode resets.
+        with torch.no_grad():
             if cached_image_by_face is not None:
                 image_features = cached_image_by_face[raw.target_face]
             elif step_count % max(args.vision_stride, 1) == 0:
                 camera = raw.capture_camera()
                 rgb = camera["rgb"][..., :3].to(torch.uint8)
                 images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
-                image_features, _ = _features(vlm, processor, images, text_prompts, device)
+                image_features, _ = _features(vlm, processor, images, device, text_features)
             face_text = text_features[raw.target_face]
             image_hist = torch.cat((image_hist[:, 1:], image_features[:, None]), dim=1)
             proprio = raw.compute_student_proprio().float()
@@ -213,5 +212,10 @@ def main():
 
 try:
     main()
-finally:
+except BaseException:
+    traceback.print_exc()
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(1)
+else:
     app.close()

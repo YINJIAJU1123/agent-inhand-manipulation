@@ -22,10 +22,23 @@ def main() -> None:
         "instructions", "episode_id", "step_index", "env_id", "terminal",
         "transition_goal_reached", "transition_dropped",
     }
-    for key in list_keys:
-        values = [shard[key] for shard in shards if key in shard]
-        if values:
-            merged[key] = sum(values, [])
+    # Each collection process restarts its environment ids at zero. Allocate a
+    # disjoint id range per shard so the trainer cannot join histories from
+    # different shards into one fictitious episode.
+    env_offset = 0
+    for shard in shards:
+        shard_env = shard.get("env_id")
+        if shard_env is None:
+            shard_env = [torch.zeros_like(x) for x in shard["episode_id"]]
+        max_env = max((int(torch.as_tensor(x).max().item()) for x in shard_env), default=-1)
+        for key in list_keys:
+            if key not in shard:
+                continue
+            values = shard[key]
+            if key == "env_id":
+                values = [torch.as_tensor(x).clone() + env_offset for x in values]
+            merged.setdefault(key, []).extend(values)
+        env_offset += max_env + 1
     merged.update({key: shards[0][key] for key in ("instruction_templates", "face_names", "task", "stride", "depth_dtype", "action_storage") if key in shards[0]})
     merged["episodes"] = sum(int(shard.get("episodes", 0)) for shard in shards)
     merged["shards"] = [str(path) for path in args.inputs]
