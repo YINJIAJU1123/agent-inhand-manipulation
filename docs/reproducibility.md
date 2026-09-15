@@ -38,6 +38,7 @@ Observed packages in the development Python environment:
 | Hydra | 1.3.6 |
 | transformers | 4.57.6 |
 | huggingface-hub | 0.36.2 (must remain <1.0 for transformers 4.57.x) |
+| sentencepiece | 0.2.0 (required by the SigLIP2 text tokenizer) |
 
 These are inventory values, not a tested installation lockfile. IsaacLab was
 mounted as a source directory without its own Git metadata, so the exact
