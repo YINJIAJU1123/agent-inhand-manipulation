@@ -68,6 +68,8 @@ def main() -> None:
     with torch.inference_mode():
         for frame_batch, text_batch in zip(data["frames"], data["instructions"]):
             rgb = frame_batch["rgb"].to(torch.uint8)
+            if rgb.shape[-1] == 4:
+                rgb = rgb[..., :3]
             images = [Image.fromarray(x.numpy()) for x in rgb]
             for start in range(0, len(images), args.batch_size):
                 image_features.append(_image_features(model, processor, images[start:start + args.batch_size], device))

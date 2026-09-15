@@ -120,3 +120,7 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
     # teacher.  A multimodal runner should fuse ``capture_camera()`` output.
     include_camera_in_policy: bool = False
     camera_frame_stack: int = 1
+    # The first visual-language task uses one canonical pose per face.  This
+    # removes an unspoken yaw variable from language supervision; the full
+    # random-yaw SO(3) version remains the state-teacher benchmark.
+    goal_yaw = 0.0

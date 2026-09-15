@@ -2,6 +2,7 @@
 
 from isaaclab.utils import configclass
 from isaaclab.scene import InteractiveSceneCfg
+from typing import Optional
 
 from .brainco_hand_env_cfg import BrainCoHandEnvCfg as _CubeCfg
 
@@ -27,3 +28,7 @@ class BrainCoHandSemanticReorientEnvCfg(_CubeCfg):
     reach_goal_bonus = 300.0
     success_tolerance = 0.16
     fall_penalty = -25.0
+    # None samples a random in-plane yaw (the SO(3) teacher).  A fixed yaw is
+    # useful for the first language/vision pilot because "show the red face"
+    # then has a single, reproducible terminal pose.
+    goal_yaw: Optional[float] = None

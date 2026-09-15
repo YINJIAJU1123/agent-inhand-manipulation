@@ -54,7 +54,10 @@ class SemanticReorientEnv(InHandManipulationEnv):
         base[face == 2] = quat_from_euler_xyz(half_pi[face == 2], zero[face == 2], zero[face == 2])
         base[face == 3] = quat_from_euler_xyz(neg_half_pi[face == 3], zero[face == 3], zero[face == 3])
         base[face == 5] = quat_from_euler_xyz(pi[face == 5], zero[face == 5], zero[face == 5])
-        yaw = sample_uniform(-3.141592653589793, 3.141592653589793, (n,), device=self.device)
+        if self.cfg.goal_yaw is None:
+            yaw = sample_uniform(-3.141592653589793, 3.141592653589793, (n,), device=self.device)
+        else:
+            yaw = torch.full((n,), float(self.cfg.goal_yaw), device=self.device)
         yaw_q = quat_from_euler_xyz(zero, zero, yaw)
         self.goal_rot[env_ids] = quat_mul(yaw_q, base)
         self.target_face[env_ids] = face

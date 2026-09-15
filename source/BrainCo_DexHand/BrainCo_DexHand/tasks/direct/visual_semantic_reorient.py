@@ -80,7 +80,7 @@ class VisualSemanticReorientEnv(SemanticReorientEnv):
         """Return the tiled camera instance for custom collectors."""
         return self._tiled_camera
 
-    def capture_camera(self, clone: bool = True) -> dict[str, torch.Tensor]:
+    def capture_camera(self, clone: bool = True, refresh: bool = True) -> dict[str, torch.Tensor]:
         """Return current RGB-D frames and camera metadata.
 
         RGB is uint8 in Isaac Lab's native camera format.  Depth is in metres
@@ -88,6 +88,11 @@ class VisualSemanticReorientEnv(SemanticReorientEnv):
         shape ``(num_envs, H, W, C)``.  Cloning avoids exposing the sensor's
         internal buffers to an asynchronous learner.
         """
+        if refresh:
+            # TiledCamera data is otherwise one simulation tick behind when a
+            # collector reads it immediately before env.step().
+            self.sim.render()
+            self._tiled_camera.update(self.step_dt, force_recompute=True)
         output: dict[str, torch.Tensor] = {}
         for key in ("rgb", "depth"):
             value = self._tiled_camera.data.output.get(key)
