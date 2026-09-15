@@ -22,6 +22,7 @@ parser.add_argument("--episodes", type=int, default=100)
 parser.add_argument("--num_envs", type=int, default=64)
 parser.add_argument("--stride", type=int, default=1, help="Record every Nth environment step.")
 parser.add_argument("--output", type=str, default="data/visual_rollouts.pt")
+parser.add_argument("--seed", type=int, default=0)
 cli_args.add_rsl_rl_args(parser)
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
@@ -49,6 +50,12 @@ import BrainCo_DexHand  # noqa: F401, E402
 @hydra_task_config(args_cli.task, "rsl_rl_cfg_entry_point")
 def main(env_cfg, agent_cfg):
     env_cfg.scene.num_envs = args_cli.num_envs
+    # A collected trajectory should contain one instruction and one terminal
+    # outcome.  The training task can chain several successful reorientations
+    # for exploration, but that would make the action labels ambiguous for
+    # the first visual student.
+    env_cfg.max_consecutive_success = 1
+    env_cfg.seed = args_cli.seed
     # Preserve terminal success/drop labels for filtering imperfect teacher
     # demonstrations downstream.  These labels are metadata only; they are
     # never exposed to the visual student as observations.
