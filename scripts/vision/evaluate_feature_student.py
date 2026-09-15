@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import sys
 from collections import defaultdict
@@ -92,7 +93,8 @@ def main():
     episode_min_error = torch.full((n,), float("inf"), device=device)
     episode_face = raw.target_face.clone()
     records = []
-    while app.is_running() and done_count < args.episodes and step_count < args.max_steps * args.episodes:
+    max_vector_steps = args.max_steps * math.ceil(args.episodes / max(n, 1))
+    while app.is_running() and done_count < args.episodes and step_count < max_vector_steps:
         with torch.inference_mode():
             if step_count % max(args.vision_stride, 1) == 0:
                 camera = raw.capture_camera()
@@ -112,7 +114,15 @@ def main():
             episode_min_error = torch.minimum(episode_min_error, metrics["orientation_error"])
             episode_success |= metrics["goal_reached"] & ~metrics["dropped"]
             episode_drop |= metrics["dropped"]
-        for idx_t in torch.nonzero(done, as_tuple=False).flatten():
+            # Apply an evaluator-side horizon even when the environment does
+            # not emit a terminal signal.  This keeps each rollout bounded
+            # and lets us compare success/timeout rates fairly.
+            timeout = episode_steps >= args.max_steps
+            done_eval = done | timeout
+        timeout_ids = torch.nonzero(timeout & ~done, as_tuple=False).flatten()
+        if len(timeout_ids) > 0:
+            raw._reset_idx(timeout_ids)
+        for idx_t in torch.nonzero(done_eval, as_tuple=False).flatten():
             idx = int(idx_t.item())
             if done_count >= args.episodes:
                 break
@@ -120,6 +130,7 @@ def main():
                 "face": int(episode_face[idx].item()),
                 "success": bool(episode_success[idx].item()) and not bool(episode_drop[idx].item()),
                 "drop": bool(episode_drop[idx].item()),
+                "timeout": bool(timeout[idx].item()),
                 "min_orientation_error_rad": float(episode_min_error[idx].item()),
                 "steps": int(episode_steps[idx].item()),
             })
