@@ -75,7 +75,8 @@ def main(env_cfg, agent_cfg):
     obs = env.get_observations()
 
     frames, actions, proprio, labels, instructions = [], [], [], [], []
-    episode_ids, step_indices, terminal_flags = [], [], []
+    episode_ids, step_indices, env_ids, terminal_flags = [], [], [], []
+    environment_ids = torch.arange(env.unwrapped.num_envs, device=env.unwrapped.device)
     transition_success, transition_drop = [], []
     episode_id = torch.zeros(env.unwrapped.num_envs, dtype=torch.long, device=env.unwrapped.device)
     step_index = torch.zeros_like(episode_id)
@@ -112,6 +113,7 @@ def main(env_cfg, agent_cfg):
                 instructions.append(env.unwrapped.current_instructions())
                 episode_ids.append(episode_id.detach().cpu().clone())
                 step_indices.append(step_index.detach().cpu().clone())
+                env_ids.append(environment_ids.detach().cpu().clone())
             else:
                 action = policy(obs).clamp(-1.0, 1.0)
             obs, _, dones, _ = env.step(action)
@@ -144,6 +146,7 @@ def main(env_cfg, agent_cfg):
             "instructions": instructions,
             "episode_id": episode_ids,
             "step_index": step_indices,
+            "env_id": env_ids,
             "terminal": terminal_flags,
             "transition_goal_reached": transition_success,
             "transition_dropped": transition_drop,

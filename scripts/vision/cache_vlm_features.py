@@ -85,6 +85,7 @@ def main() -> None:
         "target_face": torch.cat(data["target_face"]),
         "episode_id": torch.cat(data["episode_id"]),
         "step_index": torch.cat(data["step_index"]),
+        "env_id": torch.cat(data.get("env_id", [torch.zeros_like(x) for x in data["episode_id"]])),
         "model": args.model,
         "source": args.data,
     }
