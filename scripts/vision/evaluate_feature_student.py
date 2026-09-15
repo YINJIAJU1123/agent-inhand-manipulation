@@ -23,7 +23,6 @@ parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--max-steps", type=int, default=300)
 parser.add_argument("--report", required=True)
-parser.add_argument("--device", default=None)
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
 args.enable_cameras = True
