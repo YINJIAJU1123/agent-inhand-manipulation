@@ -136,6 +136,24 @@ def main():
         if step_count % 50 == 0:
             print(f"[eval] vector_steps={step_count} episodes={done_count}", flush=True)
 
+    # A visual student can fail to trigger the environment's terminal condition
+    # (for example, it may neither reach the pose nor drop the object).  Keep
+    # those partial rollouts in the report as explicit timeouts instead of
+    # silently returning ``episodes: 0``.
+    if done_count < args.episodes:
+        for idx in range(n):
+            if done_count >= args.episodes or episode_steps[idx].item() == 0:
+                continue
+            records.append({
+                "face": int(episode_face[idx].item()),
+                "success": False,
+                "drop": bool(episode_drop[idx].item()),
+                "timeout": True,
+                "min_orientation_error_rad": float(episode_min_error[idx].item()),
+                "steps": int(episode_steps[idx].item()),
+            })
+            done_count += 1
+
     per_face = defaultdict(list)
     for record in records:
         per_face[record["face"]].append(record)
