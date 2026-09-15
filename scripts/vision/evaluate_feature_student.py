@@ -59,7 +59,11 @@ def _features(model, processor, images, texts, device):
 
 def main():
     device = torch.device(args.device or ("cuda" if torch.cuda.is_available() else "cpu"))
-    task = "BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0"
+    task = (
+        "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0"
+        if args.cached_features
+        else "BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0"
+    )
     cfg = parse_env_cfg(task, device=str(device), num_envs=args.num_envs)
     cfg.max_consecutive_success = 1
     cfg.record_eval_metrics = True
