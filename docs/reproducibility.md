@@ -147,6 +147,21 @@ The complete Kit extension shutdown path segfaulted after successful rendering;
 the smoke uses Isaac Sim's default fast shutdown on success and explicitly
 returns a nonzero status for Python test failures before that shutdown.
 
+### RTX 5090 LXD note (2026-09-15)
+
+The existing `VLMrotation` LXD instance on `10.3.100.20` exposes an RTX 5090
+inside the container (`nvidia-smi` reports driver 595.71.05 and CUDA-enabled
+PyTorch 2.7.0).  Isaac Sim 5.1 starts and enumerates Vulkan successfully, but
+the camera-enabled Kit process can abort in
+`librtx.scenedb.plugin.so` while initializing Hydra RTX.  Supplying a writable
+portable Kit root removes the read-only `user.config.json` error but does not
+remove this native 5.1 renderer crash.  Isaac Sim 6.0 in the same LXD image
+starts on the 5090; its PhysX/material Python API is not drop-in compatible
+with the IsaacLab 0.47 task stack, so it is not currently used as a silent
+replacement.  Keep this distinction in experiment logs: a 5090 state-only
+rollout can validate CUDA physics, whereas a camera rollout requires a
+validated Isaac Sim/driver pairing.
+
 `/opt/vlmrotation/installed-packages.txt` records resolved packages inside the
 image; source revisions are stored beside it. Image contents exclude credentials,
 experiment logs, datasets and checkpoints through an allowlisted build context.
