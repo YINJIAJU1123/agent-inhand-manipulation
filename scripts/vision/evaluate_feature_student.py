@@ -22,6 +22,7 @@ parser.add_argument("--model", default="google/siglip2-base-patch16-224")
 parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--max-steps", type=int, default=300)
+parser.add_argument("--vision-stride", type=int, default=4, help="Run the frozen VLM every N control steps.")
 parser.add_argument("--report", required=True)
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
@@ -82,6 +83,7 @@ def main():
     history = int(ckpt.get("history", 8))
     image_hist = torch.zeros((n, history, ckpt["rgb_dim"]), device=device)
     prop_hist = torch.zeros((n, history, ckpt["proprio_dim"]), device=device)
+    image_features = torch.zeros((n, ckpt["rgb_dim"]), device=device)
     done_count = 0
     step_count = 0
     episode_steps = torch.zeros(n, dtype=torch.long, device=device)
@@ -91,11 +93,12 @@ def main():
     episode_face = raw.target_face.clone()
     records = []
     while app.is_running() and done_count < args.episodes and step_count < args.max_steps * args.episodes:
-        camera = raw.capture_camera()
-        rgb = camera["rgb"][..., :3].to(torch.uint8)
-        images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
         with torch.inference_mode():
-            image_features, _ = _features(vlm, processor, images, text_prompts, device)
+            if step_count % max(args.vision_stride, 1) == 0:
+                camera = raw.capture_camera()
+                rgb = camera["rgb"][..., :3].to(torch.uint8)
+                images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
+                image_features, _ = _features(vlm, processor, images, text_prompts, device)
             face_text = text_features[raw.target_face]
             image_hist = torch.cat((image_hist[:, 1:], image_features[:, None]), dim=1)
             proprio = raw.compute_student_proprio().float()
@@ -128,6 +131,7 @@ def main():
             episode_face[idx] = raw.target_face[idx]
             image_hist[idx] = 0
             prop_hist[idx] = 0
+            image_features[idx] = 0
         step_count += 1
         if step_count % 50 == 0:
             print(f"[eval] vector_steps={step_count} episodes={done_count}", flush=True)
@@ -137,6 +141,7 @@ def main():
         per_face[record["face"]].append(record)
     report = {
         "task": task, "checkpoint": os.path.abspath(args.checkpoint), "model": args.model,
+        "vision_stride": args.vision_stride,
         "episodes": len(records), "vector_steps": step_count,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
         "drop_rate": sum(x["drop"] for x in records) / max(len(records), 1),
