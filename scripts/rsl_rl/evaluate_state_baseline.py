@@ -238,6 +238,7 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
     min_error = torch.full((num_envs,), float("inf"), dtype=torch.float32, device=device)
     dropped = torch.zeros(num_envs, dtype=torch.bool, device=device)
     instant_reach = torch.zeros(num_envs, dtype=torch.bool, device=device)
+    ever_held = torch.zeros(num_envs, dtype=torch.bool, device=device)
     held_at_end = torch.zeros(num_envs, dtype=torch.bool, device=device)
     prev_action = torch.zeros((num_envs, env.unwrapped.num_hand_dofs), device=device)
     has_prev = torch.zeros(num_envs, dtype=torch.bool, device=device)
@@ -277,6 +278,7 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
             min_error = torch.minimum(min_error, orientation)
             dropped |= drop
             instant_reach |= reach
+            ever_held |= hold_complete
             held_at_end = hold_complete
             episode_steps += 1
             sum_clipped_l2 += clipped_l2
@@ -303,7 +305,7 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
                 "face": metric_face_value,
                 "success": bool(held_at_end[idx].item()) and not bool(dropped[idx].item()),
                 "instant_reach": bool(instant_reach[idx].item()) and not bool(dropped[idx].item()),
-                "continuous_hold": bool(hold_complete[idx].item()) and not bool(dropped[idx].item()),
+                "continuous_hold": bool(ever_held[idx].item()) and not bool(dropped[idx].item()),
                 "held_at_end": bool(held_at_end[idx].item()) and not bool(dropped[idx].item()),
                 "drop": bool(dropped[idx].item()) or bool(object_distance[idx].item() >= float(env.unwrapped.cfg.fall_dist)),
                 "hold_steps": int(hold_steps[idx].item()),
@@ -321,6 +323,7 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
             min_error[idx] = float("inf")
             dropped[idx] = False
             instant_reach[idx] = False
+            ever_held[idx] = False
             held_at_end[idx] = False
             sum_clipped_l2[idx] = 0
             sum_slew_l2[idx] = 0
