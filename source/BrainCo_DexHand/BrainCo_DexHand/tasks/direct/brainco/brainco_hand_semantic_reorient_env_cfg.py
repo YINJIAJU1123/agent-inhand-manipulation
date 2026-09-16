@@ -31,6 +31,10 @@ class BrainCoHandSemanticReorientEnvCfg(_CubeCfg):
     # Zero preserves the original one-step success behavior. Positive values
     # require continuous pose validity before awarding a success bonus.
     goal_hold_time_s: float = 0.0
+    # Dense shaping for the hold phase.  It is deliberately small relative to
+    # the terminal success bonus, but supplies credit before the full dwell is
+    # completed.  Zero recovers the original sparse-hold objective.
+    hold_progress_reward_scale: float = 0.0
     # Keep one target for a complete episode when evaluating stability.
     freeze_goal_for_episode: bool = False
     # None samples a random in-plane yaw (the SO(3) teacher).  A fixed yaw is

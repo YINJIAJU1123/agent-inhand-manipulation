@@ -200,6 +200,16 @@ class SemanticReorientEnv(InHandManipulationEnv):
             + action_slew_penalty * self.cfg.action_slew_penalty_scale
         )
 
+        # Give the actor credit for each qualified hold step.  The progress
+        # term is normalized by the required dwell, so its maximum per-step
+        # contribution is the configured scale and it cannot grow with a
+        # longer hold requirement.  A zero scale preserves the sparse reward
+        # used by the original baseline.
+        if self.cfg.hold_progress_reward_scale != 0.0:
+            required_steps = required_goal_hold_steps(float(self.cfg.goal_hold_time_s), float(self.step_dt))
+            hold_progress = (self.goal_hold_steps.to(reward.dtype) / float(required_steps)).clamp(0.0, 1.0)
+            reward = reward + hold_progress * self.cfg.hold_progress_reward_scale
+
         self.successes = self.successes + self._step_success_event.to(self.successes.dtype)
         reward = torch.where(
             self._step_success_event,
