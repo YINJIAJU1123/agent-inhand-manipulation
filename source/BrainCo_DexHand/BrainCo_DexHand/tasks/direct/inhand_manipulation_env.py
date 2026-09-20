@@ -206,6 +206,8 @@ class InHandManipulationEnv(DirectRLEnv):
         spawn_ground_plane(prim_path="/World/ground", cfg=GroundPlaneCfg(usd_path=_LOCAL_GROUND_USD))
         # clone and replicate (no need to filter for this environment)
         self.scene.clone_environments(copy_from_source=False)
+        if not self.cfg.scene.replicate_physics:
+            self.scene.filter_collisions(global_prim_paths=["/World/ground"])
         # add articulation to scene - we must register to scene to randomize with EventManager
         self.scene.articulations["robot"] = self.hand
         self.scene.rigid_objects["object"] = self.object

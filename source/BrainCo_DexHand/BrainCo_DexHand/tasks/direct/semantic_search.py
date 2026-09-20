@@ -37,12 +37,31 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
         self._frames = None
         self._cached_observation = None
         self.reset_rejections = 0
-        # 7x7 samples across the actual 28 mm patch. Surface z is 37 mm:
-        # parent marker center is 35.5 mm with thickness 3 mm.
-        uv = torch.linspace(-.012, .012, 7, device=self.device)
+        if self.object_geometry is None:
+            self.surface_normals = self._face_normals[None].expand(self.num_envs, -1, -1)
+            self.surface_rotations = self._face_marker_rots[None].expand(self.num_envs, -1, -1)
+            self.surface_centers = .035 * self.surface_normals
+            self.surface_sizes = torch.full((self.num_envs, 6, 2), .028, device=self.device)
+            center_offset, front_offset = .0005, .002
+            self.object_indices = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
+            self.object_names = ["legacy_cube_70"] * self.num_envs
+        else:
+            from BrainCo_DexHand.algo.agentic.object_catalog import PATCH_GAP, PATCH_THICKNESS
+            geometry = self.object_geometry
+            self.surface_normals, self.surface_rotations = geometry["normal"], geometry["rotation"]
+            self.surface_centers, self.surface_sizes = geometry["center"], geometry["size"]
+            self.object_indices, self.object_names = geometry["index"], geometry["names"]
+            center_offset, front_offset = PATCH_GAP + PATCH_THICKNESS / 2, PATCH_GAP + PATCH_THICKNESS
+        self.marker_centers = self.surface_centers + center_offset * self.surface_normals
+        # Sample an inset square on the front of the rendered marker geometry.
+        uv = torch.linspace(-3/7, 3/7, 7, device=self.device)
         xx, yy = torch.meshgrid(uv, uv, indexing="ij")
-        patch = torch.stack((xx.flatten(), yy.flatten(), torch.full_like(xx.flatten(), .037)), -1)
-        self.patch_points = quat_rotate(self._face_marker_rots[:, None], patch[None])
+        grid = torch.stack((xx.flatten(), yy.flatten()), -1)
+        patch = torch.zeros((self.num_envs, 6, 49, 3), device=self.device)
+        patch[..., :2] = grid * self.surface_sizes[:, :, None]
+        self.patch_points = (quat_rotate(self.surface_rotations[:, :, None], patch)
+                             + self.surface_centers[:, :, None]
+                             + front_offset * self.surface_normals[:, :, None])
 
     def _reset_target_pose(self, env_ids):
         # Preserve parent initialization, but keep one semantic target per episode.
@@ -77,9 +96,9 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
             return super()._update_face_markers()
         from isaaclab.utils.math import quat_mul
         rot = self.object_rot[:, None]
-        offsets = quat_rotate(rot, .0355 * self._face_normals[None])
+        offsets = quat_rotate(rot, self.marker_centers)
         positions = self.object_pos[:, None] + offsets + self.scene.env_origins[:, None]
-        rotations = quat_mul(rot.expand(-1, 6, -1), self._face_marker_rots[None].expand(self.num_envs, -1, -1))
+        rotations = quat_mul(rot.expand(-1, 6, -1), self.surface_rotations)
         self.face_markers.visualize(positions.reshape(-1, 3), rotations.reshape(-1, 4),
                                     marker_indices=self.face_colors.flatten())
 
@@ -108,7 +127,7 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
     def _surface_metrics(self):
         frames = self._refresh_frames()
         pos_w = self.object_pos + self.scene.env_origins
-        points = quat_rotate(self.object_rot[:, None], self.patch_points.flatten(0, 1)[None]) + pos_w[:, None]
+        points = quat_rotate(self.object_rot[:, None], self.patch_points.flatten(1, 2)) + pos_w[:, None]
         cam = self.camera.data
         pixels, depth = project_points(points, cam.pos_w, cam.quat_w_ros, cam.intrinsic_matrices)
         n, h, w = frames["depth"].shape[:3]
@@ -118,11 +137,11 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
         observed = frames["depth"].reshape(n, h, w)[torch.arange(n, device=self.device)[:, None], yi, xi]
         valid = inside & torch.isfinite(observed) & ((observed - depth).abs() <= self.cfg.depth_tolerance)
         fraction = valid.reshape(n, 6, -1).float().mean(-1)
-        normals = quat_rotate(self.object_rot[:, None], self._face_normals[None])
+        normals = quat_rotate(self.object_rot[:, None], self.surface_normals)
         toward_camera = F.normalize(cam.pos_w - pos_w, dim=-1)
         facing = (normals * toward_camera[:, None]).sum(-1)
         center_depth = depth.reshape(n, 6, -1).mean(-1).clamp_min(.05)
-        projected = .028**2 * cam.intrinsic_matrices[:, 0, 0, None] * cam.intrinsic_matrices[:, 1, 1, None]
+        projected = self.surface_sizes.prod(-1) * cam.intrinsic_matrices[:, 0, 0, None] * cam.intrinsic_matrices[:, 1, 1, None]
         projected = projected * facing.clamp_min(0) / center_depth.square()
         fraction = torch.where(facing > 0, fraction, 0.)
         return fraction, projected, facing, normals
@@ -185,7 +204,7 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
                              .2 * self.hand_dof_vel[:, ids], self.actions), -1)
         actor = torch.cat((image_features(frames["rgb"], frames["depth"]), proprio,
                            F.one_hot(self.target_color, 6).float()), -1)
-        normals = quat_rotate(self.object_rot, self._face_normals[self.target_face])
+        normals = quat_rotate(self.object_rot, self.surface_normals[torch.arange(self.num_envs, device=self.device), self.target_face])
         critic = torch.cat((actor, self.object_pos, self.object_rot,
                             self.object_linvel, self.object_angvel, normals), -1)
         assert actor.shape[-1] == self.cfg.observation_space
@@ -223,6 +242,7 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
             "target_color": self.target_color.clone(), "target_face": self.target_face.clone(),
             "layout_index": self.layout_index.clone(), "layout": self.face_colors.clone(),
             "episode_id": self.episode_id.clone(), "steps": self.episode_length_buf.clone(),
+            "object_index": self.object_indices.clone(),
         }
         # Same task reward for every PPO mechanism/control comparison. Object
         # target geometry is privileged reward supervision, never actor input.

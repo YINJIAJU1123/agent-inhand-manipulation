@@ -32,6 +32,8 @@ parser.add_argument("--output", required=True)
 parser.add_argument("--episode-seconds", type=float, default=20.)
 parser.add_argument("--hold-seconds", type=float, default=1.)
 parser.add_argument("--save-interval", type=int, default=50)
+parser.add_argument("--object-split", choices=["legacy", "train", "val", "test"], default="legacy")
+parser.add_argument("--objects", nargs="+", help="Optional object IDs within the declared split")
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
 args.enable_cameras = True
@@ -94,6 +96,7 @@ class LoggingWrapper(RslRlVecEnvWrapper):
         self.completed = 0
         self.terminal_successes = 0
         self.drops = 0
+        self.object_totals = {}
         self.start = time.monotonic()
         super().__init__(env, clip_actions=1.)
 
@@ -105,12 +108,19 @@ class LoggingWrapper(RslRlVecEnvWrapper):
         finished = done.bool()
         self.terminal_successes += int((metrics["held_at_end"] & finished & ~metrics["dropped"]).sum())
         self.drops += int((metrics["dropped"] & finished).sum())
+        for slot in finished.nonzero(as_tuple=False).flatten().tolist():
+            name = self.unwrapped.object_names[slot]
+            totals = self.object_totals.setdefault(name, {"episodes": 0, "successes": 0, "drops": 0})
+            totals["episodes"] += 1
+            totals["successes"] += int(metrics["held_at_end"][slot] & ~metrics["dropped"][slot])
+            totals["drops"] += int(metrics["dropped"][slot])
         if self.control_steps % 32 == 0:
             json_write(self.output / "heartbeat.json", {
                 "unix_time": time.time(), "pid": os.getpid(), "control_steps": self.control_steps,
                 "environment_steps": self.control_steps * self.num_envs,
                 "completed_episodes": self.completed, "terminal_successes": self.terminal_successes,
                 "drops": self.drops, "elapsed_s": time.monotonic() - self.start,
+                "per_object": self.object_totals,
                 "scope": "online training/rollout totals; not held-out evaluation",
             })
         return obs, reward, done, extras
@@ -124,6 +134,7 @@ def save_frames(raw, output, prefix):
         Image.fromarray(frames["rgb"][i].cpu().numpy()).save(output / f"{prefix}_{i:02d}.png")
         face = int(raw.target_face[i])
         rows.append({"env": i, "instruction": raw.current_instructions()[i],
+                     "object_id": raw.object_names[i],
                      "layout": raw.face_colors[i].tolist(), "target_face": face,
                      "initial_hidden": bool(raw.initial_hidden[i]),
                      "visible_fraction": float(fraction[i, face]),
@@ -207,6 +218,7 @@ def evaluate(env, runner, output):
                     continue
                 rec = {k: v[slot].tolist() for k, v in metrics.items()}
                 rec.update(slot=slot, evaluation_seed=args.seed, layout_split=args.split,
+                           object_id=env.unwrapped.object_names[slot], object_split=args.object_split,
                            method=args.mode, success=bool(metrics["held_at_end"][slot] & ~metrics["dropped"][slot]))
                 counts[slot] += 1
                 records.append(rec)
@@ -222,6 +234,13 @@ def evaluate(env, runner, output):
                "ever_exposed": sum(r["ever_exposed"] for r in records),
                "drops": sum(r["dropped"] for r in records), "step_dt": env.unwrapped.step_dt}
     summary["success_rate"] = summary["successes"] / len(records)
+    summary["object_split"] = args.object_split
+    summary["per_object"] = {}
+    for name in sorted(set(r["object_id"] for r in records)):
+        rows = [r for r in records if r["object_id"] == name]
+        summary["per_object"][name] = {
+            "episodes": len(rows), "success_rate": sum(r["success"] for r in rows) / len(rows),
+            "drops": sum(r["dropped"] for r in rows), "ever_exposed": sum(r["ever_exposed"] for r in rows)}
     json_write(output / "summary.json", summary)
     print(json.dumps(summary), flush=True)
 
@@ -241,6 +260,20 @@ def main():
     cfg.initial_visibility, cfg.layout_split = args.initial, args.split
     cfg.episode_length_s, cfg.goal_hold_time_s = args.episode_seconds, args.hold_seconds
     cfg.sim.physx.gpu_max_rigid_patch_count = 2**18
+    specs = None
+    if args.object_split != "legacy":
+        from BrainCo_DexHand.algo.agentic.object_catalog import select_objects, PATCH_SIZE, PATCH_THICKNESS
+        from BrainCo_DexHand.assets.search_objects import configure_objects
+        specs = select_objects(args.object_split, args.objects)
+        if args.mode == "train" and (args.object_split != "train" or args.split != "train"):
+            raise ValueError("Training must use training objects and marker layouts")
+        if args.mode in ("eval", "scan") and args.episodes % args.num_envs:
+            raise ValueError("Multi-object evaluation requires equal per-slot episode quotas")
+        configure_objects(cfg, specs)
+        for marker in cfg.face_marker_cfg.markers.values():
+            marker.size = (PATCH_SIZE, PATCH_SIZE, PATCH_THICKNESS)
+    elif args.objects:
+        raise ValueError("--objects requires a non-legacy --object-split")
     json_write(output / "manifest.json", {
         "args": vars(args), "code_revision": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "dirty": bool(subprocess.check_output(["git", "status", "--porcelain"], text=True).strip()),
@@ -248,6 +281,8 @@ def main():
         "actor_inputs": ["pooled RGB-D", "RGB color statistics", "joint position/velocity", "previous action", "instruction color token"],
         "privileged": "object pose/velocity and target normal for critic; geometry/depth for reward and scoring",
         "human_task_demonstrations": 0, "pretraining": None,
+        "objects": specs, "object_assignment": "fixed balanced slots; read actual USD identity",
+        "visual_frontend": "fixed RGB-D pooling and color statistics; no distillation ablation",
         "protocol": "semantic_search_v0_pilot", "unix_time": time.time(),
     })
     dump_yaml(str(output / "env.yaml"), cfg)

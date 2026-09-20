@@ -36,6 +36,8 @@ parser = argparse.ArgumentParser(description="Evaluate a Revo3 semantic state-po
 parser.add_argument("--task", type=str, default="BrainCo-Direct-Revo3-SemanticReorient-Cube-v0")
 parser.add_argument("--episodes-per-face", type=int, default=100)
 parser.add_argument("--num-envs", type=int, default=64)
+parser.add_argument("--object-split", choices=["train", "val", "test"], default=None)
+parser.add_argument("--objects", nargs="+", default=None)
 parser.add_argument("--seeds", type=str, default="0,1,2", help="Comma-separated simulator seeds.")
 parser.add_argument("--faces", type=str, default="0,1,2,3,4,5", help="Comma-separated face IDs.")
 parser.add_argument("--goal-yaw", type=float, default=None, help="Fixed goal yaw in radians; omit for random yaw.")
@@ -221,6 +223,12 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
     env_cfg.record_eval_metrics = True
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
     env_cfg.log_dir = os.path.dirname(checkpoint)
+    if args_cli.object_split:
+        from BrainCo_DexHand.algo.agentic.object_catalog import select_objects
+        from BrainCo_DexHand.assets.search_objects import configure_objects
+        if args_cli.episodes_per_face % args_cli.num_envs:
+            raise ValueError("Multi-object evaluation requires equal per-slot quotas")
+        configure_objects(env_cfg, select_objects(args_cli.object_split, args_cli.objects))
     env = gym.make(args_cli.task, cfg=env_cfg, render_mode=None)
     if isinstance(env.unwrapped, DirectMARLEnv):
         env = multi_agent_to_single_agent(env)
@@ -319,6 +327,9 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
                 "mean_target_delta_rad": float((sum_target_delta[idx] / max(n_steps, 1)).item()),
             }
             records.append(record)
+            if env.unwrapped.object_geometry is not None:
+                record["object_id"] = env.unwrapped.object_geometry["names"][idx]
+                record["object_split"] = args_cli.object_split
             episode_steps[idx] = 0
             min_error[idx] = float("inf")
             dropped[idx] = False
@@ -351,6 +362,10 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
         raise ValueError("face IDs must be in [0, 5]")
     checkpoint = retrieve_file_path(args_cli.checkpoint)
     stress = _apply_stress_overrides(env_cfg)
+    if args_cli.object_split and stress:
+        raise ValueError("Stress overrides require a separate validated multi-object protocol")
+    if args_cli.objects and not args_cli.object_split:
+        raise ValueError("--objects requires --object-split")
     agent_cfg = cli_args.update_rsl_rl_cfg(agent_cfg, args_cli)
     agent_cfg.device = str(args_cli.device or env_cfg.sim.device)
     all_records: list[dict[str, Any]] = []
@@ -386,6 +401,9 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
         "summary": aggregate_records(all_records),
         "per_face": by_face,
         "per_seed": by_seed,
+        "object_split": args_cli.object_split,
+        "per_object": {name: aggregate_records([r for r in all_records if r.get("object_id") == name])
+                       for name in sorted({r["object_id"] for r in all_records if "object_id" in r})},
         "records": all_records,
         "complete": len(all_records) == args_cli.episodes_per_face * len(faces) * len(seeds),
         "argv": sys.argv,

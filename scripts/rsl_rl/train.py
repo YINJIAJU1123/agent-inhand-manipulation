@@ -21,6 +21,9 @@ parser.add_argument("--video", action="store_true", default=False, help="Record 
 parser.add_argument("--video_length", type=int, default=200, help="Length of the recorded video (in steps).")
 parser.add_argument("--video_interval", type=int, default=2000, help="Interval between video recordings (in steps).")
 parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
+parser.add_argument("--object-split", choices=["train"], default=None,
+                    help="Use the procedural multi-object state-control training bank")
+parser.add_argument("--objects", nargs="+", default=None)
 parser.add_argument("--task", type=str, default=None, help="Name of the task.")
 parser.add_argument(
     "--agent", type=str, default="rsl_rl_cfg_entry_point", help="Name of the RL agent configuration entry point."
@@ -126,6 +129,15 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # note: certain randomizations occur in the environment initialization so we set the seed here
     env_cfg.seed = agent_cfg.seed
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
+    if args_cli.object_split:
+        from BrainCo_DexHand.algo.agentic.object_catalog import select_objects
+        from BrainCo_DexHand.assets.search_objects import configure_objects
+        from BrainCo_DexHand.tasks.direct.brainco.brainco_hand_semantic_reorient_env_cfg import BrainCoHandSemanticReorientEnvCfg
+        if not isinstance(env_cfg, BrainCoHandSemanticReorientEnvCfg):
+            raise ValueError("Object bank is supported only for the semantic state-control task")
+        configure_objects(env_cfg, select_objects(args_cli.object_split, args_cli.objects))
+    elif args_cli.objects:
+        raise ValueError("--objects requires --object-split")
     # check for invalid combination of CPU device with distributed training
     if args_cli.distributed and args_cli.device is not None and "cpu" in args_cli.device:
         raise ValueError(

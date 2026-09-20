@@ -69,6 +69,10 @@ class SemanticReorientEnv(InHandManipulationEnv):
 
     def __init__(self, cfg, render_mode=None, **kwargs):
         super().__init__(cfg, render_mode, **kwargs)
+        self.object_geometry = None
+        if cfg.object_specs:
+            from BrainCo_DexHand.assets.search_objects import read_object_geometry
+            self.object_geometry = read_object_geometry(self)
         self.target_face = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
         self.target_face_onehot = torch.zeros((self.num_envs, len(FACE_NAMES)), dtype=torch.float, device=self.device)
         self.goal_hold_steps = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
@@ -110,6 +114,10 @@ class SemanticReorientEnv(InHandManipulationEnv):
         base[face == 2] = quat_from_euler_xyz(half_pi[face == 2], zero[face == 2], zero[face == 2])
         base[face == 3] = quat_from_euler_xyz(neg_half_pi[face == 3], zero[face == 3], zero[face == 3])
         base[face == 5] = quat_from_euler_xyz(pi[face == 5], zero[face == 5], zero[face == 5])
+        if self.object_geometry is not None:
+            # Inverse surface frame maps its local outward normal to world +Z.
+            base = self.object_geometry["rotation"][env_ids, face].clone()
+            base[:, 1:] *= -1
         if self.cfg.goal_yaw is None:
             yaw = sample_uniform(-3.141592653589793, 3.141592653589793, (n,), device=self.device)
         else:
@@ -222,6 +230,13 @@ class SemanticReorientEnv(InHandManipulationEnv):
             reward,
         )
 
+        if self.object_geometry is not None:
+            logs = self.extras.setdefault("log", {})
+            for index, spec in enumerate(self.cfg.object_specs):
+                mask = self.object_geometry["index"] == index
+                logs[f"object/{spec['id']}/hold_fraction"] = self._step_hold_complete[mask].float().mean()
+                logs[f"object/{spec['id']}/drop_fraction"] = self._step_dropped[mask].float().mean()
+                logs[f"object/{spec['id']}/orientation_error"] = self._step_orientation_error[mask].mean()
         if self.cfg.record_eval_metrics:
             self.extras["semantic_metrics"] = {
                 "orientation_error": self._step_orientation_error.clone(),
