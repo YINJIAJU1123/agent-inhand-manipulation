@@ -18,6 +18,9 @@ order, and sends MIT commands back to the hand.
 ## Package Layout
 
 - `revo3_deploy.input_builder`: builds the policy observation and proprioception history.
+- `revo3_deploy.viserdex_input_builder`: explicit Cube pose, confidence, and language
+  feature contract for the VisERDex adaptation. It is separate from the legacy
+  Stage-2 runner so an image/pose failure cannot silently feed a privileged policy.
 - `revo3_deploy.policy_runner`: validates `policy.yaml`, loads ONNX, and advances delta-action targets.
 - `revo3_deploy.robot_profile`: validates joint limits, joint order mappings, and offsets.
 - `revo3_deploy.sdk_hand_io`: talks to the Revo3 Python SDK (`bc-stark-sdk`).
@@ -32,6 +35,18 @@ Install the deploy package:
 cd deploy/revo3
 pip install -e .
 ```
+
+The visual-language input contract can be checked without hardware:
+
+```bash
+cd deploy/revo3
+PYTHONPATH=. python scripts/smoke_viserdex_io.py
+```
+
+It emits `obs=(1,198)`, `proprio_hist=(1,30,42)`, `pose_hist=(1,30,8)`, and
+`language=(1,16)`. The pose vector is `[tx, ty, tz, qw, qx, qy, qz]`; the quaternion
+is normalized and estimator confidence is clipped to `[0,1]`. A visual student must
+declare these inputs explicitly in `policy.yaml`.
 
 Install the hardware extra when running on the real hand:
 
