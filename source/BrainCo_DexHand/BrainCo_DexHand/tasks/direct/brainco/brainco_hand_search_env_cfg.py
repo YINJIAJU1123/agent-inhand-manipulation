@@ -31,5 +31,8 @@ class BrainCoHandSearchEnvCfg(BrainCoHandVisualSemanticReorientEnvCfg):
     tiled_camera = BrainCoHandVisualSemanticReorientEnvCfg().tiled_camera.replace(
         width=128, height=128, data_types=["rgb", "distance_to_image_plane"]
     )
+    sim = BrainCoHandVisualSemanticReorientEnvCfg().sim.replace(
+        render=BrainCoHandVisualSemanticReorientEnvCfg().sim.render.replace(antialiasing_mode="Off")
+    )
     # Explicit optical-axis depth is required by the visibility evaluator.
-    scene = BrainCoHandVisualSemanticReorientEnvCfg().scene.replace(num_envs=64)
+    scene = BrainCoHandVisualSemanticReorientEnvCfg().scene.replace(num_envs=64, env_spacing=2.5)

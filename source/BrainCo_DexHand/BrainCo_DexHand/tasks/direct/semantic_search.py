@@ -93,6 +93,8 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
             self._compute_intermediate_values()
             self._update_face_markers()
             self.sim.render()
+            if self.pending.any():
+                self.sim.render()
             self.camera.update(self.step_dt, force_recompute=True)
             out = self.camera.data.output
             self._frames = {"rgb": out["rgb"][..., :3].clone(),
@@ -163,6 +165,10 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
             self.scene.write_data_to_sim()
             self.sim.forward()
         if self.pending.any():
+            ids = self.pending.nonzero(as_tuple=False).flatten()
+            print("RESET_DIAGNOSTICS", {"ids": ids.tolist(), "fraction": fraction[ids].tolist(),
+                                        "area": area[ids].tolist(), "facing": facing[ids].tolist(),
+                                        "counts": counts[ids].tolist()}, flush=True)
             raise RuntimeError("Could not create requested visible/hidden resets; inspect rendering and thresholds")
 
     def _get_observations(self):
