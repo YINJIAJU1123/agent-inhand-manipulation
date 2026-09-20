@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from .visual_semantic_reorient import VisualSemanticReorientEnv
 from BrainCo_DexHand.algo.agentic.search_protocol import (
     NORMALS, layout_bank, image_features, image_color_masks, instruction,
-    parse_instruction, quat_rotate, sample_visibility, update_dwell,
+    quat_rotate, project_points, update_dwell,
 )
 
 
@@ -59,6 +59,9 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
         indices = torch.randint(len(self.layouts), (n,), device=self.device)
         self.layout_index[env_ids] = indices
         self.face_colors[env_ids] = self.layouts[indices]
+        self.initial_hidden[env_ids] = (torch.rand(n, device=self.device) < .5
+                                       if self.cfg.initial_visibility == "mixed"
+                                       else self.cfg.initial_visibility == "hidden")
         self.pending[env_ids] = True
         self.episode_id[env_ids] += 1
         self.dwell[env_ids] = 0
@@ -105,10 +108,7 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
         pos_w = self.object_pos + self.scene.env_origins
         points = quat_rotate(self.object_rot[:, None], self.patch_points.flatten(0, 1)[None]) + pos_w[:, None]
         cam = self.camera.data
-        visibility, pixels, depth = sample_visibility(
-            points, cam.pos_w, cam.quat_w_ros, cam.intrinsic_matrices, frames["depth"],
-            self.cfg.depth_tolerance)
-        # sample_visibility returns a batch mean; retain each face separately.
+        pixels, depth = project_points(points, cam.pos_w, cam.quat_w_ros, cam.intrinsic_matrices)
         n, h, w = frames["depth"].shape[:3]
         x, y = pixels.unbind(-1)
         inside = (depth > .05) & (x >= 0) & (x < w) & (y >= 0) & (y < h)
@@ -137,10 +137,7 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
             pending_ids = self.pending.nonzero(as_tuple=False).flatten()
             if not len(pending_ids):
                 break
-            if self.cfg.initial_visibility == "mixed":
-                want_hidden = torch.rand(len(pending_ids), device=self.device) < .5
-            else:
-                want_hidden = torch.full((len(pending_ids),), self.cfg.initial_visibility == "hidden", device=self.device)
+            want_hidden = self.initial_hidden[pending_ids].clone()
             candidates = torch.where(want_hidden[:, None], hidden[pending_ids], visible[pending_ids])
             accepted = candidates.any(-1)
             good_ids = pending_ids[accepted]
@@ -162,6 +159,7 @@ class SemanticSearchEnv(VisualSemanticReorientEnv):
                 return
             self.reset_rejections += len(bad_ids)
             self._reset_idx(bad_ids)
+            self.initial_hidden[bad_ids] = want_hidden[~accepted]
             self.scene.write_data_to_sim()
             self.sim.forward()
         if self.pending.any():
