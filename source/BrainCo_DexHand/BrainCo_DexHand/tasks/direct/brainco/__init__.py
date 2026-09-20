@@ -18,6 +18,16 @@ from . import agents
 inhand_task_entry = "BrainCo_DexHand.tasks.direct"
 
 gym.register(
+    id="BrainCo-Direct-Revo3-SemanticSearch-Cube-v0",
+    entry_point=f"{inhand_task_entry}.semantic_search:SemanticSearchEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.brainco_hand_search_env_cfg:BrainCoHandSearchEnvCfg",
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BrainCoHandPPORunnerCfg",
+    },
+)
+
+gym.register(
     id="BrainCo-Direct-Revo3-Repose-Cube-v0",
     entry_point=f"{inhand_task_entry}.inhand_manipulation_env:InHandManipulationEnv",
     disable_env_checker=True,
