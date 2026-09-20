@@ -70,6 +70,13 @@ rebuilt after reset. GRU state is reset on each episode boundary. Episodes are
 sampled with per-vector-slot quotas during evaluation, preventing fast failures
 from dominating counts.
 
+Pilot evaluations use the same evaluation seed and per-slot quotas, but their
+later resets are not an exactly paired state bank: different episode lengths
+change global reset RNG consumption. Do not claim paired causal comparisons
+from these pilots. Freeze and replay initial states/layouts before the formal
+multi-seed benchmark. The initial diagnostic purpose is to establish complete
+working trajectories and identify failures.
+
 ## Scan baseline
 
 The low-level controller is the visible-task recurrent PPO checkpoint. Every
