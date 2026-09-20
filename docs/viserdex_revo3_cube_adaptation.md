@@ -26,6 +26,25 @@ paper comparison uses the same Cube target-surface task for all three rows;
 the visual student receives an oracle target representation in row (2), while
 row (3) obtains that representation from the language command.
 
+## Validated remote run
+
+The 5090 host uses Isaac Sim 5.1.0, Isaac Lab 2.3.2, and the `viserdex`
+micromamba environment. The Revo3 semantic Cube teacher starts with:
+
+```bash
+PYTHONPATH=source/BrainCo_DexHand:scripts/rsl_rl \
+python scripts/rsl_rl/train.py \
+  --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 \
+  --headless --device cuda:0 --num_envs 4096 --max_iterations 1000
+```
+
+A two-iteration smoke completed and wrote a 158-input PPO checkpoint. The
+formal 1000-iteration job is running in the remote background; its checkpoint
+and TensorBoard files are under
+`logs/rsl_rl/brainco_hand/*_revo3_viserdex_cube_formal/`. The camera smoke
+completed independently with RGB standard deviation 27.64 and 64.5% valid
+depth pixels.
+
 ## Deployment contract
 
 ```text
