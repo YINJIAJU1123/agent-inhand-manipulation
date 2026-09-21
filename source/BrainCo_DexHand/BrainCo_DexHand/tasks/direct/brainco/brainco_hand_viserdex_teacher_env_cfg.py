@@ -18,6 +18,9 @@ from .brainco_hand_semantic_reorient_env_cfg import BrainCoHandSemanticReorientE
 class BrainCoHandVisERDexTeacherEnvCfg(BrainCoHandSemanticReorientEnvCfg):
     """Revo3 adaptation of the published VisERDex privileged teacher."""
 
+    # Base Revo3 state observation (152) + three-step action history (63),
+    # semantic face token (6), and randomized action properties (2).
+    observation_space = 223
     scene: InteractiveSceneCfg = InteractiveSceneCfg(
         num_envs=4096, env_spacing=0.75, replicate_physics=True, clone_in_fabric=False
     )
@@ -52,10 +55,15 @@ class BrainCoHandVisERDexTeacherEnvCfg(BrainCoHandSemanticReorientEnvCfg):
     joint_velocity_penalty_scale = -0.08
     object_linear_velocity_penalty_scale = -1.0e-3
     object_angular_velocity_penalty_scale = -1.0e-3
-    joint_torque_penalty_scale = -0.05
+    joint_torque_penalty_scale = -50.0
     joint_work_penalty_scale = -0.12
     torque_proxy_stiffness = 3.0
     torque_proxy_damping = 0.1
+
+    # Performance curriculum: regularization and latency increase as the
+    # moving consecutive-success statistic improves.
+    curriculum_start_successes = 2.0
+    curriculum_full_successes = 25.0
 
     # None samples a random face and random in-plane yaw.  A fixed face is
     # reserved for balanced evaluation, never for the training distribution.
