@@ -22,6 +22,13 @@ parser.add_argument("--num_envs", type=int, default=1)
 parser.add_argument("--video_length", type=int, default=120)
 parser.add_argument("--camera_resolution", type=int, default=256)
 parser.add_argument("--seed", type=int, default=123)
+parser.add_argument(
+    "--target-face",
+    type=int,
+    default=-1,
+    choices=[-1, 0, 1, 2, 3, 4, 5],
+    help="Fix the semantic target face for a reproducible clip; -1 keeps the task sampler.",
+)
 parser.add_argument("--single_goal_trials", action="store_true", help="Use the evaluator's one-success episode setting.")
 parser.add_argument("--output", type=str, default="outputs/camera-video")
 cli_args.add_rsl_rl_args(parser)
@@ -56,6 +63,8 @@ def main(env_cfg, agent_cfg):
     env_cfg.record_eval_metrics = True
     env_cfg.tiled_camera.width = args_cli.camera_resolution
     env_cfg.tiled_camera.height = args_cli.camera_resolution
+    if args_cli.target_face >= 0:
+        env_cfg.fixed_target_face = args_cli.target_face
     if args_cli.single_goal_trials:
         env_cfg.max_consecutive_success = 1
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
@@ -119,6 +128,7 @@ def main(env_cfg, agent_cfg):
             "frames": args_cli.video_length, "camera": "semantic_camera", "fps": 1.0 / raw.step_dt,
             "seed": args_cli.seed, "resolution": args_cli.camera_resolution,
             "single_goal_trials": args_cli.single_goal_trials,
+            "target_face_override": None if args_cli.target_face < 0 else args_cli.target_face,
             "act_moving_average": env_cfg.act_moving_average,
             "scope": "Privileged state teacher in camera-enabled visual scene; qualitative replay, not a new benchmark score.",
             "target_definition": "Selected cube face normal points to world +Z, plus target yaw; no hold requirement.",
