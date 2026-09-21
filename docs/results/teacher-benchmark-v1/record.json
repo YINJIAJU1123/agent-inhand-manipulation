@@ -1,0 +1,1340 @@
+{
+  "record_id": "teacher-benchmark-v1",
+  "frozen_at": "2026-09-22",
+  "frozen_scope": "Measured reports and checkpoint identities; not final teacher acceptance or a demonstrated three-method ranking",
+  "planned_comparison": [
+    {
+      "id": "T0",
+      "name": "Direct Revo3 state teacher",
+      "status": "matched evaluation and checkpoint mapping pending"
+    },
+    {
+      "id": "T1",
+      "name": "VisERDex-style Revo3 state teacher",
+      "status": "faithfulness audit and matched reproduction pending"
+    },
+    {
+      "id": "T2",
+      "name": "Ours Revo3 engineering adaptation",
+      "status": "model1999 is current candidate, not final teacher"
+    }
+  ],
+  "checkpoint_lineage": "model500 (revo3_viserdex_cube_formal) -> model1999 (hold02 continuation); model500 is not established as an unmodified Direct baseline",
+  "checkpoint_binary_archive_status": "No local copies of these two checkpoint binaries found; remote paths and report-recorded SHA-256 pinned. Remote existence was not rechecked during this documentation update.",
+  "provenance_gaps": [
+    "git_revision is null in all nine original reports",
+    "local source snapshot has uncommitted changes and is not proof of exact remote evaluation code",
+    "one evaluation seed 101 per report; no independent training-seed comparison",
+    "continuation has more training; not an equal-budget mechanism ablation"
+  ],
+  "local_source_base_revision": "e1db41249faa49d00e329133b44d29d2e40f870d",
+  "published_reference": {
+    "url": "https://arxiv.org/html/2604.11138",
+    "checked_on": "2026-09-22",
+    "teacher_training": {
+      "success_bonus_tolerance_rad": 0.1,
+      "no_success_window_s": 10,
+      "max_consecutive_successes": 50,
+      "source": "Appendix B-A1, Table IX"
+    },
+    "hardware_evaluation": {
+      "success_tolerance_rad": 0.4,
+      "runs_per_condition": 5,
+      "cube_nominal_cs": [
+        35.4,
+        13.8
+      ],
+      "cube_adversarial_cs": [
+        25.6,
+        8.9
+      ],
+      "source": "Section IV-D, Table IV",
+      "policy": "deployed visual system, not state teacher"
+    }
+  },
+  "reports": [
+    {
+      "id": "model500_repeated30s",
+      "raw_report": "raw/model500_repeated30s.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/model500_repeated30s.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-20_18-22-13_revo3_viserdex_cube_formal/model_500.pt",
+      "checkpoint_sha256": "d3fd3120f235ca471f5ce435579f9b7a49c53fd55cfb60570e6dbe9b3726878b",
+      "git_revision": null,
+      "protocol": "repeated_reorientation_v1",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        -1
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 128,
+      "hold_tolerance_rad": 0.4,
+      "hold_time_s": 0.0,
+      "episode_length_s_override": 30.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-20_18-22-13_revo3_viserdex_cube_formal/model_500.pt",
+        "--mode",
+        "repeated",
+        "--success-tolerance",
+        "0.4",
+        "--episode-length-s",
+        "30",
+        "--episodes-per-face",
+        "128",
+        "--num-envs",
+        "128",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/model500_repeated30s.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 128,
+        "instant_reach": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "continuous_hold": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "held_at_end": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "drop": {
+          "successes": 28,
+          "trials": 128,
+          "rate": 0.21875,
+          "wilson_95_low": 0.15590524094938307,
+          "wilson_95_high": 0.29798429695446543
+        },
+        "final_orientation_error_rad": {
+          "count": 128,
+          "mean": 1.9358118146192282
+        },
+        "min_orientation_error_rad": {
+          "count": 128,
+          "mean": 0.34285568771883845
+        },
+        "steps": {
+          "count": 128,
+          "mean": 793.2265625
+        },
+        "time_s": {
+          "count": 128,
+          "mean": 26.440885416666664
+        },
+        "mean_clipped_action_l2": {
+          "count": 128,
+          "mean": 3.913494845852256
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 128,
+          "mean": 0.5985043402761221
+        },
+        "mean_action_slew_l2": {
+          "count": 128,
+          "mean": 2.7044837727444246
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 128,
+          "mean": 0.9805437581671868
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 128,
+          "mean": 2.1370290694758296
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 128,
+          "mean": 26.281318567693233
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 128,
+          "mean": 3.8330379049293697
+        }
+      },
+      "repeated_summary": {
+        "episodes": 128,
+        "cs_mean": 7.3125,
+        "cs_std": 5.5138320386098085,
+        "cs_min": 0,
+        "cs_max": 21,
+        "successes_by_face": [
+          140,
+          153,
+          169,
+          145,
+          142,
+          187
+        ],
+        "horizon_censored_episodes": 100,
+        "interpretation": "Successes before drop or fixed horizon; surviving episodes are right-censored, not lifetime CS. Semantic face plus random-yaw goals, not an exact VisERDex reproduction."
+      }
+    },
+    {
+      "id": "hold02_final_hold_face0",
+      "raw_report": "raw/hold02_final_hold_face0.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/final_reports/hold02_final_hold_face0.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+      "checkpoint_sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+      "git_revision": null,
+      "protocol": "state_baseline_v2",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        0
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 64,
+      "hold_tolerance_rad": 0.16,
+      "hold_time_s": 0.5,
+      "episode_length_s_override": 10.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+        "--mode",
+        "hold",
+        "--faces",
+        "0",
+        "--episode-length-s",
+        "10",
+        "--episodes-per-face",
+        "64",
+        "--num-envs",
+        "64",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/hold02_final_hold_face0.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 64,
+        "instant_reach": {
+          "successes": 61,
+          "trials": 64,
+          "rate": 0.953125,
+          "wilson_95_low": 0.8710034625990631,
+          "wilson_95_high": 0.983930983213707
+        },
+        "continuous_hold": {
+          "successes": 60,
+          "trials": 64,
+          "rate": 0.9375,
+          "wilson_95_low": 0.8500251490779133,
+          "wilson_95_high": 0.9754287986033819
+        },
+        "held_at_end": {
+          "successes": 49,
+          "trials": 64,
+          "rate": 0.765625,
+          "wilson_95_low": 0.6486674241743136,
+          "wilson_95_high": 0.8525010440607586
+        },
+        "drop": {
+          "successes": 2,
+          "trials": 64,
+          "rate": 0.03125,
+          "wilson_95_low": 0.008612138346171874,
+          "wilson_95_high": 0.10697291770958313
+        },
+        "final_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.196067126293201
+        },
+        "min_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.11314167137607001
+        },
+        "steps": {
+          "count": 64,
+          "mean": 290.203125
+        },
+        "time_s": {
+          "count": 64,
+          "mean": 9.6734375
+        },
+        "mean_clipped_action_l2": {
+          "count": 64,
+          "mean": 4.189619913697243
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 64,
+          "mean": 0.7526927385479212
+        },
+        "mean_action_slew_l2": {
+          "count": 64,
+          "mean": 2.804230021312833
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 64,
+          "mean": 0.7365792691707611
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 64,
+          "mean": 1.7192832008004189
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 64,
+          "mean": 18.97257700562477
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 64,
+          "mean": 2.951875180006027
+        }
+      },
+      "repeated_summary": null
+    },
+    {
+      "id": "hold02_final_hold_face1",
+      "raw_report": "raw/hold02_final_hold_face1.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/final_reports/hold02_final_hold_face1.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+      "checkpoint_sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+      "git_revision": null,
+      "protocol": "state_baseline_v2",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        1
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 64,
+      "hold_tolerance_rad": 0.16,
+      "hold_time_s": 0.5,
+      "episode_length_s_override": 10.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+        "--mode",
+        "hold",
+        "--faces",
+        "1",
+        "--episode-length-s",
+        "10",
+        "--episodes-per-face",
+        "64",
+        "--num-envs",
+        "64",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/hold02_final_hold_face1.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 64,
+        "instant_reach": {
+          "successes": 59,
+          "trials": 64,
+          "rate": 0.921875,
+          "wilson_95_low": 0.8298046264583709,
+          "wilson_95_high": 0.9661688230914496
+        },
+        "continuous_hold": {
+          "successes": 59,
+          "trials": 64,
+          "rate": 0.921875,
+          "wilson_95_low": 0.8298046264583709,
+          "wilson_95_high": 0.9661688230914496
+        },
+        "held_at_end": {
+          "successes": 51,
+          "trials": 64,
+          "rate": 0.796875,
+          "wilson_95_low": 0.6828636426898583,
+          "wilson_95_high": 0.8772658218081634
+        },
+        "drop": {
+          "successes": 5,
+          "trials": 64,
+          "rate": 0.078125,
+          "wilson_95_low": 0.03383117690855046,
+          "wilson_95_high": 0.17019537354162906
+        },
+        "final_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.25449495945940726
+        },
+        "min_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.13176856428617612
+        },
+        "steps": {
+          "count": 64,
+          "mean": 277.328125
+        },
+        "time_s": {
+          "count": 64,
+          "mean": 9.244270833333333
+        },
+        "mean_clipped_action_l2": {
+          "count": 64,
+          "mean": 4.169051818549633
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 64,
+          "mean": 0.7446156460791826
+        },
+        "mean_action_slew_l2": {
+          "count": 64,
+          "mean": 2.94788739643991
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 64,
+          "mean": 0.7675111019052565
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 64,
+          "mean": 1.7705737743526697
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 64,
+          "mean": 18.604685693979263
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 64,
+          "mean": 3.5982043873518705
+        }
+      },
+      "repeated_summary": null
+    },
+    {
+      "id": "hold02_final_hold_face2",
+      "raw_report": "raw/hold02_final_hold_face2.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/final_reports/hold02_final_hold_face2.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+      "checkpoint_sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+      "git_revision": null,
+      "protocol": "state_baseline_v2",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        2
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 64,
+      "hold_tolerance_rad": 0.16,
+      "hold_time_s": 0.5,
+      "episode_length_s_override": 10.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+        "--mode",
+        "hold",
+        "--faces",
+        "2",
+        "--episode-length-s",
+        "10",
+        "--episodes-per-face",
+        "64",
+        "--num-envs",
+        "64",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/hold02_final_hold_face2.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 64,
+        "instant_reach": {
+          "successes": 59,
+          "trials": 64,
+          "rate": 0.921875,
+          "wilson_95_low": 0.8298046264583709,
+          "wilson_95_high": 0.9661688230914496
+        },
+        "continuous_hold": {
+          "successes": 59,
+          "trials": 64,
+          "rate": 0.921875,
+          "wilson_95_low": 0.8298046264583709,
+          "wilson_95_high": 0.9661688230914496
+        },
+        "held_at_end": {
+          "successes": 45,
+          "trials": 64,
+          "rate": 0.703125,
+          "wilson_95_low": 0.5822979889645707,
+          "wilson_95_high": 0.8009484867446022
+        },
+        "drop": {
+          "successes": 5,
+          "trials": 64,
+          "rate": 0.078125,
+          "wilson_95_low": 0.03383117690855046,
+          "wilson_95_high": 0.17019537354162906
+        },
+        "final_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.2621493609913159
+        },
+        "min_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.15509769321215572
+        },
+        "steps": {
+          "count": 64,
+          "mean": 277.625
+        },
+        "time_s": {
+          "count": 64,
+          "mean": 9.254166666666666
+        },
+        "mean_clipped_action_l2": {
+          "count": 64,
+          "mean": 4.172391578555107
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 64,
+          "mean": 0.7428889954462647
+        },
+        "mean_action_slew_l2": {
+          "count": 64,
+          "mean": 3.1504192110151052
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 64,
+          "mean": 0.8342057280242443
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 64,
+          "mean": 1.8096007741987705
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 64,
+          "mean": 19.09585604071617
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 64,
+          "mean": 3.298160722479224
+        }
+      },
+      "repeated_summary": null
+    },
+    {
+      "id": "hold02_final_hold_face3",
+      "raw_report": "raw/hold02_final_hold_face3.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/final_reports/hold02_final_hold_face3.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+      "checkpoint_sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+      "git_revision": null,
+      "protocol": "state_baseline_v2",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        3
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 64,
+      "hold_tolerance_rad": 0.16,
+      "hold_time_s": 0.5,
+      "episode_length_s_override": 10.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+        "--mode",
+        "hold",
+        "--faces",
+        "3",
+        "--episode-length-s",
+        "10",
+        "--episodes-per-face",
+        "64",
+        "--num-envs",
+        "64",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/hold02_final_hold_face3.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 64,
+        "instant_reach": {
+          "successes": 61,
+          "trials": 64,
+          "rate": 0.953125,
+          "wilson_95_low": 0.8710034625990631,
+          "wilson_95_high": 0.983930983213707
+        },
+        "continuous_hold": {
+          "successes": 61,
+          "trials": 64,
+          "rate": 0.953125,
+          "wilson_95_low": 0.8710034625990631,
+          "wilson_95_high": 0.983930983213707
+        },
+        "held_at_end": {
+          "successes": 49,
+          "trials": 64,
+          "rate": 0.765625,
+          "wilson_95_low": 0.6486674241743136,
+          "wilson_95_high": 0.8525010440607586
+        },
+        "drop": {
+          "successes": 2,
+          "trials": 64,
+          "rate": 0.03125,
+          "wilson_95_low": 0.008612138346171874,
+          "wilson_95_high": 0.10697291770958313
+        },
+        "final_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.19012461169040762
+        },
+        "min_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.08676799717068207
+        },
+        "steps": {
+          "count": 64,
+          "mean": 290.28125
+        },
+        "time_s": {
+          "count": 64,
+          "mean": 9.676041666666666
+        },
+        "mean_clipped_action_l2": {
+          "count": 64,
+          "mean": 4.1837490648031235
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 64,
+          "mean": 0.7548395413905382
+        },
+        "mean_action_slew_l2": {
+          "count": 64,
+          "mean": 2.8053996432572603
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 64,
+          "mean": 0.7315244148485363
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 64,
+          "mean": 1.7766904756426811
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 64,
+          "mean": 18.66667413711548
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 64,
+          "mean": 2.878589665517211
+        }
+      },
+      "repeated_summary": null
+    },
+    {
+      "id": "hold02_final_hold_face4",
+      "raw_report": "raw/hold02_final_hold_face4.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/final_reports/hold02_final_hold_face4.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+      "checkpoint_sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+      "git_revision": null,
+      "protocol": "state_baseline_v2",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        4
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 64,
+      "hold_tolerance_rad": 0.16,
+      "hold_time_s": 0.5,
+      "episode_length_s_override": 10.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+        "--mode",
+        "hold",
+        "--faces",
+        "4",
+        "--episode-length-s",
+        "10",
+        "--episodes-per-face",
+        "64",
+        "--num-envs",
+        "64",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/hold02_final_hold_face4.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 64,
+        "instant_reach": {
+          "successes": 62,
+          "trials": 64,
+          "rate": 0.96875,
+          "wilson_95_low": 0.8930270822904169,
+          "wilson_95_high": 0.9913878616538281
+        },
+        "continuous_hold": {
+          "successes": 61,
+          "trials": 64,
+          "rate": 0.953125,
+          "wilson_95_low": 0.8710034625990631,
+          "wilson_95_high": 0.983930983213707
+        },
+        "held_at_end": {
+          "successes": 51,
+          "trials": 64,
+          "rate": 0.796875,
+          "wilson_95_low": 0.6828636426898583,
+          "wilson_95_high": 0.8772658218081634
+        },
+        "drop": {
+          "successes": 2,
+          "trials": 64,
+          "rate": 0.03125,
+          "wilson_95_low": 0.008612138346171874,
+          "wilson_95_high": 0.10697291770958313
+        },
+        "final_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.17831223731627688
+        },
+        "min_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.09202699911111267
+        },
+        "steps": {
+          "count": 64,
+          "mean": 289.984375
+        },
+        "time_s": {
+          "count": 64,
+          "mean": 9.666145833333333
+        },
+        "mean_clipped_action_l2": {
+          "count": 64,
+          "mean": 4.187106225639582
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 64,
+          "mean": 0.7541873762384057
+        },
+        "mean_action_slew_l2": {
+          "count": 64,
+          "mean": 2.7269209809601307
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 64,
+          "mean": 0.7123621557839215
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 64,
+          "mean": 1.7245875876396894
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 64,
+          "mean": 19.015798062086105
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 64,
+          "mean": 2.9550850708037615
+        }
+      },
+      "repeated_summary": null
+    },
+    {
+      "id": "hold02_final_hold_face5",
+      "raw_report": "raw/hold02_final_hold_face5.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/final_reports/hold02_final_hold_face5.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+      "checkpoint_sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+      "git_revision": null,
+      "protocol": "state_baseline_v2",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        5
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 64,
+      "hold_tolerance_rad": 0.16,
+      "hold_time_s": 0.5,
+      "episode_length_s_override": 10.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+        "--mode",
+        "hold",
+        "--faces",
+        "5",
+        "--episode-length-s",
+        "10",
+        "--episodes-per-face",
+        "64",
+        "--num-envs",
+        "64",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/hold02_final_hold_face5.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 64,
+        "instant_reach": {
+          "successes": 62,
+          "trials": 64,
+          "rate": 0.96875,
+          "wilson_95_low": 0.8930270822904169,
+          "wilson_95_high": 0.9913878616538281
+        },
+        "continuous_hold": {
+          "successes": 60,
+          "trials": 64,
+          "rate": 0.9375,
+          "wilson_95_low": 0.8500251490779133,
+          "wilson_95_high": 0.9754287986033819
+        },
+        "held_at_end": {
+          "successes": 48,
+          "trials": 64,
+          "rate": 0.75,
+          "wilson_95_low": 0.631837235413303,
+          "wilson_95_high": 0.8398507346902941
+        },
+        "drop": {
+          "successes": 2,
+          "trials": 64,
+          "rate": 0.03125,
+          "wilson_95_low": 0.008612138346171874,
+          "wilson_95_high": 0.10697291770958313
+        },
+        "final_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.19512535237299744
+        },
+        "min_orientation_error_rad": {
+          "count": 64,
+          "mean": 0.10906672784767579
+        },
+        "steps": {
+          "count": 64,
+          "mean": 290.21875
+        },
+        "time_s": {
+          "count": 64,
+          "mean": 9.673958333333333
+        },
+        "mean_clipped_action_l2": {
+          "count": 64,
+          "mean": 4.178935706615448
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 64,
+          "mean": 0.750687625259161
+        },
+        "mean_action_slew_l2": {
+          "count": 64,
+          "mean": 2.880113774910569
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 64,
+          "mean": 0.7620623926632106
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 64,
+          "mean": 1.7340810857713223
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 64,
+          "mean": 19.718793600797653
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 64,
+          "mean": 2.9952338878065348
+        }
+      },
+      "repeated_summary": null
+    },
+    {
+      "id": "hold02_final_repeated02s",
+      "raw_report": "raw/hold02_final_repeated02s.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/final_reports/hold02_final_repeated02s.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+      "checkpoint_sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+      "git_revision": null,
+      "protocol": "repeated_reorientation_v1",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        -1
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 128,
+      "hold_tolerance_rad": 0.4,
+      "hold_time_s": 0.2,
+      "episode_length_s_override": 30.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+        "--mode",
+        "repeated",
+        "--success-tolerance",
+        "0.4",
+        "--goal-hold-time-s",
+        "0.2",
+        "--episode-length-s",
+        "30",
+        "--episodes-per-face",
+        "128",
+        "--num-envs",
+        "128",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/hold02_final_repeated02s.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 128,
+        "instant_reach": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "continuous_hold": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "held_at_end": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "drop": {
+          "successes": 23,
+          "trials": 128,
+          "rate": 0.1796875,
+          "wilson_95_low": 0.12282459974516051,
+          "wilson_95_high": 0.25521626286755583
+        },
+        "final_orientation_error_rad": {
+          "count": 128,
+          "mean": 1.5403283609484788
+        },
+        "min_orientation_error_rad": {
+          "count": 128,
+          "mean": 0.0802902397881553
+        },
+        "steps": {
+          "count": 128,
+          "mean": 809.546875
+        },
+        "time_s": {
+          "count": 128,
+          "mean": 26.984895833333333
+        },
+        "mean_clipped_action_l2": {
+          "count": 128,
+          "mean": 4.1627032533288
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 128,
+          "mean": 0.7422292898409069
+        },
+        "mean_action_slew_l2": {
+          "count": 128,
+          "mean": 7.454373899847269
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 128,
+          "mean": 2.0334118455648422
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 128,
+          "mean": 2.8574129845947027
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 128,
+          "mean": 32.71798050403595
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 128,
+          "mean": 6.316210906021297
+        }
+      },
+      "repeated_summary": {
+        "episodes": 128,
+        "cs_mean": 23.2890625,
+        "cs_std": 7.43424544732643,
+        "cs_min": 0,
+        "cs_max": 32,
+        "successes_by_face": [
+          480,
+          504,
+          497,
+          472,
+          498,
+          530
+        ],
+        "horizon_censored_episodes": 105,
+        "interpretation": "Successes before drop or fixed horizon; surviving episodes are right-censored, not lifetime CS. Semantic face plus random-yaw goals, not an exact VisERDex reproduction."
+      }
+    },
+    {
+      "id": "hold02_final_repeated0s",
+      "raw_report": "raw/hold02_final_repeated0s.json",
+      "source_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260921/final_reports/hold02_final_repeated0s.json",
+      "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+      "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+      "checkpoint_sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+      "git_revision": null,
+      "protocol": "repeated_reorientation_v1",
+      "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+      "clip_actions": null,
+      "seeds": [
+        101
+      ],
+      "faces": [
+        -1
+      ],
+      "goal_yaw_mode": "random",
+      "num_envs": 128,
+      "hold_tolerance_rad": 0.4,
+      "hold_time_s": 0.0,
+      "episode_length_s_override": 30.0,
+      "argv": [
+        "scripts/rsl_rl/evaluate_state_baseline.py",
+        "--headless",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+        "--mode",
+        "repeated",
+        "--success-tolerance",
+        "0.4",
+        "--episode-length-s",
+        "30",
+        "--episodes-per-face",
+        "128",
+        "--num-envs",
+        "128",
+        "--seeds",
+        "101",
+        "--report",
+        "outputs/teacher_20260921/hold02_final_repeated0s.json"
+      ],
+      "runtime": {
+        "python": "3.11.16 (main, Sep  2 2026, 23:39:52) [GCC 15.3.0]",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "torch": "2.7.0+cu128"
+      },
+      "summary": {
+        "episodes": 128,
+        "instant_reach": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "continuous_hold": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "held_at_end": {
+          "successes": 0,
+          "trials": 0,
+          "rate": null,
+          "wilson_95_low": null,
+          "wilson_95_high": null
+        },
+        "drop": {
+          "successes": 36,
+          "trials": 128,
+          "rate": 0.28125,
+          "wilson_95_low": 0.2106132270868173,
+          "wilson_95_high": 0.3646341912828427
+        },
+        "final_orientation_error_rad": {
+          "count": 128,
+          "mean": 1.885546678910032
+        },
+        "min_orientation_error_rad": {
+          "count": 128,
+          "mean": 0.22198352692066692
+        },
+        "steps": {
+          "count": 128,
+          "mean": 743.6015625
+        },
+        "time_s": {
+          "count": 128,
+          "mean": 24.78671875
+        },
+        "mean_clipped_action_l2": {
+          "count": 128,
+          "mean": 4.173308625817299
+        },
+        "mean_raw_out_of_bounds_fraction": {
+          "count": 128,
+          "mean": 0.7485825074836612
+        },
+        "mean_action_slew_l2": {
+          "count": 128,
+          "mean": 7.532597698271275
+        },
+        "mean_applied_target_delta_rad": {
+          "count": 128,
+          "mean": 2.03926894813776
+        },
+        "mean_joint_velocity_rms_rad_s": {
+          "count": 128,
+          "mean": 2.899854237213731
+        },
+        "max_joint_velocity_norm_rad_s": {
+          "count": 128,
+          "mean": 32.65702813863754
+        },
+        "mean_object_angular_velocity_rad_s": {
+          "count": 128,
+          "mean": 6.772170834243298
+        }
+      },
+      "repeated_summary": {
+        "episodes": 128,
+        "cs_mean": 25.6640625,
+        "cs_std": 11.062519310541056,
+        "cs_min": 0,
+        "cs_max": 39,
+        "successes_by_face": [
+          550,
+          541,
+          530,
+          523,
+          553,
+          588
+        ],
+        "horizon_censored_episodes": 92,
+        "interpretation": "Successes before drop or fixed horizon; surviving episodes are right-censored, not lifetime CS. Semantic face plus random-yaw goals, not an exact VisERDex reproduction."
+      }
+    }
+  ],
+  "balanced_face_hold_aggregate": {
+    "episodes": 384,
+    "instant_reach": {
+      "successes": 364,
+      "trials": 384,
+      "rate": 0.9479166666666666,
+      "wilson_95_low": 0.9209261407578317,
+      "wilson_95_high": 0.9660342194006657
+    },
+    "continuous_hold": {
+      "successes": 360,
+      "trials": 384,
+      "rate": 0.9375,
+      "wilson_95_low": 0.9086895155593778,
+      "wilson_95_high": 0.9576438594791546
+    },
+    "held_at_end": {
+      "successes": 293,
+      "trials": 384,
+      "rate": 0.7630208333333334,
+      "wilson_95_low": 0.71801571515527,
+      "wilson_95_high": 0.8028156591238478
+    },
+    "drop": {
+      "successes": 18,
+      "trials": 384,
+      "rate": 0.046875,
+      "wilson_95_low": 0.029853471204759136,
+      "wilson_95_high": 0.07287267607676066
+    },
+    "final_orientation_error_rad": {
+      "count": 384,
+      "mean": 0.2127122746872677
+    },
+    "min_orientation_error_rad": {
+      "count": 384,
+      "mean": 0.11464494216731207
+    },
+    "steps": {
+      "count": 384,
+      "mean": 285.9401041666667
+    },
+    "time_s": {
+      "count": 384,
+      "mean": 9.531336805555556
+    },
+    "mean_clipped_action_l2": {
+      "count": 384,
+      "mean": 4.180142384643356
+    },
+    "mean_raw_out_of_bounds_fraction": {
+      "count": 384,
+      "mean": 0.7499853204935789
+    },
+    "mean_action_slew_l2": {
+      "count": 384,
+      "mean": 2.8858285046493015
+    },
+    "mean_applied_target_delta_rad": {
+      "count": 384,
+      "mean": 0.7573741770659884
+    },
+    "mean_joint_velocity_rms_rad_s": {
+      "count": 384,
+      "mean": 1.7558028164009254
+    },
+    "max_joint_velocity_norm_rad_s": {
+      "count": 384,
+      "mean": 19.012397423386574
+    },
+    "mean_object_angular_velocity_rad_s": {
+      "count": 384,
+      "mean": 3.1128581523274383
+    }
+  },
+  "videos": [
+    {
+      "seed_label": "random_seed101",
+      "metadata": "video_metadata/random_seed101/metadata.json",
+      "mp4_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260922/videos_mp4/random_seed101.mp4",
+      "mp4_sha256": "9512e610c8ec95e04737f3d64954df5e8d8b89c4f447903a2bb460a5c74148ea",
+      "role": "qualitative privileged-state replay; not evaluation or visual-policy evidence"
+    },
+    {
+      "seed_label": "random_seed102",
+      "metadata": "video_metadata/random_seed102/metadata.json",
+      "mp4_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260922/videos_mp4/random_seed102.mp4",
+      "mp4_sha256": "a9d06405bb98e815cfe7cccfa2602aa81feb402ee78ec9334b676ad2c88d0b9a",
+      "role": "qualitative privileged-state replay; not evaluation or visual-policy evidence"
+    },
+    {
+      "seed_label": "random_seed103",
+      "metadata": "video_metadata/random_seed103/metadata.json",
+      "mp4_path": "/home/yin/DexManipulation/agentrotation/outputs/teacher_20260922/videos_mp4/random_seed103.mp4",
+      "mp4_sha256": "9b408448884cee3f91a46575d07a72e32a3f84bd7f3f1f483c3d1f213bef5df1",
+      "role": "qualitative privileged-state replay; not evaluation or visual-policy evidence"
+    }
+  ],
+  "interpretation": "At zero dwell local mean CS increases 7.3125 -> 25.6640625; drops also increase 28/128 -> 36/128. No strict Direct < VisERDex < Ours conclusion is established."
+}
