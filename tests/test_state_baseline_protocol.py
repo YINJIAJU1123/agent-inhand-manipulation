@@ -14,7 +14,23 @@ from state_baseline_protocol import (
     mean_summary,
     rate_summary,
     wilson_interval,
+    repeated_summary,
 )
+
+
+def test_repeated_summary_keeps_drop_and_horizon_censored_episodes():
+    rows = [
+        {"consecutive_successes": 2, "successes_by_face": [1, 1, 0, 0, 0, 0], "horizon_censored": False},
+        {"consecutive_successes": 4, "successes_by_face": [0, 0, 1, 1, 1, 1], "horizon_censored": True},
+        {"consecutive_successes": 0, "successes_by_face": [0]*6, "horizon_censored": False},
+    ]
+    summary = repeated_summary(rows)
+    assert summary["episodes"] == 3
+    assert summary["cs_mean"] == 2
+    assert math.isclose(summary["cs_std"], math.sqrt(8/3))
+    assert summary["horizon_censored_episodes"] == 1
+    assert summary["successes_by_face"] == [1]*6
+    assert repeated_summary([])["cs_mean"] is None
 
 
 def test_quota_balances_vector_slots_without_fast_success_bias():

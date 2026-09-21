@@ -24,6 +24,7 @@ import os
 import platform
 import subprocess
 import sys
+import time
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -40,6 +41,10 @@ parser.add_argument("--object-split", choices=["train", "val", "test"], default=
 parser.add_argument("--objects", nargs="+", default=None)
 parser.add_argument("--seeds", type=str, default="0,1,2", help="Comma-separated simulator seeds.")
 parser.add_argument("--faces", type=str, default="0,1,2,3,4,5", help="Comma-separated face IDs.")
+parser.add_argument("--mode", choices=["hold", "repeated"], default="hold")
+parser.add_argument("--success-tolerance", type=float, default=None)
+parser.add_argument("--goal-hold-time-s", type=float, default=None)
+parser.add_argument("--torch-threads", type=int, default=4)
 parser.add_argument("--goal-yaw", type=float, default=None, help="Fixed goal yaw in radians; omit for random yaw.")
 parser.add_argument(
     "--episode-length-s",
@@ -63,12 +68,20 @@ parser.add_argument(
 cli_args.add_rsl_rl_args(parser)
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
+original_argv = list(sys.argv)
+if args_cli.torch_threads <= 0:
+    parser.error("--torch-threads must be positive")
+if args_cli.success_tolerance is not None and args_cli.success_tolerance <= 0:
+    parser.error("--success-tolerance must be positive")
+if args_cli.goal_hold_time_s is not None and args_cli.goal_hold_time_s < 0:
+    parser.error("--goal-hold-time-s must be non-negative")
 sys.argv = [sys.argv[0]] + hydra_args
 app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
 
 import gymnasium as gym  # noqa: E402
 import torch  # noqa: E402
+torch.set_num_threads(args_cli.torch_threads)
 from rsl_rl.runners import DistillationRunner, OnPolicyRunner  # noqa: E402
 
 from isaaclab.envs import DirectMARLEnv, multi_agent_to_single_agent  # noqa: E402
@@ -79,7 +92,7 @@ from isaaclab_tasks.utils.hydra import hydra_task_config  # noqa: E402
 import isaaclab_tasks  # noqa: F401, E402
 import BrainCo_DexHand  # noqa: F401, E402
 
-from state_baseline_protocol import EpisodeQuota, aggregate_records  # noqa: E402
+from state_baseline_protocol import EpisodeQuota, aggregate_records, repeated_summary  # noqa: E402
 
 
 def _parse_ints(value: str, name: str) -> list[int]:
@@ -221,11 +234,14 @@ def _runner_for(env: Any, agent_cfg: Any, checkpoint: str):
 def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: int) -> list[dict[str, Any]]:
     env_cfg.scene.num_envs = args_cli.num_envs
     env_cfg.seed = seed
-    env_cfg.fixed_target_face = face
+    repeated = args_cli.mode == "repeated"
+    env_cfg.fixed_target_face = None if repeated else face
     env_cfg.goal_yaw = args_cli.goal_yaw
     env_cfg.max_consecutive_success = 0
-    env_cfg.freeze_goal_for_episode = True
-    env_cfg.goal_hold_time_s = 0.5
+    env_cfg.freeze_goal_for_episode = not repeated
+    env_cfg.goal_hold_time_s = args_cli.goal_hold_time_s if args_cli.goal_hold_time_s is not None else (0.0 if repeated else 0.5)
+    if args_cli.success_tolerance is not None:
+        env_cfg.success_tolerance = args_cli.success_tolerance
     if args_cli.episode_length_s is not None:
         if args_cli.episode_length_s <= 0.0:
             raise ValueError("--episode-length-s must be positive")
@@ -239,7 +255,9 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
         if args_cli.episodes_per_face % args_cli.num_envs:
             raise ValueError("Multi-object evaluation requires equal per-slot quotas")
         configure_objects(env_cfg, select_objects(args_cli.object_split, args_cli.objects))
+    print(f"[EVAL] Creating mode={args_cli.mode} seed={seed} face={face} envs={args_cli.num_envs}", flush=True)
     env = gym.make(args_cli.task, cfg=env_cfg, render_mode=None)
+    print("[EVAL] Environment created; loading policy", flush=True)
     if isinstance(env.unwrapped, DirectMARLEnv):
         env = multi_agent_to_single_agent(env)
     env = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
@@ -286,7 +304,16 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
     goal_before = env.unwrapped.goal_rot.detach().clone()
     obs = env.get_observations()
     records: list[dict[str, Any]] = []
+    successes = torch.zeros(num_envs, dtype=torch.long, device=device)
+    per_face_successes = torch.zeros((num_envs, 6), dtype=torch.long, device=device)
+    started = time.monotonic()
+    steps = 0
+    max_steps = (max(quotas) + 1) * (env.unwrapped.max_episode_length + 1)
+    print("[EVAL] Starting rollout", flush=True)
     while simulation_app.is_running() and sum(accepted) < args_cli.episodes_per_face:
+        steps += 1
+        if steps > max_steps:
+            raise RuntimeError("Episode quota did not finish within the configured horizon bound")
         with torch.no_grad():
             raw = policy(obs).detach()
             previous_target = env.unwrapped.cur_targets[:, env.unwrapped.actuated_dof_indices].detach().clone()
@@ -310,6 +337,12 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
             hold_steps = _metric_tensor(metrics, "hold_steps", episode_steps, dtype=torch.long)
             metric_face = _metric_tensor(metrics, "target_face", face_before, dtype=torch.long)
             metric_goal = _metric_tensor(metrics, "goal_rotation", goal_before)
+            if repeated:
+                if "success_event" not in metrics:
+                    raise RuntimeError("Repeated evaluation requires pre-reset success_event")
+                event = metrics["success_event"].to(torch.long)
+                successes += event
+                per_face_successes.scatter_add_(1, metric_face[:, None], event[:, None])
             min_error = torch.minimum(min_error, orientation)
             dropped |= drop
             instant_reach |= reach
@@ -339,7 +372,7 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
             accepted[idx] += 1
             n_steps = int(episode_steps[idx].item())
             metric_face_value = int(metric_face[idx].item())
-            if metric_face_value != face:
+            if not repeated and metric_face_value != face:
                 raise RuntimeError(
                     f"terminal target_face mismatch: block requested {face}, metric reported {metric_face_value}"
                 )
@@ -374,6 +407,15 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
                 ),
             }
             records.append(record)
+            if repeated:
+                record["consecutive_successes"] = int(successes[idx].item())
+                record["successes_by_face"] = per_face_successes[idx].cpu().tolist()
+                record["horizon_censored"] = not record["drop"]
+                # Hold outcomes across changing targets have no fixed-goal meaning.
+                for key in ("success", "instant_reach", "continuous_hold", "held_at_end"):
+                    record.pop(key)
+                successes[idx] = 0
+                per_face_successes[idx] = 0
             if env.unwrapped.object_geometry is not None:
                 record["object_id"] = env.unwrapped.object_geometry["names"][idx]
                 record["object_split"] = args_cli.object_split
@@ -397,6 +439,8 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
         active = ~dones
         prev_action[active] = action[active]
         has_prev[active] = True
+        if steps == 1 or steps % 100 == 0 or sum(accepted) == args_cli.episodes_per_face:
+            print(f"[EVAL] seed={seed} face={face} step={steps} episodes={sum(accepted)}/{args_cli.episodes_per_face} wall_s={time.monotonic()-started:.1f}", flush=True)
     env.close()
     return records
 
@@ -409,7 +453,9 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
         raise ValueError("--episodes-per-face and --num-envs must be positive")
     seeds = _parse_ints(args_cli.seeds, "--seeds")
     faces = _parse_ints(args_cli.faces, "--faces")
-    if any(face < 0 or face >= 6 for face in faces):
+    if args_cli.mode == "repeated":
+        faces = [-1]  # One block with freshly sampled face/yaw after every success.
+    if args_cli.mode == "hold" and any(face < 0 or face >= 6 for face in faces):
         raise ValueError("face IDs must be in [0, 5]")
     checkpoint = retrieve_file_path(args_cli.checkpoint)
     stress = _apply_stress_overrides(env_cfg)
@@ -433,7 +479,7 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
     for seed in seeds:
         by_seed[str(seed)] = aggregate_records([row for row in all_records if row["seed"] == seed])
     report = {
-        "protocol": "state_baseline_v2",
+        "protocol": "repeated_reorientation_v1" if args_cli.mode == "repeated" else "state_baseline_v2",
         "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
         "clip_actions": agent_cfg.clip_actions,
         "control_metrics_source": "actual pre-reset targets and state, sampled at policy frequency",
@@ -448,7 +494,7 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
         "goal_yaw_mode": "fixed" if args_cli.goal_yaw is not None else "random",
         "num_envs": args_cli.num_envs,
         "hold_tolerance_rad": float(env_cfg.success_tolerance),
-        "hold_time_s": 0.5,
+        "hold_time_s": float(env_cfg.goal_hold_time_s),
         "episode_length_s_override": args_cli.episode_length_s,
         "stress_overrides": stress,
         "env_cfg": _json_safe(env_cfg),
@@ -461,8 +507,12 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
                        for name in sorted({r["object_id"] for r in all_records if "object_id" in r})},
         "records": all_records,
         "complete": len(all_records) == args_cli.episodes_per_face * len(faces) * len(seeds),
-        "argv": sys.argv,
+        "argv": original_argv,
     }
+    if args_cli.mode == "repeated":
+        report["repeated_summary"] = repeated_summary(all_records)
+        report["per_face"] = {}  # Episodes traverse multiple target faces.
+        report["repeated_per_seed"] = {str(seed): repeated_summary([r for r in all_records if r["seed"] == seed]) for seed in seeds}
     output = Path(args_cli.report).expanduser().resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", encoding="utf-8") as handle:

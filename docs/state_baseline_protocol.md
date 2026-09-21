@@ -109,3 +109,26 @@ Protocol v2 passes raw policy outputs through the training-configured wrapper;
 v1 added an unconditional [-1,1] clamp and must not be mixed with v2 results.
 Velocity metrics are sampled before terminal resets at policy frequency; they
 are not continuous-time peaks. Action slew averages exclude the first step.
+
+## Repeated reorientation teacher evaluation
+
+Use `--mode repeated --success-tolerance 0.4 --episode-length-s 30` for a
+separate repeated-target check. `--episodes-per-face` then means total episodes
+per seed (there are no fixed face blocks). Targets are sampled again after each
+success; the default hold duration in this mode is zero. Use
+`--goal-hold-time-s 0.2` for a stricter dwell-qualified variant and retain its
+separate manifest. The hold-mode default remains 0.5 seconds.
+
+The report includes per-episode CS, per-face success counts, drop rate, control
+metrics, and horizon censoring. A surviving episode is right-censored: CS at a
+30-second cutoff is not a lifetime count and cannot be compared directly to the
+VisERDex paper. Goals here are semantic face plus random yaw, not its exact
+orientation distribution. Aggregate face counts are counts, not balanced face
+success rates. Hold mode remains the balanced per-face stability check.
+
+Rollout progress prints every 100 steps and a simulator-step bound rejects a
+quota that never completes. `run_teacher_stage.sh` additionally sets process
+timeouts, limits CPU math threads, and runs smoke before the separate baseline
+or training stages. It resumes model500 with a 0.2-second hold objective, small
+dense hold-progress shaping, and saves every 100 iterations. These are candidate
+settings to evaluate, not a claim of a stable teacher.

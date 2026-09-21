@@ -252,6 +252,7 @@ class SemanticReorientEnv(InHandManipulationEnv):
 
         # Only completed holds trigger target changes.  A frozen-goal run
         # keeps the target and continues until timeout/drop for stability eval.
+        hold_fraction = self._step_hold_complete.float().mean()
         self.reset_goal_buf[:] = self._step_success_event
         if self.cfg.freeze_goal_for_episode:
             self.reset_goal_buf.zero_()
@@ -273,7 +274,11 @@ class SemanticReorientEnv(InHandManipulationEnv):
         )
         if "log" not in self.extras:
             self.extras["log"] = dict()
-        self.extras["log"]["consecutive_successes"] = self.successes.mean()
+        self.extras["log"]["consecutive_successes"] = self.consecutive_successes.mean()
+        self.extras["log"]["active_episode_successes"] = self.successes.mean()
+        self.extras["log"]["drop_fraction"] = self._step_dropped.float().mean()
+        self.extras["log"]["hold_fraction"] = hold_fraction
+        self.extras["log"]["orientation_error_rad"] = self._step_orientation_error.mean()
         return reward
 
     @property

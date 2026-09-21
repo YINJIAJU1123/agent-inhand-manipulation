@@ -12,6 +12,22 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import log, sqrt
 from typing import Iterable, Mapping, Sequence
+from statistics import mean, pstdev
+
+
+def repeated_summary(records: Sequence[Mapping[str, object]]) -> dict[str, object]:
+    """Report completed episodes, retaining horizon-censoring information."""
+    counts = [int(row["consecutive_successes"]) for row in records]
+    return {
+        "episodes": len(counts),
+        "cs_mean": mean(counts) if counts else None,
+        "cs_std": pstdev(counts) if counts else None,
+        "cs_min": min(counts) if counts else None,
+        "cs_max": max(counts) if counts else None,
+        "successes_by_face": [sum(row["successes_by_face"][i] for row in records) for i in range(6)],
+        "horizon_censored_episodes": sum(bool(row["horizon_censored"]) for row in records),
+        "interpretation": "Successes before drop or fixed horizon; surviving episodes are right-censored, not lifetime CS. Semantic face plus random-yaw goals, not an exact VisERDex reproduction.",
+    }
 
 
 @dataclass(frozen=True)
