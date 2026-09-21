@@ -41,6 +41,12 @@ parser.add_argument("--objects", nargs="+", default=None)
 parser.add_argument("--seeds", type=str, default="0,1,2", help="Comma-separated simulator seeds.")
 parser.add_argument("--faces", type=str, default="0,1,2,3,4,5", help="Comma-separated face IDs.")
 parser.add_argument("--goal-yaw", type=float, default=None, help="Fixed goal yaw in radians; omit for random yaw.")
+parser.add_argument(
+    "--episode-length-s",
+    type=float,
+    default=None,
+    help="Optional bounded diagnostic horizon; omit to use the task's configured horizon.",
+)
 parser.add_argument("--report", type=str, default="outputs/state-baseline.json")
 parser.add_argument("--object-scale", type=float, default=None)
 parser.add_argument("--object-density", type=float, default=None)
@@ -220,6 +226,10 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
     env_cfg.max_consecutive_success = 0
     env_cfg.freeze_goal_for_episode = True
     env_cfg.goal_hold_time_s = 0.5
+    if args_cli.episode_length_s is not None:
+        if args_cli.episode_length_s <= 0.0:
+            raise ValueError("--episode-length-s must be positive")
+        env_cfg.episode_length_s = args_cli.episode_length_s
     env_cfg.record_eval_metrics = True
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
     env_cfg.log_dir = os.path.dirname(checkpoint)
@@ -439,6 +449,7 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
         "num_envs": args_cli.num_envs,
         "hold_tolerance_rad": float(env_cfg.success_tolerance),
         "hold_time_s": 0.5,
+        "episode_length_s_override": args_cli.episode_length_s,
         "stress_overrides": stress,
         "env_cfg": _json_safe(env_cfg),
         "runtime": {"python": sys.version, "platform": platform.platform(), "torch": torch.__version__},
