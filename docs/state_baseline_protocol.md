@@ -1,6 +1,6 @@
 # Camera-free state-policy baseline protocol
 
-`evaluate_state_baseline.py` is the reference evaluation for the privileged
+`evaluate_state_baseline.py` (protocol v2) is the reference evaluation for the privileged
 semantic Revo3 controller. It does not enable cameras and does not require RTX
 rendering. Run it from the repository root with the Isaac Lab Python runtime:
 
