@@ -125,30 +125,6 @@ def _require_protocol_metrics(metrics: Any) -> dict[str, Any]:
     return metrics
 
 
-def _apply_position_ema(
-    previous_target: torch.Tensor,
-    scaled_target: torch.Tensor,
-    moving_average: float,
-    decimation: int,
-    lower: torch.Tensor,
-    upper: torch.Tensor,
-) -> torch.Tensor:
-    """Reproduce the task's target filter for every physics substep.
-
-    ``DirectRLEnv.step`` calls ``_apply_action`` once per physics step.  The
-    policy action is held for ``decimation`` substeps, so applying the EMA
-    once here would under-report the target motion seen by the simulator.
-    Keeping this calculation in the evaluator makes the smoothness metric
-    match the actual control path without changing the trained environment.
-    """
-
-    target = previous_target
-    for _ in range(max(int(decimation), 1)):
-        target = moving_average * scaled_target + (1.0 - moving_average) * target
-        target = torch.maximum(torch.minimum(target, upper), lower)
-    return target
-
-
 def _sha256(path: str | os.PathLike[str]) -> str:
     digest = hashlib.sha256()
     with open(path, "rb") as handle:
@@ -261,6 +237,21 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
     policy_nn = getattr(runner.alg, "policy", None)
     if policy_nn is None:
         policy_nn = getattr(runner.alg, "actor_critic", None)
+    # DirectRLEnv resets terminal slots before returning from step(). Sample
+    # the real control path during rewards, while physics state is pre-reset.
+    control_snapshot = {}
+    original_rewards = env.unwrapped._get_rewards
+
+    def capture_control_before_reset():
+        task = env.unwrapped
+        ids = task.actuated_dof_indices
+        control_snapshot["targets"] = task.cur_targets[:, ids].detach().clone()
+        control_snapshot["joint_velocity"] = task.hand_dof_vel[:, ids].detach().clone()
+        control_snapshot["object_angvel"] = task.object_angvel.detach().clone()
+        control_snapshot["action"] = task.actions.detach().clone()
+        return original_rewards()
+
+    env.unwrapped._get_rewards = capture_control_before_reset
     device = env.unwrapped.device
     num_envs = env.unwrapped.num_envs
     episode_quota = EpisodeQuota(args_cli.episodes_per_face, num_envs)
@@ -288,27 +279,17 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
     while simulation_app.is_running() and sum(accepted) < args_cli.episodes_per_face:
         with torch.no_grad():
             raw = policy(obs).detach()
-            action = raw.clamp(-1.0, 1.0)
-            lower = env.unwrapped.hand_dof_lower_limits[:, env.unwrapped.actuated_dof_indices]
-            upper = env.unwrapped.hand_dof_upper_limits[:, env.unwrapped.actuated_dof_indices]
             previous_target = env.unwrapped.cur_targets[:, env.unwrapped.actuated_dof_indices].detach().clone()
-            scaled = lower + 0.5 * (action + 1.0) * (upper - lower)
-            moving_average = float(env.unwrapped.cfg.act_moving_average)
-            actual_target = _apply_position_ema(
-                previous_target,
-                scaled,
-                moving_average,
-                env.unwrapped.cfg.decimation,
-                lower,
-                upper,
-            )
-            target_delta = torch.linalg.vector_norm(actual_target - previous_target, dim=-1)
-            clipped_l2 = torch.linalg.vector_norm(action, dim=-1)
+            # The wrapper applies the configured clip_actions, just as in
+            # training/play. Never silently add a new [-1,1] clamp here.
+            obs, _, dones_raw, info = env.step(raw)
+            action = control_snapshot["action"]
+            target_delta = torch.linalg.vector_norm(control_snapshot["targets"] - previous_target, dim=-1)
+            clipped_l2 = torch.linalg.vector_norm(action.clamp(-1.0, 1.0), dim=-1)
             raw_out_of_bounds = (raw.abs() > 1.0).float().mean(dim=-1)
             slew_l2 = torch.where(
                 has_prev, torch.linalg.vector_norm(action - prev_action, dim=-1), torch.zeros_like(clipped_l2)
             )
-            obs, _, dones_raw, info = env.step(action)
             dones = _done_tensor(dones_raw, device)
             metrics = _require_protocol_metrics(info.get("semantic_metrics") if isinstance(info, dict) else None)
             orientation = _metric_tensor(metrics, "orientation_error", min_error.new_zeros(num_envs))
@@ -329,10 +310,10 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
             sum_raw_out_of_bounds += raw_out_of_bounds
             sum_slew_l2 += slew_l2
             sum_applied_target_delta += target_delta
-            joint_velocity = env.unwrapped.hand_dof_vel[:, env.unwrapped.actuated_dof_indices]
+            joint_velocity = control_snapshot["joint_velocity"]
             joint_velocity_rms = torch.sqrt(torch.mean(joint_velocity.square(), dim=-1))
             joint_velocity_norm = torch.linalg.vector_norm(joint_velocity, dim=-1)
-            object_angular_velocity = torch.linalg.vector_norm(env.unwrapped.object_angvel, dim=-1)
+            object_angular_velocity = torch.linalg.vector_norm(control_snapshot["object_angvel"], dim=-1)
             sum_joint_velocity_rms += joint_velocity_rms
             max_joint_velocity = torch.maximum(max_joint_velocity, joint_velocity_norm)
             sum_object_angular_velocity += object_angular_velocity
@@ -370,7 +351,7 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
                 "mean_raw_out_of_bounds_fraction": float(
                     (sum_raw_out_of_bounds[idx] / max(n_steps, 1)).item()
                 ),
-                "mean_action_slew_l2": float((sum_slew_l2[idx] / max(n_steps, 1)).item()),
+                "mean_action_slew_l2": float((sum_slew_l2[idx] / max(n_steps - 1, 1)).item()),
                 "mean_applied_target_delta_rad": float(
                     (sum_applied_target_delta[idx] / max(n_steps, 1)).item()
                 ),
@@ -442,7 +423,10 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
     for seed in seeds:
         by_seed[str(seed)] = aggregate_records([row for row in all_records if row["seed"] == seed])
     report = {
-        "protocol": "state_baseline_v1",
+        "protocol": "state_baseline_v2",
+        "action_mode": "raw policy output through configured RslRlVecEnvWrapper",
+        "clip_actions": agent_cfg.clip_actions,
+        "control_metrics_source": "actual pre-reset targets and state, sampled at policy frequency",
         "task": args_cli.task,
         "checkpoint": os.path.abspath(checkpoint),
         "checkpoint_sha256": _sha256(checkpoint),

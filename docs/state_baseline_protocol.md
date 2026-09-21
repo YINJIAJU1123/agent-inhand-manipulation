@@ -64,10 +64,9 @@ The report stores these derived outcomes for every episode:
 - `success`: currently equal to `held_at_end && !drop`;
 - `drop`, `steps`, simulated `time_s`, final and minimum orientation error;
 - mean clipped action L2, raw-command out-of-bounds fraction, mean action-slew
-  L2, and mean **actual** target movement in radians. The target movement uses
-  the environment's normalized action scaling and applies `act_moving_average`
-  once for every physics substep in `decimation`, matching the `cur_targets`
-  update; it is not the norm of the raw policy output. The report also records
+  L2, and mean **actual** target movement in radians. The target movement is sampled from `cur_targets` before reset, after all
+  physics substeps. It therefore includes every EMA update and target
+  saturation, rather than approximating the applied movement. The report also records
   joint velocity RMS/peak and object angular velocity so visible jitter can be
   separated from large target commands.
 
@@ -105,3 +104,8 @@ Running against the old semantic environment is rejected when any of the hold
 or terminal pre-reset fields is missing. In particular, a missing
 `hold_complete` field is never treated as an instantaneous success. This keeps
 old one-step success reports separate from the continuous-hold baseline.
+
+Protocol v2 passes raw policy outputs through the training-configured wrapper;
+v1 added an unconditional [-1,1] clamp and must not be mixed with v2 results.
+Velocity metrics are sampled before terminal resets at policy frequency; they
+are not continuous-time peaks. Action slew averages exclude the first step.
