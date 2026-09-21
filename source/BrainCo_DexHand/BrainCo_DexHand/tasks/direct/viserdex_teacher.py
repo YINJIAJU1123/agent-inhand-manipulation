@@ -80,7 +80,9 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
                 ),
                 dim=-1,
             )
-        return torch.cat((base, self.target_face_onehot, history, props), dim=-1)
+        # ``base`` already includes the six-dimensional semantic face token
+        # from SemanticReorientEnv.
+        return torch.cat((base, history, props), dim=-1)
 
     def _apply_action(self) -> None:
         raw_targets = scale(
