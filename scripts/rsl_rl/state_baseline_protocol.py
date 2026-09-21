@@ -137,8 +137,12 @@ def aggregate_records(records: Sequence[Mapping[str, object]]) -> dict[str, obje
         "steps",
         "time_s",
         "mean_clipped_action_l2",
+        "mean_raw_out_of_bounds_fraction",
         "mean_action_slew_l2",
-        "mean_target_delta_rad",
+        "mean_applied_target_delta_rad",
+        "mean_joint_velocity_rms_rad_s",
+        "max_joint_velocity_norm_rad_s",
+        "mean_object_angular_velocity_rad_s",
     ):
         summary[key] = mean_summary(numbers(key))
     return summary

@@ -125,6 +125,30 @@ def _require_protocol_metrics(metrics: Any) -> dict[str, Any]:
     return metrics
 
 
+def _apply_position_ema(
+    previous_target: torch.Tensor,
+    scaled_target: torch.Tensor,
+    moving_average: float,
+    decimation: int,
+    lower: torch.Tensor,
+    upper: torch.Tensor,
+) -> torch.Tensor:
+    """Reproduce the task's target filter for every physics substep.
+
+    ``DirectRLEnv.step`` calls ``_apply_action`` once per physics step.  The
+    policy action is held for ``decimation`` substeps, so applying the EMA
+    once here would under-report the target motion seen by the simulator.
+    Keeping this calculation in the evaluator makes the smoothness metric
+    match the actual control path without changing the trained environment.
+    """
+
+    target = previous_target
+    for _ in range(max(int(decimation), 1)):
+        target = moving_average * scaled_target + (1.0 - moving_average) * target
+        target = torch.maximum(torch.minimum(target, upper), lower)
+    return target
+
+
 def _sha256(path: str | os.PathLike[str]) -> str:
     digest = hashlib.sha256()
     with open(path, "rb") as handle:
@@ -251,8 +275,12 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
     prev_action = torch.zeros((num_envs, env.unwrapped.num_hand_dofs), device=device)
     has_prev = torch.zeros(num_envs, dtype=torch.bool, device=device)
     sum_clipped_l2 = torch.zeros(num_envs, device=device)
+    sum_raw_out_of_bounds = torch.zeros(num_envs, device=device)
     sum_slew_l2 = torch.zeros(num_envs, device=device)
-    sum_target_delta = torch.zeros(num_envs, device=device)
+    sum_applied_target_delta = torch.zeros(num_envs, device=device)
+    sum_joint_velocity_rms = torch.zeros(num_envs, device=device)
+    max_joint_velocity = torch.zeros(num_envs, device=device)
+    sum_object_angular_velocity = torch.zeros(num_envs, device=device)
     face_before = env.unwrapped.target_face.detach().clone()
     goal_before = env.unwrapped.goal_rot.detach().clone()
     obs = env.get_observations()
@@ -266,9 +294,17 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
             previous_target = env.unwrapped.cur_targets[:, env.unwrapped.actuated_dof_indices].detach().clone()
             scaled = lower + 0.5 * (action + 1.0) * (upper - lower)
             moving_average = float(env.unwrapped.cfg.act_moving_average)
-            actual_target = moving_average * scaled + (1.0 - moving_average) * previous_target
+            actual_target = _apply_position_ema(
+                previous_target,
+                scaled,
+                moving_average,
+                env.unwrapped.cfg.decimation,
+                lower,
+                upper,
+            )
             target_delta = torch.linalg.vector_norm(actual_target - previous_target, dim=-1)
             clipped_l2 = torch.linalg.vector_norm(action, dim=-1)
+            raw_out_of_bounds = (raw.abs() > 1.0).float().mean(dim=-1)
             slew_l2 = torch.where(
                 has_prev, torch.linalg.vector_norm(action - prev_action, dim=-1), torch.zeros_like(clipped_l2)
             )
@@ -290,8 +326,16 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
             held_at_end = hold_complete
             episode_steps += 1
             sum_clipped_l2 += clipped_l2
+            sum_raw_out_of_bounds += raw_out_of_bounds
             sum_slew_l2 += slew_l2
-            sum_target_delta += target_delta
+            sum_applied_target_delta += target_delta
+            joint_velocity = env.unwrapped.hand_dof_vel[:, env.unwrapped.actuated_dof_indices]
+            joint_velocity_rms = torch.sqrt(torch.mean(joint_velocity.square(), dim=-1))
+            joint_velocity_norm = torch.linalg.vector_norm(joint_velocity, dim=-1)
+            object_angular_velocity = torch.linalg.vector_norm(env.unwrapped.object_angvel, dim=-1)
+            sum_joint_velocity_rms += joint_velocity_rms
+            max_joint_velocity = torch.maximum(max_joint_velocity, joint_velocity_norm)
+            sum_object_angular_velocity += object_angular_velocity
             if policy_nn is not None and hasattr(policy_nn, "reset"):
                 policy_nn.reset(dones)
 
@@ -323,8 +367,20 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
                 "min_orientation_error_rad": float(min_error[idx].item()),
                 "goal_rotation": metric_goal[idx].detach().cpu().tolist(),
                 "mean_clipped_action_l2": float((sum_clipped_l2[idx] / max(n_steps, 1)).item()),
+                "mean_raw_out_of_bounds_fraction": float(
+                    (sum_raw_out_of_bounds[idx] / max(n_steps, 1)).item()
+                ),
                 "mean_action_slew_l2": float((sum_slew_l2[idx] / max(n_steps, 1)).item()),
-                "mean_target_delta_rad": float((sum_target_delta[idx] / max(n_steps, 1)).item()),
+                "mean_applied_target_delta_rad": float(
+                    (sum_applied_target_delta[idx] / max(n_steps, 1)).item()
+                ),
+                "mean_joint_velocity_rms_rad_s": float(
+                    (sum_joint_velocity_rms[idx] / max(n_steps, 1)).item()
+                ),
+                "max_joint_velocity_norm_rad_s": float(max_joint_velocity[idx].item()),
+                "mean_object_angular_velocity_rad_s": float(
+                    (sum_object_angular_velocity[idx] / max(n_steps, 1)).item()
+                ),
             }
             records.append(record)
             if env.unwrapped.object_geometry is not None:
@@ -337,8 +393,12 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
             ever_held[idx] = False
             held_at_end[idx] = False
             sum_clipped_l2[idx] = 0
+            sum_raw_out_of_bounds[idx] = 0
             sum_slew_l2[idx] = 0
-            sum_target_delta[idx] = 0
+            sum_applied_target_delta[idx] = 0
+            sum_joint_velocity_rms[idx] = 0
+            max_joint_velocity[idx] = 0
+            sum_object_angular_velocity[idx] = 0
             has_prev[idx] = False
             prev_action[idx] = 0
             face_before[idx] = env.unwrapped.target_face[idx]

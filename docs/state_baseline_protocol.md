@@ -63,10 +63,13 @@ The report stores these derived outcomes for every episode:
 - `held_at_end`: was in the completed hold state on the terminal transition;
 - `success`: currently equal to `held_at_end && !drop`;
 - `drop`, `steps`, simulated `time_s`, final and minimum orientation error;
-- mean clipped action L2, mean action-slew L2, and mean **actual** target
-  movement in radians. The target movement uses the environment's normalized
-  action scaling and `act_moving_average`, matching the `cur_targets` update;
-  it is not the norm of the raw policy output.
+- mean clipped action L2, raw-command out-of-bounds fraction, mean action-slew
+  L2, and mean **actual** target movement in radians. The target movement uses
+  the environment's normalized action scaling and applies `act_moving_average`
+  once for every physics substep in `decimation`, matching the `cur_targets`
+  update; it is not the norm of the raw policy output. The report also records
+  joint velocity RMS/peak and object angular velocity so visible jitter can be
+  separated from large target commands.
 
 Each Bernoulli outcome has a 95% Wilson interval. The JSON contains aggregate,
 per-face, and per-seed summaries plus the complete episode records.

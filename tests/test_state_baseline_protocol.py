@@ -47,8 +47,12 @@ def test_aggregate_records_reports_hold_reach_drop_and_control_metrics():
             "steps": 100,
             "time_s": 3.0,
             "mean_clipped_action_l2": 1.2,
+            "mean_raw_out_of_bounds_fraction": 0.0,
             "mean_action_slew_l2": 0.2,
-            "mean_target_delta_rad": 0.08,
+            "mean_applied_target_delta_rad": 0.08,
+            "mean_joint_velocity_rms_rad_s": 1.0,
+            "max_joint_velocity_norm_rad_s": 3.0,
+            "mean_object_angular_velocity_rad_s": 2.0,
         },
         {
             "instant_reach": True,
@@ -60,8 +64,12 @@ def test_aggregate_records_reports_hold_reach_drop_and_control_metrics():
             "steps": 20,
             "time_s": 0.6,
             "mean_clipped_action_l2": 2.0,
+            "mean_raw_out_of_bounds_fraction": 0.1,
             "mean_action_slew_l2": 0.8,
-            "mean_target_delta_rad": 0.2,
+            "mean_applied_target_delta_rad": 0.2,
+            "mean_joint_velocity_rms_rad_s": 2.0,
+            "max_joint_velocity_norm_rad_s": 5.0,
+            "mean_object_angular_velocity_rad_s": 4.0,
         },
     ]
     summary = aggregate_records(records)

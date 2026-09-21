@@ -131,7 +131,7 @@ the goal interface identical for the later CLIP/SigLIP visual student.  The
 contract and templates live in
 `source/BrainCo_DexHand/BrainCo_DexHand/algo/agentic/language_goal.py`.
 
-The visual task uses an Isaac primitive cube and a fixed 128x128 RGB-D
+The visual task uses an Isaac primitive cube and a fixed 256x256 RGB-D
 `TiledCamera` at `/World/envs/env_*/SemanticCamera`.  The camera is an elevated
 front eye-to-hand view at `(0, -0.72, 0.95)` m, tilted down by 32.59 degrees;
 the exact rationale and field of view are documented in

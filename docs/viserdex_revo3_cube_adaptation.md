@@ -26,7 +26,7 @@ paper comparison uses the same Cube target-surface task for all three rows;
 the visual student receives an oracle target representation in row (2), while
 row (3) obtains that representation from the language command.
 
-## Validated remote run
+## Current implementation status
 
 The 5090 host uses Isaac Sim 5.1.0, Isaac Lab 2.3.2, and the `viserdex`
 micromamba environment. The Revo3 semantic Cube teacher starts with:
@@ -38,12 +38,14 @@ python scripts/rsl_rl/train.py \
   --headless --device cuda:0 --num_envs 4096 --max_iterations 1000
 ```
 
-A two-iteration smoke completed and wrote a 158-input PPO checkpoint. The
-formal 1000-iteration job is running in the remote background; its checkpoint
-and TensorBoard files are under
+The remote run used the existing 158-D privileged state teacher. It reached
+about 700 of the requested 1000 iterations before the job was stopped; it did
+not train a visual student. Its checkpoints and TensorBoard files are under
 `logs/rsl_rl/brainco_hand/*_revo3_viserdex_cube_formal/`. The camera smoke
 completed independently with RGB standard deviation 27.64 and 64.5% valid
-depth pixels.
+depth pixels, but those frames were only recorded for qualitative inspection.
+The visual task still returns the state observation to PPO, and the policy does
+not read RGB or depth.
 
 ## Deployment contract
 
@@ -70,8 +72,12 @@ hold window while the object remains grasped.
 ## Checklist
 
 - [x] Isaac Sim 5.1 + Isaac Lab 2.3.2 environment on the 5090 host.
-- [x] VisERDex Cube assets and one-object pose-estimator data.
-- [x] Revo3 action/observation adapter and camera extrinsics.
+- [ ] VisERDex Cube assets wired into the Revo3 task and pose-estimator data
+  validated end-to-end (the downloaded assets are not used by the current
+  primitive-cube teacher).
+- [ ] Revo3 visual action/observation adapter connected to a policy; the
+  current IO builder is an offline draft contract only. Camera extrinsics are
+  smoke-tested, not calibrated against a Revo3 mount.
 - [x] Privileged Cube teacher smoke and checkpoint.
 - [x] RGB-D camera smoke on the Revo3 hand scene (256x256; valid depth 64.5%).
 - [x] Versioned visual-language IO builder and offline dry-run.
