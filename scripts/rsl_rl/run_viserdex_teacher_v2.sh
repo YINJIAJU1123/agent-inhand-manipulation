@@ -43,7 +43,7 @@ case "$stage" in
       --task BrainCo-Direct-Revo3-VisERDexTeacher-Cube-v0 \
       --headless --device cuda:0 --num_envs 512 --seed 123 --max_iterations 1500 \
       --resume --load_run "$TEACHER_LOAD_RUN" --checkpoint "$TEACHER_CHECKPOINT" \
-      --run_name viserdex_teacher_v4_full
+      --run_name viserdex_teacher_v5_scaled
     ;;
   train)
     timeout -k 30s 12h "$runtime" -u scripts/rsl_rl/train.py \
