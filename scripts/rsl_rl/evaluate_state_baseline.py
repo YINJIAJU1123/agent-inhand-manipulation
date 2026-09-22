@@ -388,6 +388,7 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
                 "instant_reach": bool(instant_reach[idx].item()) and not bool(dropped[idx].item()),
                 "continuous_hold": bool(ever_held[idx].item()) and not bool(dropped[idx].item()),
                 "held_at_end": bool(held_at_end[idx].item()) and not bool(dropped[idx].item()),
+                "usable_teacher": bool(ever_held[idx].item()) and bool(held_at_end[idx].item()) and not bool(dropped[idx].item()),
                 "drop": bool(dropped[idx].item()) or bool(object_distance[idx].item() >= float(env.unwrapped.cfg.fall_dist)),
                 "hold_steps": int(hold_steps[idx].item()),
                 "steps": n_steps,
@@ -417,7 +418,7 @@ def _run_block(env_cfg: Any, agent_cfg: Any, checkpoint: str, seed: int, face: i
                 record["successes_by_face"] = per_face_successes[idx].cpu().tolist()
                 record["horizon_censored"] = not record["drop"]
                 # Hold outcomes across changing targets have no fixed-goal meaning.
-                for key in ("success", "instant_reach", "continuous_hold", "held_at_end"):
+                for key in ("success", "instant_reach", "continuous_hold", "held_at_end", "usable_teacher"):
                     record.pop(key)
                 successes[idx] = 0
                 per_face_successes[idx] = 0

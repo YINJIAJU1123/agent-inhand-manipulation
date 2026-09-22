@@ -75,6 +75,17 @@ gym.register(
     },
 )
 
+gym.register(
+    id="BrainCo-Direct-Revo3-OursTeacher-Cube-v0",
+    entry_point=f"{inhand_task_entry}.viserdex_teacher:VisERDexTeacherEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.brainco_hand_ours_teacher_env_cfg:BrainCoHandOursTeacherEnvCfg",
+        "rl_games_cfg_entry_point": f"{agents.__name__}:rl_games_ppo_cfg.yaml",
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BrainCoHandVisERDexTeacherPPORunnerCfg",
+    },
+)
+
 # Camera-enabled collector.  The default actor observation is intentionally
 # unchanged; consumers read RGB-D frames through ``capture_camera()`` and can
 # attach their own visual-language encoder without invalidating the state

@@ -91,5 +91,6 @@ def test_aggregate_records_reports_hold_reach_drop_and_control_metrics():
     summary = aggregate_records(records)
     assert summary["episodes"] == 2
     assert summary["continuous_hold"]["successes"] == 1
+    assert summary["usable_teacher"]["successes"] == 1
     assert summary["drop"]["successes"] == 1
     assert math.isclose(summary["steps"]["mean"], 60.0)

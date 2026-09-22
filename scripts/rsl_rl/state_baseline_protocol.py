@@ -145,6 +145,13 @@ def aggregate_records(records: Sequence[Mapping[str, object]]) -> dict[str, obje
         "instant_reach": rate_summary(bools("instant_reach")),
         "continuous_hold": rate_summary(bools("continuous_hold")),
         "held_at_end": rate_summary(bools("held_at_end")),
+        "usable_teacher": rate_summary(
+            [
+                bool(record.get("usable_teacher", record.get("continuous_hold", False) and record.get("held_at_end", False)))
+                for record in records
+                if "continuous_hold" in record or "usable_teacher" in record
+            ]
+        ),
         "drop": rate_summary(bools("drop")),
     }
     for key in (

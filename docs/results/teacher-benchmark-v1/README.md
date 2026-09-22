@@ -2,6 +2,9 @@
 
 日期：2026-09-22。冻结的是已测结果、协议和 checkpoint 身份；后续新实验新建 v2，不覆盖 v1。当前 teacher 仍可优化，不代表已通过最终验收。
 
+后续 T0/T1/T2 的统一评价合同已冻结在
+[`docs/state_teacher_metrics_v2.md`](../../state_teacher_metrics_v2.md)：主指标是六面 balanced hold，辅指标是 repeated reorientation；v1 中的历史结果继续保留，不能与新合同下的结果直接混排。
+
 ## 三档比较的定义
 
 目标是检验 **Direct < VisERDex-style < Ours（Revo3 工程适配）**，三档都在同一 Revo3 单 Cube state-teacher 任务下测量。它是研究目标，排序由数据决定。
