@@ -43,3 +43,18 @@ success-driven regularization curriculum.  The final process is alive on
 `brainco`; at the latest check it reached iteration 2/2500 with an estimated
 remaining time of roughly 9.5 hours.  No final teacher metric is recorded
 until the run and fixed evaluation protocol complete.
+
+## Final run check
+
+The 2500-iteration process finished normally and wrote `model_2499.pt`. The
+rollout did **not** converge to a usable teacher:
+
+- consecutive successes stayed around 0.00;
+- curriculum stayed at 0.00;
+- orientation error stayed around 2.20--2.23 rad;
+- drop fraction was roughly 3--4% near the end.
+
+This checkpoint must not be used as the final VisERDex teacher. The next pass
+should correct the torque/work proxy scaling before another long run: the
+current implementation squares the summed proxy torque and work, so the `-50`
+torque term dominates the task reward and explains the very large value losses.
