@@ -137,6 +137,10 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
             required_steps,
         )
         timeout = self._goal_elapsed_steps >= self._goal_timeout_steps
+        # Keep the ordinary environment horizon as a second safety bound.
+        # This is also what makes short diagnostic/evaluation horizons
+        # effective instead of relying only on the per-goal clock.
+        timeout = timeout | (self.episode_length_buf >= self.max_episode_length - 1)
         if self.cfg.max_consecutive_success > 0:
             timeout = timeout | (
                 self.successes + self._step_success_event.to(self.successes.dtype)
@@ -194,6 +198,8 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
             self.consecutive_successes,
         )
         self.reset_goal_buf[:] = self._step_success_event
+        if self.cfg.freeze_goal_for_episode:
+            self.reset_goal_buf.zero_()
         goal_env_ids = self.reset_goal_buf.nonzero(as_tuple=False).squeeze(-1)
         if len(goal_env_ids) > 0:
             self._reset_target_pose(goal_env_ids)
