@@ -11,7 +11,7 @@
     {
       "id": "T1",
       "name": "VisERDex-style Revo3 state teacher",
-      "status": "faithfulness audit and matched reproduction pending"
+      "status": "corrected v5 candidate evaluated; matched repeated protocol recorded below"
     },
     {
       "id": "T2",
@@ -1336,5 +1336,241 @@
       "role": "qualitative privileged-state replay; not evaluation or visual-policy evidence"
     }
   ],
-  "interpretation": "At zero dwell local mean CS increases 7.3125 -> 25.6640625; drops also increase 28/128 -> 36/128. No strict Direct < VisERDex < Ours conclusion is established."
+  "interpretation": "At zero dwell local mean CS increases 7.3125 -> 25.6640625; drops also increase 28/128 -> 36/128. No strict Direct < VisERDex < Ours conclusion is established.",
+  "viserdex_v5_corrected": {
+    "status": "candidate_not_final",
+    "task": "BrainCo-Direct-Revo3-VisERDexTeacher-Cube-v0",
+    "training_run": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-22_09-31-56_viserdex_teacher_v5_scaled",
+    "selected_checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-22_09-31-56_viserdex_teacher_v5_scaled/model_750.pt",
+    "selected_checkpoint_sha256": "d263d7c65f405d7eb385c782b61b91ebd14afd5be45e6608c8a97d027d3c69cd",
+    "late_checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-22_09-31-56_viserdex_teacher_v5_scaled/model_1648.pt",
+    "late_checkpoint_sha256": "583435836a50deba69a6fe71aec0d629caa9c3dcf658b4bad619d60992c41334",
+    "training": {
+      "envs": 512,
+      "seed": 123,
+      "iterations": "149->1648",
+      "observation_dim": 244,
+      "action_dim": 21,
+      "ema_alpha_range": [
+        0.08,
+        0.2
+      ],
+      "action_delay_steps": [
+        0,
+        2
+      ],
+      "regularizer_scale_fix": "torque -2.0, work -0.02, action -0.08, slew -0.012, joint_velocity -0.008"
+    },
+    "repeated_protocol": {
+      "report": "outputs/viserdex_teacher_v5/eval_v5_model750_repeated16.json",
+      "episodes": 16,
+      "seed": 101,
+      "horizon_s": 30.0,
+      "tolerance_rad": 0.1,
+      "summary": {
+        "episodes": 16,
+        "cs_mean": 17.75,
+        "cs_std": 6.0878978309429606,
+        "cs_min": 4,
+        "cs_max": 25,
+        "successes_by_face": [
+          36,
+          40,
+          50,
+          46,
+          59,
+          53
+        ],
+        "horizon_censored_episodes": 14,
+        "interpretation": "Successes before drop or fixed horizon; surviving episodes are right-censored, not lifetime CS. Semantic face plus random-yaw goals, not an exact VisERDex reproduction."
+      },
+      "drop": {
+        "successes": 2,
+        "trials": 16,
+        "rate": 0.125,
+        "wilson_95_low": 0.03497748774324047,
+        "wilson_95_high": 0.36022827265758695
+      }
+    },
+    "late_checkpoint_comparison": {
+      "report": "outputs/viserdex_teacher_v5/eval_v5_model1648_repeated16.json",
+      "summary": {
+        "episodes": 16,
+        "cs_mean": 14.5,
+        "cs_std": 8.4335638967165,
+        "cs_min": 2,
+        "cs_max": 30,
+        "successes_by_face": [
+          28,
+          39,
+          37,
+          34,
+          52,
+          42
+        ],
+        "horizon_censored_episodes": 13,
+        "interpretation": "Successes before drop or fixed horizon; surviving episodes are right-censored, not lifetime CS. Semantic face plus random-yaw goals, not an exact VisERDex reproduction."
+      },
+      "drop": {
+        "successes": 3,
+        "trials": 16,
+        "rate": 0.1875,
+        "wilson_95_low": 0.06591599071428142,
+        "wilson_95_high": 0.4300888096197414
+      }
+    },
+    "fixed_face_hold": {
+      "episodes_per_face": 4,
+      "horizon_s": 10.0,
+      "tolerance_rad": 0.1,
+      "faces": [
+        {
+          "face": 0,
+          "held_at_end": {
+            "successes": 0,
+            "trials": 4,
+            "rate": 0.0,
+            "wilson_95_low": 0.0,
+            "wilson_95_high": 0.4898908364545973
+          },
+          "instant_reach": {
+            "successes": 4,
+            "trials": 4,
+            "rate": 1.0,
+            "wilson_95_low": 0.5101091635454027,
+            "wilson_95_high": 1.0
+          },
+          "drop": {
+            "successes": 0,
+            "trials": 4,
+            "rate": 0.0,
+            "wilson_95_low": 0.0,
+            "wilson_95_high": 0.4898908364545973
+          }
+        },
+        {
+          "face": 1,
+          "held_at_end": {
+            "successes": 3,
+            "trials": 4,
+            "rate": 0.75,
+            "wilson_95_low": 0.30064184258240184,
+            "wilson_95_high": 0.9544127391902995
+          },
+          "instant_reach": {
+            "successes": 4,
+            "trials": 4,
+            "rate": 1.0,
+            "wilson_95_low": 0.5101091635454027,
+            "wilson_95_high": 1.0
+          },
+          "drop": {
+            "successes": 0,
+            "trials": 4,
+            "rate": 0.0,
+            "wilson_95_low": 0.0,
+            "wilson_95_high": 0.4898908364545973
+          }
+        },
+        {
+          "face": 2,
+          "held_at_end": {
+            "successes": 3,
+            "trials": 4,
+            "rate": 0.75,
+            "wilson_95_low": 0.30064184258240184,
+            "wilson_95_high": 0.9544127391902995
+          },
+          "instant_reach": {
+            "successes": 4,
+            "trials": 4,
+            "rate": 1.0,
+            "wilson_95_low": 0.5101091635454027,
+            "wilson_95_high": 1.0
+          },
+          "drop": {
+            "successes": 0,
+            "trials": 4,
+            "rate": 0.0,
+            "wilson_95_low": 0.0,
+            "wilson_95_high": 0.4898908364545973
+          }
+        },
+        {
+          "face": 3,
+          "held_at_end": {
+            "successes": 1,
+            "trials": 4,
+            "rate": 0.25,
+            "wilson_95_low": 0.04558726080970055,
+            "wilson_95_high": 0.6993581574175981
+          },
+          "instant_reach": {
+            "successes": 4,
+            "trials": 4,
+            "rate": 1.0,
+            "wilson_95_low": 0.5101091635454027,
+            "wilson_95_high": 1.0
+          },
+          "drop": {
+            "successes": 0,
+            "trials": 4,
+            "rate": 0.0,
+            "wilson_95_low": 0.0,
+            "wilson_95_high": 0.4898908364545973
+          }
+        },
+        {
+          "face": 4,
+          "held_at_end": {
+            "successes": 2,
+            "trials": 4,
+            "rate": 0.5,
+            "wilson_95_low": 0.15003898915214947,
+            "wilson_95_high": 0.8499610108478506
+          },
+          "instant_reach": {
+            "successes": 4,
+            "trials": 4,
+            "rate": 1.0,
+            "wilson_95_low": 0.5101091635454027,
+            "wilson_95_high": 1.0
+          },
+          "drop": {
+            "successes": 0,
+            "trials": 4,
+            "rate": 0.0,
+            "wilson_95_low": 0.0,
+            "wilson_95_high": 0.4898908364545973
+          }
+        },
+        {
+          "face": 5,
+          "held_at_end": {
+            "successes": 2,
+            "trials": 4,
+            "rate": 0.5,
+            "wilson_95_low": 0.15003898915214947,
+            "wilson_95_high": 0.8499610108478506
+          },
+          "instant_reach": {
+            "successes": 4,
+            "trials": 4,
+            "rate": 1.0,
+            "wilson_95_low": 0.5101091635454027,
+            "wilson_95_high": 1.0
+          },
+          "drop": {
+            "successes": 0,
+            "trials": 4,
+            "rate": 0.0,
+            "wilson_95_low": 0.0,
+            "wilson_95_high": 0.4898908364545973
+          }
+        }
+      ],
+      "report_dir": "outputs/viserdex_teacher_v5"
+    },
+    "interpretation": "Semantic face plus random in-plane yaw repeated protocol; not an exact VisERDex reproduction. Selected by matched repeated CS with fewer drops; fixed-goal hold remains a stability gap."
+  }
 }

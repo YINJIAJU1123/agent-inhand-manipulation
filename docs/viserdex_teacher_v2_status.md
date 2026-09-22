@@ -65,3 +65,27 @@ The original 2500-iteration checkpoint and the first corrected canary are
 diagnostic only; neither is a final teacher.  A final result is recorded only
 after the restarted adaptation remains numerically stable and passes the fixed
 face/seed evaluation protocol.
+
+## Corrected adaptation result
+
+The warm-start adaptation completed on `brainco` with 512 environments, seed
+123, and the full randomized EMA/action-delay protocol.  The run directory is
+
+```text
+/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-22_09-31-56_viserdex_teacher_v5_scaled
+```
+
+The best checkpoint in the matched repeated evaluation was `model_750.pt`
+(SHA-256 `d263d7c65f405d7eb385c782b61b91ebd14afd5be45e6608c8a97d027d3c69cd`).
+With 16 episodes, seed 101, 30 s horizon, random face plus random in-plane
+yaw, 0.1 rad tolerance, and no hold dwell, it achieved mean consecutive
+successes 17.75 (std 6.09, range 4--25), with 2/16 drops.  The final
+`model_1648.pt` checkpoint was lower at CS 14.50 (std 8.43) with 3/16 drops,
+so it is retained as a late-run diagnostic rather than the selected candidate
+(SHA-256 `583435836a50deba69a6fe71aec0d629caa9c3dcf658b4bad619d60992c41334`).
+
+For the selected model, a four-episode fixed-face, 10 s hold check reached the
+goal in all 24 trials with no drops.  The held-at-end rates for faces 0--5 were
+0%, 75%, 75%, 25%, 50%, and 50% (mean 45.8%).  This exposes a remaining
+stability gap even though repeated reorientation improves; the six JSON reports
+and checkpoint hashes are archived under `outputs/viserdex_teacher_v5/`.
