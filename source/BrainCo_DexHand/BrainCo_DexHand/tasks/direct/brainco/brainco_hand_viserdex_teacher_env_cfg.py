@@ -18,9 +18,9 @@ from .brainco_hand_semantic_reorient_env_cfg import BrainCoHandSemanticReorientE
 class BrainCoHandVisERDexTeacherEnvCfg(BrainCoHandSemanticReorientEnvCfg):
     """Revo3 adaptation of the published VisERDex privileged teacher."""
 
-    # Base Revo3 state observation (152) + three-step action history (63),
+    # Base Revo3 state observation (152) + four-step action history (84),
     # semantic face token (6), and randomized action properties (2).
-    observation_space = 223
+    observation_space = 244
     scene: InteractiveSceneCfg = InteractiveSceneCfg(
         num_envs=4096, env_spacing=0.75, replicate_physics=True, clone_in_fabric=False
     )

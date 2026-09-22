@@ -25,7 +25,7 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
             device=self.device,
         )
         self._action_history = torch.zeros(
-            (self.num_envs, 3, cfg.action_space), dtype=torch.float, device=self.device
+            (self.num_envs, 4, cfg.action_space), dtype=torch.float, device=self.device
         )
         self._goal_elapsed_steps = torch.zeros(self.num_envs, dtype=torch.long, device=self.device)
         self._goal_timeout_steps = max(1, int(round(float(cfg.goal_timeout_s) / float(self.step_dt))))
@@ -38,9 +38,15 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
             self._ema_alpha[env_ids] = sample_uniform(
                 float(self.cfg.ema_alpha_min), float(self.cfg.ema_alpha_max), (len(env_ids),), device=self.device
             )
+            curriculum = ((self.consecutive_successes.mean() - self.cfg.curriculum_start_successes)
+                           / max(self.cfg.curriculum_full_successes - self.cfg.curriculum_start_successes, 1e-6)).clamp(0.0, 1.0)
+            effective_delay_max = int(round(
+                float(self.cfg.action_delay_min_steps)
+                + curriculum.item() * float(self.cfg.action_delay_max_steps - self.cfg.action_delay_min_steps)
+            ))
             self._action_delay_steps[env_ids] = torch.randint(
                 int(self.cfg.action_delay_min_steps),
-                int(self.cfg.action_delay_max_steps) + 1,
+                effective_delay_max + 1,
                 (len(env_ids),),
                 device=self.device,
             )
@@ -62,14 +68,18 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
         self._action_queue = torch.roll(self._action_queue, shifts=-1, dims=1)
         self._action_queue[:, -1] = actions
         env_ids = torch.arange(self.num_envs, device=self.device)
-        self.actions = self._action_queue[env_ids, self._action_delay_steps].clone()
+        # The queue is ordered oldest -> newest.  A zero-step delay must pick
+        # the newest action; the previous implementation selected the oldest
+        # entry and silently inverted the sampled latency.
+        queue_index = int(self.cfg.action_delay_max_steps) - self._action_delay_steps
+        self.actions = self._action_queue[env_ids, queue_index].clone()
 
     def compute_full_observations(self):
         """Expose Revo3 state plus VisERDex action/property context."""
 
         base = super().compute_full_observations()
         if not hasattr(self, "_action_history"):
-            history = base.new_zeros((self.num_envs, 3 * self.cfg.action_space))
+            history = base.new_zeros((self.num_envs, 4 * self.cfg.action_space))
             props = base.new_zeros((self.num_envs, 2))
         else:
             history = self._action_history.reshape(self.num_envs, -1)
@@ -137,22 +147,29 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
     def _get_rewards(self):
         rot_dist = self._step_orientation_error
         goal_dist = self._step_object_distance
-        reward = goal_dist * self.cfg.dist_reward_scale
-        reward = reward + (torch.abs(rot_dist) + self.cfg.rot_eps).reciprocal() * self.cfg.rot_reward_scale
-        action_mag = self.actions.square().sum(-1)
-        action_rate = (self.actions - self.prev_actions).square().sum(-1)
-        joint_vel = self.hand_dof_vel[:, self.actuated_dof_indices].square().sum(-1)
-        object_linvel = self.object_linvel.square().sum(-1)
-        object_angvel = self.object_angvel.square().sum(-1)
+        dist_rew = goal_dist * self.cfg.dist_reward_scale
+        rot_rew = (torch.abs(rot_dist) + self.cfg.rot_eps).reciprocal() * self.cfg.rot_reward_scale
+        reward = dist_rew + rot_rew
+        action_mag = torch.linalg.vector_norm(self.actions, dim=-1)
+        action_rate = torch.linalg.vector_norm(self.actions - self.prev_actions, dim=-1)
+        joint_vel = torch.linalg.vector_norm(self.hand_dof_vel[:, self.actuated_dof_indices], dim=-1)
+        object_linvel = torch.linalg.vector_norm(self.object_linvel, dim=-1)
+        object_angvel = torch.linalg.vector_norm(self.object_angvel, dim=-1)
         target_error = self.cur_targets[:, self.actuated_dof_indices] - self.hand_dof_pos[:, self.actuated_dof_indices]
         torque_proxy = self.cfg.torque_proxy_stiffness * target_error - self.cfg.torque_proxy_damping * self.hand_dof_vel[:, self.actuated_dof_indices]
-        torque_mag = torque_proxy.square().sum(-1)
-        joint_work = (torque_proxy * self.hand_dof_vel[:, self.actuated_dof_indices]).sum(-1).square()
+        dof_normalizer = float(len(self.actuated_dof_indices)) ** 0.5
+        # The published terms use an L2 torque norm and absolute mechanical
+        # work.  Normalize the Revo3 PD proxy by sqrt(DoF) because it is a
+        # position-control proxy rather than a measured actuator torque.
+        torque_proxy_l2 = torch.linalg.vector_norm(torque_proxy, dim=-1)
+        torque_mag = torque_proxy_l2 / dof_normalizer
+        joint_work_abs = torch.sum(torch.abs(torque_proxy * self.hand_dof_vel[:, self.actuated_dof_indices]), dim=-1)
+        joint_work = joint_work_abs / dof_normalizer
         curriculum = ((self.consecutive_successes.mean() - self.cfg.curriculum_start_successes)
                        / max(self.cfg.curriculum_full_successes - self.cfg.curriculum_start_successes, 1e-6)).clamp(0.0, 1.0)
         # Start with task completion and progressively turn on the full
         # stability regularization as the moving success count improves.
-        reg_scale = 0.25 + 0.75 * curriculum
+        reg_scale = curriculum
         reward = reward + reg_scale * self.cfg.action_penalty_scale * action_mag
         reward = reward + reg_scale * self.cfg.action_slew_penalty_scale * action_rate
         reward = reward + reg_scale * self.cfg.joint_velocity_penalty_scale * joint_vel
@@ -190,4 +207,28 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
         self.extras["log"]["action_delay_steps"] = self._action_delay_steps.float().mean()
         self.extras["log"]["ema_alpha"] = self._ema_alpha.mean()
         self.extras["log"]["curriculum"] = curriculum
+        # Keep raw reward components visible during smoke/debug runs.  These
+        # are averages before any PPO normalization and expose unit mistakes
+        # that can otherwise be hidden by the aggregate reward.
+        self.extras["log"]["reward_task"] = (dist_rew + rot_rew).mean()
+        self.extras["log"]["reward_action"] = (reg_scale * self.cfg.action_penalty_scale * action_mag).mean()
+        self.extras["log"]["reward_joint_velocity"] = (reg_scale * self.cfg.joint_velocity_penalty_scale * joint_vel).mean()
+        self.extras["log"]["reward_torque"] = (reg_scale * self.cfg.joint_torque_penalty_scale * torque_mag).mean()
+        self.extras["log"]["reward_work"] = (reg_scale * self.cfg.joint_work_penalty_scale * joint_work).mean()
+        self.extras["log"]["torque_proxy_l2"] = torque_proxy_l2.mean()
+        self.extras["log"]["torque_proxy_l2_normalized"] = torque_mag.mean()
+        self.extras["log"]["joint_work_abs_sum"] = joint_work_abs.mean()
+        self.extras["log"]["joint_work_normalized"] = joint_work.mean()
+        if self.cfg.record_eval_metrics:
+            self.extras["semantic_metrics"] = {
+                "orientation_error": self._step_orientation_error.clone(),
+                "object_distance": self._step_object_distance.clone(),
+                "goal_reached": self._step_goal_reached.clone(),
+                "dropped": self._step_dropped.clone(),
+                "hold_complete": self._step_hold_complete.clone(),
+                "hold_steps": self.goal_hold_steps.clone(),
+                "success_event": self._step_success_event.clone(),
+                "target_face": self._step_target_face.clone(),
+                "goal_rotation": self._step_goal_rotation.clone(),
+            }
         return reward
