@@ -28,7 +28,7 @@ case "$stage" in
     timeout -k 30s 12h "$runtime" -u scripts/rsl_rl/train.py \
       --task BrainCo-Direct-Revo3-VisERDexTeacher-Cube-v0 \
       --headless --device cuda:0 --num_envs 2048 --seed 123 --max_iterations 2500 \
-      --run_name viserdex_teacher_v2_full
+      --run_name viserdex_teacher_v3_fixed
     ;;
   *) echo "unknown stage: $stage" >&2; exit 2 ;;
 esac

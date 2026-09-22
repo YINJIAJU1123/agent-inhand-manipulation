@@ -197,6 +197,20 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
             + (1.0 - self.cfg.av_factor) * self.consecutive_successes,
             self.consecutive_successes,
         )
+        # Snapshot before goal reset clears hold/success event buffers.
+        if self.cfg.record_eval_metrics:
+            self.extras["semantic_metrics"] = {
+                "orientation_error": self._step_orientation_error.clone(),
+                "object_distance": self._step_object_distance.clone(),
+                "goal_reached": self._step_goal_reached.clone(),
+                "dropped": self._step_dropped.clone(),
+                "hold_complete": self._step_hold_complete.clone(),
+                "hold_steps": self.goal_hold_steps.clone(),
+                "success_event": self._step_success_event.clone(),
+                "target_face": self._step_target_face.clone(),
+                "goal_rotation": self._step_goal_rotation.clone(),
+            }
+
         self.reset_goal_buf[:] = self._step_success_event
         if self.cfg.freeze_goal_for_episode:
             self.reset_goal_buf.zero_()
@@ -225,16 +239,4 @@ class VisERDexTeacherEnv(SemanticReorientEnv):
         self.extras["log"]["torque_proxy_l2_normalized"] = torque_mag.mean()
         self.extras["log"]["joint_work_abs_sum"] = joint_work_abs.mean()
         self.extras["log"]["joint_work_normalized"] = joint_work.mean()
-        if self.cfg.record_eval_metrics:
-            self.extras["semantic_metrics"] = {
-                "orientation_error": self._step_orientation_error.clone(),
-                "object_distance": self._step_object_distance.clone(),
-                "goal_reached": self._step_goal_reached.clone(),
-                "dropped": self._step_dropped.clone(),
-                "hold_complete": self._step_hold_complete.clone(),
-                "hold_steps": self.goal_hold_steps.clone(),
-                "success_event": self._step_success_event.clone(),
-                "target_face": self._step_target_face.clone(),
-                "goal_rotation": self._step_goal_rotation.clone(),
-            }
         return reward

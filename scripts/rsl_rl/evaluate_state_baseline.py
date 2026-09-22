@@ -75,6 +75,11 @@ if args_cli.success_tolerance is not None and args_cli.success_tolerance <= 0:
     parser.error("--success-tolerance must be positive")
 if args_cli.goal_hold_time_s is not None and args_cli.goal_hold_time_s < 0:
     parser.error("--goal-hold-time-s must be non-negative")
+# Isaac Sim can stall when recreating a scene after closing the first one.
+# Dispatch before starting Kit so every face/seed has its own clean process.
+from state_baseline_batch import run_isolated_blocks
+if run_isolated_blocks(args_cli, original_argv):
+    raise SystemExit(0)
 sys.argv = [sys.argv[0]] + hydra_args
 app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
@@ -518,7 +523,7 @@ def main(env_cfg: Any, agent_cfg: Any) -> None:
     with output.open("w", encoding="utf-8") as handle:
         json.dump(report, handle, indent=2, allow_nan=False)
         handle.write("\n")
-    print(json.dumps(report, indent=2, allow_nan=False))
+    print(json.dumps(report["summary"], indent=2, allow_nan=False))
     print(f"[INFO] Wrote report to {output}")
     if not report["complete"]:
         raise RuntimeError("evaluation ended before the fixed episode quota was complete")
