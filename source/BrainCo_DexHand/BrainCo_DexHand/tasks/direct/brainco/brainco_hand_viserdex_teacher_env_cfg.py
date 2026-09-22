@@ -50,13 +50,16 @@ class BrainCoHandVisERDexTeacherEnvCfg(BrainCoHandSemanticReorientEnvCfg):
     rot_eps = 0.1
     reach_goal_bonus = 250.0
     fall_penalty = -10.0
-    action_penalty_scale = -0.80
-    action_slew_penalty_scale = -0.12
-    joint_velocity_penalty_scale = -0.08
+    # The PD proxy is normalized by sqrt(DoF); these engineering terms are
+    # kept at the same order as the dense task reward so the value target does
+    # not become dominated by stabilization before the pose is learned.
+    action_penalty_scale = -0.08
+    action_slew_penalty_scale = -0.012
+    joint_velocity_penalty_scale = -0.008
     object_linear_velocity_penalty_scale = -1.0e-3
     object_angular_velocity_penalty_scale = -1.0e-3
-    joint_torque_penalty_scale = -50.0
-    joint_work_penalty_scale = -0.12
+    joint_torque_penalty_scale = -2.0
+    joint_work_penalty_scale = -0.02
     torque_proxy_stiffness = 3.0
     torque_proxy_damping = 0.1
 

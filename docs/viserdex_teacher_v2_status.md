@@ -34,15 +34,22 @@ Remote log:
 /home/jiaju/src/RevoLab/logs/viserdex_teacher_v2_full.launch.log
 ```
 
-The first protocol draft was stopped after smoke review because it still used
-the old 158-dimensional state and PPO schedule.  The final run uses the
-VisERDex PPO schedule (24 steps per environment, 1024-1024-1024-512 MLP,
-`gamma=0.998`, adaptive `1e-3` learning rate), a 223-dimensional Revo3 state
-input with four-step action context and randomized action properties, and a
-success-driven regularization curriculum.  The final process is alive on
-`brainco`; at the latest check it reached iteration 2/2500 with an estimated
-remaining time of roughly 9.5 hours.  No final teacher metric is recorded
-until the run and fixed evaluation protocol complete.
+The corrected protocol uses the VisERDex PPO schedule (24 steps per
+environment, 1024-1024-1024-512 MLP, `gamma=0.998`, adaptive `1e-3` learning
+rate), a 244-dimensional Revo3 state input with four-step action context and
+randomized action properties, and a success-driven regularization curriculum.
+The first corrected 512-environment canary completed without numerical
+explosion, but did not yet reduce orientation error.  A deterministic
+bootstrap also stayed near 2.2 rad, so a prior successful 158-dimensional
+state teacher was embedded into the 244-dimensional network as a warm start.
+That checkpoint reached 4/4 fixed-face successes at 0.16 rad in the corrected
+environment, proving the action and goal interfaces are compatible.
+
+When the warm start was resumed with the original `-50` torque proxy scale,
+the moving curriculum reached about 0.4 and the torque term became roughly
+`-22` per step; value loss grew to `1e4--1e5`.  This is the remaining training
+bug.  The next run reduces torque/work and related proxy regularizers by one
+order of magnitude and restarts the adaptation from the validated warm start.
 
 ## Final run check
 
@@ -54,7 +61,7 @@ rollout did **not** converge to a usable teacher:
 - orientation error stayed around 2.20--2.23 rad;
 - drop fraction was roughly 3--4% near the end.
 
-This checkpoint must not be used as the final VisERDex teacher. The next pass
-should correct the torque/work proxy scaling before another long run: the
-current implementation squares the summed proxy torque and work, so the `-50`
-torque term dominates the task reward and explains the very large value losses.
+The original 2500-iteration checkpoint and the first corrected canary are
+diagnostic only; neither is a final teacher.  A final result is recorded only
+after the restarted adaptation remains numerically stable and passes the fixed
+face/seed evaluation protocol.
