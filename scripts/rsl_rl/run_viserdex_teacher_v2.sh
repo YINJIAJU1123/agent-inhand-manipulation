@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Full VisERDex-style Revo3 teacher protocol on the 5090/brainco host.
-stage=${1:?usage: run_viserdex_teacher_v2.sh smoke|canary|bootstrap|train}
+stage=${1:?usage: run_viserdex_teacher_v2.sh smoke|canary|bootstrap|adapt|train}
 export PYTHONPATH="source/BrainCo_DexHand:scripts/rsl_rl:${PYTHONPATH:-}"
 export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4
 export OMNI_KIT_ACCEPT_EULA=YES
@@ -35,6 +35,15 @@ case "$stage" in
       --run_name viserdex_teacher_v4_bootstrap \
       env.success_tolerance=0.16 env.ema_alpha_min=0.35 env.ema_alpha_max=0.35 \
       env.action_delay_min_steps=0 env.action_delay_max_steps=0
+    ;;
+  adapt)
+    : "${TEACHER_LOAD_RUN:?set TEACHER_LOAD_RUN to the source run directory name}"
+    : "${TEACHER_CHECKPOINT:?set TEACHER_CHECKPOINT to the source checkpoint filename}"
+    timeout -k 30s 12h "$runtime" -u scripts/rsl_rl/train.py \
+      --task BrainCo-Direct-Revo3-VisERDexTeacher-Cube-v0 \
+      --headless --device cuda:0 --num_envs 512 --seed 123 --max_iterations 1500 \
+      --resume --load_run "$TEACHER_LOAD_RUN" --checkpoint "$TEACHER_CHECKPOINT" \
+      --run_name viserdex_teacher_v4_full
     ;;
   train)
     timeout -k 30s 12h "$runtime" -u scripts/rsl_rl/train.py \
