@@ -33,6 +33,8 @@ parser.add_argument("--cached-features", default=None,
                     help="Optional offline feature cache. Skips live VLM encoding and uses per-face mean features.")
 parser.add_argument("--structured-camera", action="store_true",
                     help="Use the deterministic 12-D RGB statistics encoder on live camera frames.")
+parser.add_argument("--semantic-camera", action="store_true",
+                    help="Use deterministic marker-aware RGB features on live camera frames.")
 parser.add_argument("--zero-language", action="store_true",
                     help="Zero the language feature while evaluating a control student.")
 parser.add_argument("--episodes", type=int, default=30)
@@ -46,7 +48,7 @@ AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
 # Camera-enabled teacher tasks still need Isaac's camera extension even when
 # the policy consumes cached features; otherwise the environment cannot spawn.
-args.enable_cameras = args.structured_camera or args.cached_features is None or "Visual" in (args.task or "")
+args.enable_cameras = args.structured_camera or args.semantic_camera or args.cached_features is None or "Visual" in (args.task or "")
 app = AppLauncher(args).app
 
 import gymnasium as gym  # noqa: E402
@@ -87,11 +89,44 @@ def _structured_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
                       center.mean((1, 2)), center.std((1, 2))), dim=-1)
 
 
+def _semantic_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
+    """Match ``cache_semantic_features.py`` for live RGB frames."""
+    rgb = rgb.to(torch.float32)
+    if rgb.max() > 1.5:
+        rgb = rgb / 255.0
+    if rgb.shape[-1] == 4:
+        rgb = rgb[..., :3]
+    n, height, width, _ = rgb.shape
+    pixels = rgb.reshape(n, height * width, 3)
+    colors = torch.tensor(
+        [[0.85, 0.05, 0.05], [0.05, 0.75, 0.15], [0.05, 0.25, 0.90],
+         [0.95, 0.75, 0.05], [0.80, 0.05, 0.75], [0.05, 0.80, 0.85]],
+        device=rgb.device, dtype=rgb.dtype,
+    )
+    distance = (pixels[:, None] - colors[None, :, None]).square().mean(dim=-1)
+    weights = torch.exp(-distance / 0.025) * (pixels.mean(dim=-1)[:, None] > 0.06)
+    yy, xx = torch.meshgrid(
+        torch.linspace(-1.0, 1.0, height, device=rgb.device, dtype=rgb.dtype),
+        torch.linspace(-1.0, 1.0, width, device=rgb.device, dtype=rgb.dtype), indexing="ij")
+    xx, yy = xx.reshape(1, 1, -1), yy.reshape(1, 1, -1)
+    mass = weights.mean(dim=-1)
+    denom = weights.sum(dim=-1).clamp_min(1e-6)
+    cx = (weights * xx).sum(dim=-1) / denom
+    cy = (weights * yy).sum(dim=-1) / denom
+    sx = torch.sqrt((weights * (xx - cx[..., None]).square()).sum(dim=-1) / denom)
+    sy = torch.sqrt((weights * (yy - cy[..., None]).square()).sum(dim=-1) / denom)
+    marker = torch.stack((mass, cx, cy, sx + sy), dim=-1).reshape(n, -1)
+    center = rgb[:, height // 4 : 3 * height // 4, width // 4 : 3 * width // 4]
+    global_stats = torch.cat((rgb.mean((1, 2)), rgb.std((1, 2)),
+                              center.mean((1, 2)), center.std((1, 2))), dim=-1)
+    return torch.cat((global_stats, marker), dim=-1)
+
+
 def main():
     device = torch.device(args.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     task = args.task or (
         "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0"
-        if args.cached_features and not args.structured_camera
+        if args.cached_features and not args.structured_camera and not args.semantic_camera
         else "BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0"
     )
     cfg = parse_env_cfg(task, device=str(device), num_envs=args.num_envs)
@@ -115,7 +150,7 @@ def main():
     processor = None
     vlm = None
     cached_image_by_face = cached_text_by_face = None
-    if args.structured_camera:
+    if args.structured_camera or args.semantic_camera:
         # The live path uses the same six-dimensional language contract as the
         # structured cache, so its checkpoint is drop-in compatible.
         text_features = torch.eye(len(face_names), device=device)
@@ -165,7 +200,9 @@ def main():
             elif step_count % max(args.vision_stride, 1) == 0:
                 camera = raw.capture_camera()
                 rgb = camera["rgb"][..., :3].to(torch.uint8)
-                if args.structured_camera:
+                if args.semantic_camera:
+                    image_features = _semantic_rgb_features(rgb)
+                elif args.structured_camera:
                     image_features = _structured_rgb_features(rgb)
                 else:
                     images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
@@ -243,6 +280,7 @@ def main():
         "action_scale": args.action_scale,
         "cached_features": args.cached_features,
         "structured_camera": args.structured_camera,
+        "semantic_camera": args.semantic_camera,
         "zero_language": args.zero_language,
         "episodes": len(records), "vector_steps": step_count,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
