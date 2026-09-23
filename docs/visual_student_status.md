@@ -45,14 +45,24 @@ student diagnostic and is not the frozen teacher's repeated-success metric.
 | 12-D RGB statistics, language zeroed | 0% | 12.50% |
 | 36-D marker-aware RGB + language | 0% | 8.33% |
 | 36-D marker-aware RGB, language zeroed | 0% | 4.17% |
+| 36-D marker-aware RGB + language, action scale 6 | 8.33% | 4.17% |
+| 36-D marker-aware RGB, language zeroed, action scale 6 | 0% | 0% |
 
-The marker-aware representation did not recover closed-loop success.  The
-current limiting issue is behavior-cloning distribution shift and the bounded
-action projection: 76.6% of raw teacher action elements in the merged replay
-were outside `[-1,1]`, while the student contract clips actions to that range.
+The first marker-aware run exposed a second issue in the action contract:
+76.6% of raw teacher action elements in the merged replay were outside
+`[-1,1]`.  Retraining against raw teacher actions normalized by a global
+`action_scale=8.0` reduced the offline validation MSE to 0.01115.  In the
+same 24-episode live test, applying scale 6.0 gave 8.33% success and 4.17%
+drop for the language student, versus 0% success and 0% drop for the matched
+no-language control.  Applying scale 8.0 gave the same 8.33% success but
+16.67% drop for language and 0%/25% for no-language.  Scale 6.0 is retained as
+the current fallback candidate, but these small-sample results are diagnostic
+and not a final paper claim.
+
 The student checkpoints are useful for interface and failure analysis, but
-none is a final paper result and no PPO fine-tuning should be reported until
-the action contract is re-aligned and a real frozen image encoder is cached.
+none is a final paper result.  PPO fine-tuning should wait until the action
+scale is calibrated on a larger held-out set and a real frozen image encoder
+is cached; the current semantic features are only a deterministic fallback.
 
 Reports copied into `outputs/viserdex_revo3_cube/` include the rollout feature
 summaries, training curves, oracle-feature diagnostics, and both live RGB
