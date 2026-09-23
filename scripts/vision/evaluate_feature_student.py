@@ -24,6 +24,10 @@ parser.add_argument("--task", default=None, help="Override the registered evalua
 parser.add_argument("--model", default="google/siglip2-base-patch16-224")
 parser.add_argument("--cached-features", default=None,
                     help="Optional offline feature cache. Skips live VLM encoding and uses per-face mean features.")
+parser.add_argument("--structured-camera", action="store_true",
+                    help="Use the deterministic 12-D RGB statistics encoder on live camera frames.")
+parser.add_argument("--zero-language", action="store_true",
+                    help="Zero the language feature while evaluating a control student.")
 parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--max-steps", type=int, default=300)
@@ -35,13 +39,16 @@ AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
 # Camera-enabled teacher tasks still need Isaac's camera extension even when
 # the policy consumes cached features; otherwise the environment cannot spawn.
-args.enable_cameras = args.cached_features is None or "Visual" in (args.task or "")
+args.enable_cameras = args.structured_camera or args.cached_features is None or "Visual" in (args.task or "")
 app = AppLauncher(args).app
 
 import gymnasium as gym  # noqa: E402
 import torch  # noqa: E402
 from PIL import Image  # noqa: E402
-from transformers import AutoModel, AutoProcessor  # noqa: E402
+try:
+    from transformers import AutoModel, AutoProcessor  # noqa: E402
+except ImportError:  # pragma: no cover - only needed for the SigLIP path
+    AutoModel = AutoProcessor = None
 
 from isaaclab_tasks.utils import parse_env_cfg  # noqa: E402
 import BrainCo_DexHand  # noqa: F401, E402
@@ -60,11 +67,24 @@ def _features(model, processor, images, device, text_features):
     )
 
 
+def _structured_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
+    """Match ``cache_structured_features.py`` for live RGB frames."""
+    rgb = rgb.to(torch.float32)
+    if rgb.max() > 1.5:
+        rgb = rgb / 255.0
+    if rgb.shape[-1] == 4:
+        rgb = rgb[..., :3]
+    _, height, width, _ = rgb.shape
+    center = rgb[:, height // 4 : 3 * height // 4, width // 4 : 3 * width // 4]
+    return torch.cat((rgb.mean((1, 2)), rgb.std((1, 2)),
+                      center.mean((1, 2)), center.std((1, 2))), dim=-1)
+
+
 def main():
     device = torch.device(args.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     task = args.task or (
         "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0"
-        if args.cached_features
+        if args.cached_features and not args.structured_camera
         else "BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0"
     )
     cfg = parse_env_cfg(task, device=str(device), num_envs=args.num_envs)
@@ -88,7 +108,13 @@ def main():
     processor = None
     vlm = None
     cached_image_by_face = cached_text_by_face = None
-    if args.cached_features:
+    if args.structured_camera:
+        # The live path uses the same six-dimensional language contract as the
+        # structured cache, so its checkpoint is drop-in compatible.
+        text_features = torch.eye(len(face_names), device=device)
+        if args.zero_language:
+            text_features.zero_()
+    elif args.cached_features:
         cached = torch.load(args.cached_features, map_location="cpu", weights_only=False)
         cached_image_by_face = torch.stack([
             cached["image_features"][cached["target_face"] == face].float().mean(dim=0)
@@ -100,6 +126,8 @@ def main():
         ]).to(device)
         text_features = cached_text_by_face
     else:
+        if AutoProcessor is None or AutoModel is None:
+            raise RuntimeError("transformers is required for live SigLIP evaluation")
         processor = AutoProcessor.from_pretrained(args.model, use_fast=False)
         vlm = AutoModel.from_pretrained(args.model).to(device).eval()
         with torch.inference_mode():
@@ -130,8 +158,11 @@ def main():
             elif step_count % max(args.vision_stride, 1) == 0:
                 camera = raw.capture_camera()
                 rgb = camera["rgb"][..., :3].to(torch.uint8)
-                images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
-                image_features, _ = _features(vlm, processor, images, device, text_features)
+                if args.structured_camera:
+                    image_features = _structured_rgb_features(rgb)
+                else:
+                    images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
+                    image_features, _ = _features(vlm, processor, images, device, text_features)
             face_text = text_features[raw.target_face]
             image_hist = torch.cat((image_hist[:, 1:], image_features[:, None]), dim=1)
             proprio = raw.compute_student_proprio().float()
@@ -204,6 +235,8 @@ def main():
         "vision_stride": args.vision_stride,
         "action_scale": args.action_scale,
         "cached_features": args.cached_features,
+        "structured_camera": args.structured_camera,
+        "zero_language": args.zero_language,
         "episodes": len(records), "vector_steps": step_count,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
         "drop_rate": sum(x["drop"] for x in records) / max(len(records), 1),
