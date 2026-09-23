@@ -33,7 +33,9 @@ parser.add_argument("--action-scale", type=float, default=1.0,
 parser.add_argument("--report", required=True)
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
-args.enable_cameras = args.cached_features is None
+# Camera-enabled teacher tasks still need Isaac's camera extension even when
+# the policy consumes cached features; otherwise the environment cannot spawn.
+args.enable_cameras = args.cached_features is None or "Visual" in (args.task or "")
 app = AppLauncher(args).app
 
 import gymnasium as gym  # noqa: E402
