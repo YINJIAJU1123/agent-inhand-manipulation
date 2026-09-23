@@ -16,6 +16,13 @@ import traceback
 from collections import defaultdict
 from pathlib import Path
 
+# Keep the evaluator runnable from a clean IsaacLab shell, as used on the
+# remote GPU host, without relying on an externally exported PYTHONPATH.
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEXHAND_SOURCE = REPO_ROOT / "source" / "BrainCo_DexHand"
+if str(DEXHAND_SOURCE) not in sys.path:
+    sys.path.insert(0, str(DEXHAND_SOURCE))
+
 from isaaclab.app import AppLauncher
 
 parser = argparse.ArgumentParser()
