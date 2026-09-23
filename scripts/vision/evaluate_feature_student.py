@@ -20,6 +20,7 @@ from isaaclab.app import AppLauncher
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--checkpoint", required=True)
+parser.add_argument("--task", default=None, help="Override the registered evaluation task.")
 parser.add_argument("--model", default="google/siglip2-base-patch16-224")
 parser.add_argument("--cached-features", default=None,
                     help="Optional offline feature cache. Skips live VLM encoding and uses per-face mean features.")
@@ -59,7 +60,7 @@ def _features(model, processor, images, device, text_features):
 
 def main():
     device = torch.device(args.device or ("cuda" if torch.cuda.is_available() else "cpu"))
-    task = (
+    task = args.task or (
         "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0"
         if args.cached_features
         else "BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0"
