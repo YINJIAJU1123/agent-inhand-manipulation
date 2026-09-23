@@ -68,3 +68,7 @@ class BrainCoHandVisERDexTeacherVisualEnvCfg(BrainCoHandVisERDexTeacherEnvCfg):
     )
     include_camera_in_policy: bool = False
     camera_frame_stack: int = 1
+    # The language contract names a face, not an in-plane rotation.  Remove
+    # the benchmark-only random yaw while collecting language demonstrations;
+    # the frozen benchmark teacher itself keeps random yaw in its own config.
+    goal_yaw = 0.0
