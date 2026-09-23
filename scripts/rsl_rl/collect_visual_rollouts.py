@@ -17,7 +17,7 @@ from isaaclab.app import AppLauncher
 import cli_args  # isort: skip
 
 parser = argparse.ArgumentParser(description="Collect RGB-D rollouts for visual Revo3 training.")
-parser.add_argument("--task", type=str, default="BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0")
+parser.add_argument("--task", type=str, default="BrainCo-Direct-Revo3-VisERDexTeacherVisual-Cube-v0")
 parser.add_argument("--episodes", type=int, default=100)
 parser.add_argument("--num_envs", type=int, default=64)
 parser.add_argument("--stride", type=int, default=1, help="Record every Nth environment step.")

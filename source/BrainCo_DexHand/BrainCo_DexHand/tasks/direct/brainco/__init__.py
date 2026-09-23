@@ -101,3 +101,14 @@ gym.register(
         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_ppo_cfg.yaml",
     },
 )
+
+gym.register(
+    id="BrainCo-Direct-Revo3-VisERDexTeacherVisual-Cube-v0",
+    entry_point=f"{inhand_task_entry}.viserdex_teacher_visual:VisERDexTeacherVisualEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.brainco_hand_viserdex_teacher_visual_env_cfg:BrainCoHandVisERDexTeacherVisualEnvCfg",
+        "rl_games_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BrainCoHandVisERDexTeacherPPORunnerCfg",
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BrainCoHandVisERDexTeacherPPORunnerCfg",
+    },
+)
