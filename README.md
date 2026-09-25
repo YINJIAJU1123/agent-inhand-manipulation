@@ -11,6 +11,9 @@ checks. See [camera validation](docs/camera_placement.md) and
 [reproduction instructions](docs/reproducibility.md). This establishes sensor
 operation, not a trained visual-language policy or validated 5090 deployment.
 
+The latest project status and the boundary between diagnostic results and paper
+evidence are tracked in [progress_20260926.md](docs/progress_20260926.md).
+
 The semantic goal reset was corrected on 2026-09-12: target tokens now clear
 previous face bits, and side-face rotations map the named face to world +Z.
 Earlier evaluation reports belong to the previous goal implementation and must
