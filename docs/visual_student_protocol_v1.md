@@ -31,8 +31,9 @@ provenance and must never pass them to the student.
 3. Cache one of the versioned visual frontends.
 4. Train the recurrent offline baseline with an episode-level train/validation
    split and one of training seeds `0,1,2`.
-5. Run live camera evaluation on the held-out layout split. A target-conditioned
-   mean feature is not a closed-loop visual evaluation and is rejected.
+5. Run live camera evaluation on the frozen visual reorientation task. A
+   target-conditioned mean feature is not a closed-loop visual evaluation and
+   is rejected.
 6. Repeat the same budget with the evidence-memory variant.
 
 ## Acceptance criteria
@@ -43,9 +44,12 @@ are present in its report:
 - exact freeze manifest and code revision;
 - dataset sample/episode counts and disjoint split manifest;
 - action scale and checkpoint SHA-256;
-- terminal success, ever-display, drop, timeout and time-to-display;
+- terminal success, ever-reach, minimum orientation error, drop, timeout and
+  time-to-first-reach;
 - per-face and per-reset-condition counts;
 - no privileged fields in the student batch contract.
 
 An offline MSE improvement is useful for debugging but is not a visual-control
-success claim. The paper comparison starts from live RGB-D closed-loop results.
+success claim. This v1 stage validates visual reorientation. The active hidden
+surface-search benchmark is a separate protocol and starts only after this
+student control path is stable.

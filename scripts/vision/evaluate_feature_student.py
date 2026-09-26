@@ -203,6 +203,8 @@ def main():
     step_count = 0
     episode_steps = torch.zeros(n, dtype=torch.long, device=device)
     episode_success = torch.zeros(n, dtype=torch.bool, device=device)
+    episode_ever_reach = torch.zeros(n, dtype=torch.bool, device=device)
+    episode_first_reach = torch.full((n,), -1, dtype=torch.long, device=device)
     episode_drop = torch.zeros(n, dtype=torch.bool, device=device)
     episode_min_error = torch.full((n,), float("inf"), device=device)
     instruction_face = _instruction_faces(raw, device)
@@ -234,7 +236,11 @@ def main():
             metrics = info["semantic_metrics"]
             episode_steps += 1
             episode_min_error = torch.minimum(episode_min_error, metrics["orientation_error"])
-            episode_success |= metrics["goal_reached"] & ~metrics["dropped"]
+            reached = metrics["goal_reached"] & ~metrics["dropped"]
+            episode_ever_reach |= reached
+            first_reach = reached & (episode_first_reach < 0)
+            episode_first_reach = torch.where(first_reach, episode_steps, episode_first_reach)
+            episode_success |= reached
             episode_drop |= metrics["dropped"]
             # Apply an evaluator-side horizon even when the environment does
             # not emit a terminal signal.  This keeps each rollout bounded
@@ -251,6 +257,8 @@ def main():
             records.append({
                 "face": int(episode_face[idx].item()),
                 "success": bool(episode_success[idx].item()) and not bool(episode_drop[idx].item()),
+                "ever_reach": bool(episode_ever_reach[idx].item()),
+                "time_to_first_reach_steps": int(episode_first_reach[idx].item()),
                 "drop": bool(episode_drop[idx].item()),
                 "timeout": bool(timeout[idx].item()),
                 "min_orientation_error_rad": float(episode_min_error[idx].item()),
@@ -259,6 +267,8 @@ def main():
             done_count += 1
             episode_steps[idx] = 0
             episode_success[idx] = False
+            episode_ever_reach[idx] = False
+            episode_first_reach[idx] = -1
             episode_drop[idx] = False
             episode_min_error[idx] = float("inf")
             instruction_face = _instruction_faces(raw, device)
@@ -281,6 +291,8 @@ def main():
             records.append({
                 "face": int(episode_face[idx].item()),
                 "success": False,
+                "ever_reach": bool(episode_ever_reach[idx].item()),
+                "time_to_first_reach_steps": int(episode_first_reach[idx].item()),
                 "drop": bool(episode_drop[idx].item()),
                 "timeout": True,
                 "min_orientation_error_rad": float(episode_min_error[idx].item()),
@@ -297,6 +309,8 @@ def main():
         "action_scale": args.action_scale,
         "cached_features": None,
         "freeze_id": freeze_manifest["freeze_id"],
+        "protocol_id": freeze_manifest["visual_protocol"]["protocol_id"],
+        "stage": freeze_manifest["visual_protocol"]["stage"],
         "teacher_checkpoint_sha256": freeze_manifest["teacher"]["sha256"],
         "structured_camera": args.structured_camera,
         "semantic_camera": args.semantic_camera,

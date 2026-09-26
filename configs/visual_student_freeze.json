@@ -46,20 +46,27 @@
   },
   "visual_protocol": {
     "protocol_id": "visual_student_protocol_v1",
+    "stage": "visual_reorientation_student",
+    "evaluation_task": "BrainCo-Direct-Revo3-VisERDexTeacherVisual-Cube-v0",
     "camera_resolution": [256, 256],
     "control_frequency_hz": 30,
     "vision_stride": 2,
     "episode_horizon_steps": 600,
-    "success": "terminal requested-surface display predicate with no drop",
+    "success": "terminal semantic-goal reach without drop",
     "report_metrics": [
       "terminal_success",
-      "ever_display",
-      "time_to_first_display",
+      "ever_reach",
+      "time_to_first_reach",
+      "minimum_orientation_error_rad",
       "drop",
       "timeout"
     ],
-    "evaluation_layout_split": "test",
     "training_seeds": [0, 1, 2]
+  },
+  "search_protocol": {
+    "status": "not frozen in this visual reorientation stage",
+    "task": "BrainCo-Direct-Revo3-SemanticSearch-Cube-v0",
+    "requires_separate_online_teacher_and_visible_hidden_evaluation": true
   },
   "feature_frontends": {
     "smoke": "structured_rgb_stats+face_onehot",
