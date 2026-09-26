@@ -9,8 +9,11 @@ predictor training.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import os
 import sys
+from pathlib import Path
 
 from isaaclab.app import AppLauncher
 
@@ -24,6 +27,9 @@ parser.add_argument("--stride", type=int, default=1, help="Record every Nth envi
 parser.add_argument("--output", type=str, default="data/visual_rollouts.pt")
 parser.add_argument("--seed", type=int, default=0)
 parser.add_argument("--target-face", type=int, default=-1, choices=[-1, 0, 1, 2, 3, 4, 5])
+parser.add_argument("--goal-yaw", type=float, default=0.0,
+                    help="Deterministic in-plane goal yaw for visual-language collection.")
+parser.add_argument("--freeze-manifest", default="configs/visual_student_freeze.json")
 cli_args.add_rsl_rl_args(parser)
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
@@ -57,6 +63,7 @@ def main(env_cfg, agent_cfg):
     # the first visual student.
     env_cfg.max_consecutive_success = 1
     env_cfg.seed = args_cli.seed
+    env_cfg.goal_yaw = args_cli.goal_yaw
     if args_cli.target_face >= 0:
         env_cfg.fixed_target_face = args_cli.target_face
     # Preserve terminal success/drop labels for filtering imperfect teacher
@@ -145,6 +152,14 @@ def main(env_cfg, agent_cfg):
         step += 1
 
     os.makedirs(os.path.dirname(os.path.abspath(args_cli.output)) or ".", exist_ok=True)
+    checkpoint_path = os.path.abspath(args_cli.checkpoint)
+    checkpoint_sha256 = None
+    if os.path.isfile(checkpoint_path):
+        checkpoint_sha256 = hashlib.sha256(Path(checkpoint_path).read_bytes()).hexdigest()
+    freeze_path = os.path.abspath(args_cli.freeze_manifest)
+    freeze_id = None
+    if os.path.isfile(freeze_path):
+        freeze_id = json.loads(Path(freeze_path).read_text()).get("freeze_id")
     torch.save(
         {
             "frames": frames,
@@ -168,6 +183,11 @@ def main(env_cfg, agent_cfg):
             # than being a hidden face-id token.
             "face_names": ["red", "green", "blue", "yellow", "magenta", "cyan"],
             "task": args_cli.task,
+            "checkpoint": checkpoint_path,
+            "checkpoint_sha256": checkpoint_sha256,
+            "freeze_manifest": freeze_path,
+            "freeze_id": freeze_id,
+            "goal_yaw": args_cli.goal_yaw,
             "episodes": completed,
             "stride": args_cli.stride,
             "depth_dtype": "float16",

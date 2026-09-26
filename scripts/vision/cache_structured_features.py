@@ -52,6 +52,9 @@ def main() -> None:
         "terminal": torch.cat(data.get("terminal", [torch.zeros_like(x) for x in data["episode_id"]])).bool(),
         "model": "structured_rgb_stats+face_onehot",
         "source": args.data,
+        "source_checkpoint": data.get("checkpoint"),
+        "source_checkpoint_sha256": data.get("checkpoint_sha256"),
+        "freeze_id": data.get("freeze_id"),
     }
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

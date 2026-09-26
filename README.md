@@ -14,6 +14,8 @@ operation, not a trained visual-language policy or validated 5090 deployment.
 The latest project status and the boundary between diagnostic results and paper
 evidence are tracked in [progress_20260926.md](docs/progress_20260926.md).
 
+The frozen visual-student contract is recorded in [visual_student_protocol_v1.md](docs/visual_student_protocol_v1.md), with the machine-readable manifest at [configs/visual_student_freeze.json](configs/visual_student_freeze.json).
+
 The semantic goal reset was corrected on 2026-09-12: target tokens now clear
 previous face bits, and side-face rotations map the named face to world +Z.
 Earlier evaluation reports belong to the previous goal implementation and must

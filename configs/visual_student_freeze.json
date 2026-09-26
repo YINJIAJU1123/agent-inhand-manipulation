@@ -1,0 +1,70 @@
+{
+  "freeze_id": "viserdex_revo3_visual_student_v1",
+  "frozen_at": "2026-09-26",
+  "teacher": {
+    "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
+    "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+    "sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
+    "selection_protocol": "state_teacher_metrics_v2",
+    "selection_metrics": {
+      "evaluation_seed": 101,
+      "episodes": 384,
+      "usable_teacher_rate": 0.7630208333333334,
+      "drop_rate": 0.046875
+    },
+    "status": "frozen_candidate; requires independent training-seed replication for final paper claim"
+  },
+  "action_contract": {
+    "action_dim": 21,
+    "student_output": "tanh_bounded_normalized_command",
+    "action_scale": 6.0,
+    "post_scale_clipping": "environment_joint_target_saturation",
+    "source": "visual_student_status_20260923",
+    "raw_teacher_actions_are_not_used_as_student_inputs": true
+  },
+  "student_observation": {
+    "allowed": [
+      "rgb",
+      "depth",
+      "language_instruction",
+      "hand_joint_position",
+      "hand_joint_velocity",
+      "fingertip_kinematics",
+      "previous_normalized_action",
+      "observation_history"
+    ],
+    "forbidden": [
+      "object_pose",
+      "object_velocity",
+      "target_face_id",
+      "target_world_normal",
+      "goal_quaternion",
+      "orientation_error",
+      "hidden_layout",
+      "previous_reward"
+    ]
+  },
+  "visual_protocol": {
+    "protocol_id": "visual_student_protocol_v1",
+    "camera_resolution": [256, 256],
+    "control_frequency_hz": 30,
+    "vision_stride": 2,
+    "episode_horizon_steps": 600,
+    "success": "terminal requested-surface display predicate with no drop",
+    "report_metrics": [
+      "terminal_success",
+      "ever_display",
+      "time_to_first_display",
+      "drop",
+      "timeout"
+    ],
+    "evaluation_layout_split": "test",
+    "training_seeds": [0, 1, 2]
+  },
+  "feature_frontends": {
+    "smoke": "structured_rgb_stats+face_onehot",
+    "semantic_baseline": "semantic_rgb_marker_stats+face_onehot",
+    "paper_frontend": "siglip2_or_versioned_frozen_encoder",
+    "cached_feature_closed_loop_evaluation": false
+  }
+}

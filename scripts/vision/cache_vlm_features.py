@@ -92,6 +92,9 @@ def main() -> None:
         "terminal": torch.cat(data.get("terminal", [torch.zeros_like(x) for x in data["episode_id"]])).bool(),
         "model": args.model,
         "source": args.data,
+        "source_checkpoint": data.get("checkpoint"),
+        "source_checkpoint_sha256": data.get("checkpoint_sha256"),
+        "freeze_id": data.get("freeze_id"),
     }
     torch.save(result, output)
     report = {"output": str(output), "samples": int(result["actions"].shape[0]),

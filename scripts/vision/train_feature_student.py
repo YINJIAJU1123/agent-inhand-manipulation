@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
 import os
 import sys
 from pathlib import Path
@@ -19,6 +20,7 @@ from torch.utils.data import DataLoader, Dataset
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "source" / "BrainCo_DexHand"))
+DEFAULT_FREEZE_MANIFEST = ROOT / "configs" / "visual_student_freeze.json"
 from BrainCo_DexHand.algo.agentic.visual_student import VisualLanguageStudent, VisualStudentBatch  # noqa: E402
 
 
@@ -75,26 +77,49 @@ class FeatureSequenceDataset(Dataset):
         return self.rgb[index], self.lang[index], self.proprio[index], self.actions[index]
 
 
+def _load_freeze_manifest(path: str | None) -> dict:
+    manifest_path = Path(path) if path else DEFAULT_FREEZE_MANIFEST
+    if not manifest_path.exists():
+        raise FileNotFoundError(f"freeze manifest not found: {manifest_path}")
+    import json as _json
+    manifest = _json.loads(manifest_path.read_text())
+    contract = manifest.get("action_contract", {})
+    if contract.get("action_dim") != 21:
+        raise ValueError("visual student freeze requires the 21-D Revo3 action contract")
+    if float(contract.get("action_scale", 0.0)) <= 0:
+        raise ValueError("freeze manifest must define a positive action scale")
+    return manifest
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--freeze-manifest", default=str(DEFAULT_FREEZE_MANIFEST))
     parser.add_argument("--history", type=int, default=8)
+    parser.add_argument("--memory-mode", choices=("plain", "evidence"), default="plain")
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
+    manifest = _load_freeze_manifest(args.freeze_manifest)
     torch.manual_seed(args.seed)
     train = FeatureSequenceDataset(args.data, args.history, "train", args.seed)
     val = FeatureSequenceDataset(args.data, args.history, "val", args.seed)
+    if train.actions.shape[-1] != int(manifest["action_contract"]["action_dim"]):
+        raise ValueError(
+            f"dataset action dimension {train.actions.shape[-1]} does not match frozen contract "
+            f"{manifest['action_contract']['action_dim']}"
+        )
     train_loader = DataLoader(train, batch_size=args.batch_size, shuffle=True, drop_last=False)
     val_loader = DataLoader(val, batch_size=args.batch_size, shuffle=False, drop_last=False)
     device = torch.device(args.device)
     model = VisualLanguageStudent(
         rgb_dim=train.rgb.shape[-1], language_dim=train.lang.shape[-1],
         proprio_dim=train.proprio.shape[-1], action_dim=train.actions.shape[-1],
+        memory_mode=args.memory_mode,
     ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     history = []
@@ -114,12 +139,21 @@ def main() -> None:
         history.append(row); print(json.dumps(row), flush=True)
 
     output = Path(args.output); output.parent.mkdir(parents=True, exist_ok=True)
+    data_sha256 = hashlib.sha256(Path(args.data).read_bytes()).hexdigest()
     torch.save({"model": model.cpu().state_dict(), "rgb_dim": train.rgb.shape[-1],
                 "language_dim": train.lang.shape[-1], "proprio_dim": train.proprio.shape[-1],
                 "action_dim": train.actions.shape[-1], "history": args.history,
+                "action_scale": float(manifest["action_contract"]["action_scale"]),
+                "memory_mode": args.memory_mode,
+                "freeze_id": manifest["freeze_id"],
+                "freeze_manifest": str(Path(args.freeze_manifest).resolve()),
+                "data_sha256": data_sha256,
                 "metrics": history}, output)
-    report = {"data": args.data, "output": str(output), "train_samples": len(train),
-              "val_samples": len(val), "device": str(device), "metrics": history}
+    report = {"data": args.data, "data_sha256": data_sha256, "output": str(output),
+              "train_samples": len(train), "val_samples": len(val), "device": str(device),
+              "seed": args.seed, "history": args.history,
+              "action_scale": float(manifest["action_contract"]["action_scale"]),
+              "memory_mode": args.memory_mode, "freeze_id": manifest["freeze_id"], "metrics": history}
     output.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
 

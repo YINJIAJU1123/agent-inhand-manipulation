@@ -39,7 +39,16 @@ def main() -> None:
                 values = [torch.as_tensor(x).clone() + env_offset for x in values]
             merged.setdefault(key, []).extend(values)
         env_offset += max_env + 1
-    merged.update({key: shards[0][key] for key in ("instruction_templates", "face_names", "task", "stride", "depth_dtype", "action_storage") if key in shards[0]})
+    metadata_keys = (
+        "instruction_templates", "face_names", "task", "stride", "depth_dtype",
+        "action_storage", "checkpoint", "checkpoint_sha256", "freeze_manifest", "freeze_id", "goal_yaw",
+    )
+    for key in metadata_keys:
+        if key in shards[0]:
+            values = [shard.get(key) for shard in shards]
+            if key in {"checkpoint_sha256", "freeze_id", "task", "checkpoint"} and any(v != values[0] for v in values[1:]):
+                raise ValueError(f"shards disagree on frozen metadata field {key}: {values}")
+            merged[key] = values[0]
     merged["episodes"] = sum(int(shard.get("episodes", 0)) for shard in shards)
     merged["shards"] = [str(path) for path in args.inputs]
     output = Path(args.output)

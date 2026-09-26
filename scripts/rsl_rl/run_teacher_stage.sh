@@ -16,6 +16,13 @@ fi
 output=${TEACHER_OUTPUT:-outputs/teacher_20260921}
 checkpoint=${TEACHER_CHECKPOINT:-logs/rsl_rl/brainco_hand/2026-09-20_18-22-13_revo3_viserdex_cube_formal/model_500.pt}
 report_tag=${TEACHER_REPORT_TAG:-model500}
+load_run=${TEACHER_LOAD_RUN:-2026-09-20_18-22-13_revo3_viserdex_cube_formal}
+load_checkpoint=${TEACHER_LOAD_CHECKPOINT:-model_500.pt}
+run_name=${TEACHER_RUN_NAME:-revo3_teacher_hold02_s21}
+num_envs=${TEACHER_NUM_ENVS:-2048}
+max_iterations=${TEACHER_MAX_ITERATIONS:-1500}
+hold_time_s=${TEACHER_HOLD_TIME_S:-0.2}
+hold_reward_scale=${TEACHER_HOLD_PROGRESS_REWARD_SCALE:-2.0}
 mkdir -p "$output"
 common=(--headless --device cuda:0 --checkpoint "$checkpoint")
 case "$stage" in
@@ -41,10 +48,10 @@ case "$stage" in
   train)
     timeout -k 30s 12h "$runtime" -u scripts/rsl_rl/train.py \
       --task BrainCo-Direct-Revo3-SemanticReorient-Cube-v0 --headless --device cuda:0 \
-      --num_envs 2048 --seed 42 --max_iterations 1500 --resume \
-      --load_run 2026-09-20_18-22-13_revo3_viserdex_cube_formal --checkpoint model_500.pt \
-      --run_name revo3_teacher_hold02_s21 \
-      env.goal_hold_time_s=0.2 env.hold_progress_reward_scale=2.0 \
+      --num_envs "$num_envs" --seed "${TEACHER_SEED:-42}" --max_iterations "$max_iterations" --resume \
+      --load_run "$load_run" --checkpoint "$load_checkpoint" \
+      --run_name "$run_name" \
+      env.goal_hold_time_s="$hold_time_s" env.hold_progress_reward_scale="$hold_reward_scale" \
       env.success_tolerance=0.16 agent.save_interval=100
     ;;
   *) echo "Unknown stage: $stage" >&2; exit 2 ;;

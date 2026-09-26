@@ -75,15 +75,29 @@ class VisualLanguageStudent(nn.Module):
         action_history_dim: int = 0,
         hidden_dim: int = 256,
         memory_layers: int = 1,
+        memory_mode: str = "plain",
     ) -> None:
         super().__init__()
         if min(rgb_dim, language_dim, proprio_dim, action_dim, hidden_dim) <= 0:
             raise ValueError("feature, action and hidden dimensions must be positive")
+        if memory_mode not in {"plain", "evidence"}:
+            raise ValueError("memory_mode must be 'plain' or 'evidence'")
+        if memory_mode == "evidence" and rgb_dim != 36:
+            raise ValueError("evidence memory currently requires the 36-D semantic RGB feature contract")
         self.action_dim = action_dim
         self.hidden_dim = hidden_dim
+        self.memory_mode = memory_mode
         self.rgb_proj = nn.Sequential(nn.LayerNorm(rgb_dim), nn.Linear(rgb_dim, hidden_dim), nn.SiLU())
         self.lang_proj = nn.Sequential(nn.LayerNorm(language_dim), nn.Linear(language_dim, hidden_dim), nn.SiLU())
         self.proprio_proj = nn.Sequential(nn.LayerNorm(proprio_dim), nn.Linear(proprio_dim, hidden_dim), nn.SiLU())
+        self.surface_proj = (
+            nn.Sequential(nn.LayerNorm(4), nn.Linear(4, hidden_dim), nn.SiLU())
+            if memory_mode == "evidence" else None
+        )
+        self.surface_query = (
+            nn.Sequential(nn.LayerNorm(language_dim), nn.Linear(language_dim, hidden_dim), nn.SiLU())
+            if memory_mode == "evidence" else None
+        )
         self.touch_proj = (
             nn.Sequential(nn.LayerNorm(touch_dim), nn.Linear(touch_dim, hidden_dim), nn.SiLU())
             if touch_dim
@@ -124,7 +138,22 @@ class VisualLanguageStudent(nn.Module):
         batch.validate()
         rgb, proprio = batch.rgb_features, batch.proprio
         b, t, _ = rgb.shape
-        x = self.rgb_proj(rgb) + self.lang_proj(self._language_sequence(batch.language_features, t))
+        language_sequence = self._language_sequence(batch.language_features, t)
+        x = self.rgb_proj(rgb) + self.lang_proj(language_sequence)
+        if self.memory_mode == "evidence":
+            # The semantic frontend reserves the final 24 dimensions for six
+            # surfaces x (mass, centroid-x, centroid-y, spread). Attention is
+            # conditioned on the instruction, so the recurrent state stores
+            # evidence for the requested surface instead of only a flat RGB
+            # summary. This is the matched evidence-memory variant; all other
+            # inputs and the GRU/action budget remain unchanged.
+            marker = rgb[..., -24:].reshape(b, t, 6, 4)
+            slots = self.surface_proj(marker)
+            query = self.surface_query(language_sequence)
+            score = (slots * query.unsqueeze(2)).sum(dim=-1) / (self.hidden_dim ** 0.5)
+            attention = score.softmax(dim=-1)
+            evidence = (attention.unsqueeze(-1) * slots).sum(dim=2)
+            x = x + evidence
         x = x + self.proprio_proj(proprio)
         if batch.touch is not None:
             if self.touch_proj is None:

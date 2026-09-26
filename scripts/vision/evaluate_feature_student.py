@@ -30,7 +30,8 @@ parser.add_argument("--checkpoint", required=True)
 parser.add_argument("--task", default=None, help="Override the registered evaluation task.")
 parser.add_argument("--model", default="google/siglip2-base-patch16-224")
 parser.add_argument("--cached-features", default=None,
-                    help="Optional offline feature cache. Skips live VLM encoding and uses per-face mean features.")
+                    help="Deprecated for closed-loop evaluation; cached features are offline-only.")
+parser.add_argument("--freeze-manifest", default=str(REPO_ROOT / "configs" / "visual_student_freeze.json"))
 parser.add_argument("--structured-camera", action="store_true",
                     help="Use the deterministic 12-D RGB statistics encoder on live camera frames.")
 parser.add_argument("--semantic-camera", action="store_true",
@@ -41,11 +42,19 @@ parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--max-steps", type=int, default=300)
 parser.add_argument("--vision-stride", type=int, default=4, help="Run the frozen VLM every N control steps.")
-parser.add_argument("--action-scale", type=float, default=1.0,
-                    help="Scale the bounded student command before sending it to the hand. No post-scale clipping is applied.")
+parser.add_argument("--action-scale", type=float, default=None,
+                    help="Override the frozen action scale; normally read from the freeze manifest.")
 parser.add_argument("--report", required=True)
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
+freeze_manifest = json.loads(Path(args.freeze_manifest).read_text())
+if args.cached_features:
+    raise ValueError("cached features are offline-only and cannot be used for closed-loop evaluation; use --semantic-camera or a live VLM")
+manifest_scale = float(freeze_manifest["action_contract"]["action_scale"])
+if args.action_scale is None:
+    args.action_scale = manifest_scale
+elif abs(float(args.action_scale) - manifest_scale) > 1e-8:
+    raise ValueError(f"action scale {args.action_scale} disagrees with frozen manifest {manifest_scale}")
 # Camera-enabled teacher tasks still need Isaac's camera extension even when
 # the policy consumes cached features; otherwise the environment cannot spawn.
 args.enable_cameras = args.structured_camera or args.semantic_camera or args.cached_features is None or "Visual" in (args.task or "")
@@ -64,6 +73,7 @@ import BrainCo_DexHand  # noqa: F401, E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from train_feature_student import VisualLanguageStudent, VisualStudentBatch  # noqa: E402
+from BrainCo_DexHand.algo.agentic.language_goal import FACE_NAMES  # noqa: E402
 
 
 def _features(model, processor, images, device, text_features):
@@ -122,6 +132,19 @@ def _semantic_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
     return torch.cat((global_stats, marker), dim=-1)
 
 
+def _instruction_faces(raw, device):
+    """Parse the external language command without reading target_face in the actor path."""
+    names = {name: index for index, name in enumerate(FACE_NAMES)}
+    values = []
+    for text in raw.current_instructions():
+        tokens = str(text).lower().split()
+        matches = [names[name] for name in names if name in tokens]
+        if len(matches) != 1:
+            raise ValueError(f"cannot parse exactly one face from instruction: {text!r}")
+        values.append(matches[0])
+    return torch.as_tensor(values, dtype=torch.long, device=device)
+
+
 def main():
     device = torch.device(args.device or ("cuda" if torch.cuda.is_available() else "cpu"))
     task = args.task or (
@@ -140,8 +163,13 @@ def main():
     env = gym.make(task, cfg=cfg)
     raw = env.unwrapped
     ckpt = torch.load(args.checkpoint, map_location=device, weights_only=False)
+    if ckpt.get("freeze_id") and ckpt["freeze_id"] != freeze_manifest["freeze_id"]:
+        raise ValueError(f"student checkpoint freeze_id {ckpt['freeze_id']} does not match {freeze_manifest['freeze_id']}")
+    if ckpt.get("action_scale") is not None and abs(float(ckpt["action_scale"]) - float(args.action_scale)) > 1e-8:
+        raise ValueError("checkpoint action scale disagrees with the frozen evaluation scale")
     policy = VisualLanguageStudent(
-        ckpt["rgb_dim"], ckpt["language_dim"], ckpt["proprio_dim"], ckpt["action_dim"]
+        ckpt["rgb_dim"], ckpt["language_dim"], ckpt["proprio_dim"], ckpt["action_dim"],
+        memory_mode=ckpt.get("memory_mode", "plain")
     ).to(device)
     policy.load_state_dict(ckpt["model"])
     policy.eval()
@@ -149,24 +177,12 @@ def main():
     text_prompts = [f"show the {x} marker" for x in face_names]
     processor = None
     vlm = None
-    cached_image_by_face = cached_text_by_face = None
     if args.structured_camera or args.semantic_camera:
         # The live path uses the same six-dimensional language contract as the
         # structured cache, so its checkpoint is drop-in compatible.
         text_features = torch.eye(len(face_names), device=device)
         if args.zero_language:
             text_features.zero_()
-    elif args.cached_features:
-        cached = torch.load(args.cached_features, map_location="cpu", weights_only=False)
-        cached_image_by_face = torch.stack([
-            cached["image_features"][cached["target_face"] == face].float().mean(dim=0)
-            for face in range(len(face_names))
-        ]).to(device)
-        cached_text_by_face = torch.stack([
-            cached["language_features"][cached["target_face"] == face].float().mean(dim=0)
-            for face in range(len(face_names))
-        ]).to(device)
-        text_features = cached_text_by_face
     else:
         if AutoProcessor is None or AutoModel is None:
             raise RuntimeError("transformers is required for live SigLIP evaluation")
@@ -189,15 +205,14 @@ def main():
     episode_success = torch.zeros(n, dtype=torch.bool, device=device)
     episode_drop = torch.zeros(n, dtype=torch.bool, device=device)
     episode_min_error = torch.full((n,), float("inf"), device=device)
-    episode_face = raw.target_face.clone()
+    instruction_face = _instruction_faces(raw, device)
+    episode_face = instruction_face.clone()
     records = []
     max_vector_steps = args.max_steps * math.ceil(args.episodes / max(n, 1))
     while app.is_running() and done_count < args.episodes and step_count < max_vector_steps:
         # Keep state tensors mutable across episode resets.
         with torch.no_grad():
-            if cached_image_by_face is not None:
-                image_features = cached_image_by_face[raw.target_face]
-            elif step_count % max(args.vision_stride, 1) == 0:
+            if step_count % max(args.vision_stride, 1) == 0:
                 camera = raw.capture_camera()
                 rgb = camera["rgb"][..., :3].to(torch.uint8)
                 if args.semantic_camera:
@@ -207,7 +222,8 @@ def main():
                 else:
                     images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
                     image_features, _ = _features(vlm, processor, images, device, text_features)
-            face_text = text_features[raw.target_face]
+            instruction_face = _instruction_faces(raw, device)
+            face_text = text_features[instruction_face]
             image_hist = torch.cat((image_hist[:, 1:], image_features[:, None]), dim=1)
             proprio = raw.compute_student_proprio().float()
             prop_hist = torch.cat((prop_hist[:, 1:], proprio[:, None]), dim=1)
@@ -245,7 +261,8 @@ def main():
             episode_success[idx] = False
             episode_drop[idx] = False
             episode_min_error[idx] = float("inf")
-            episode_face[idx] = raw.target_face[idx]
+            instruction_face = _instruction_faces(raw, device)
+            episode_face[idx] = instruction_face[idx]
             image_hist[idx] = 0
             prop_hist[idx] = 0
             image_features[idx] = 0
@@ -278,7 +295,9 @@ def main():
         "task": task, "checkpoint": os.path.abspath(args.checkpoint), "model": args.model,
         "vision_stride": args.vision_stride,
         "action_scale": args.action_scale,
-        "cached_features": args.cached_features,
+        "cached_features": None,
+        "freeze_id": freeze_manifest["freeze_id"],
+        "teacher_checkpoint_sha256": freeze_manifest["teacher"]["sha256"],
         "structured_camera": args.structured_camera,
         "semantic_camera": args.semantic_camera,
         "zero_language": args.zero_language,
