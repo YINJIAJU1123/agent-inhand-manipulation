@@ -55,6 +55,7 @@ def main() -> None:
         "source_checkpoint": data.get("checkpoint"),
         "source_checkpoint_sha256": data.get("checkpoint_sha256"),
         "freeze_id": data.get("freeze_id"),
+        "action_storage": data.get("action_storage"),
     }
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

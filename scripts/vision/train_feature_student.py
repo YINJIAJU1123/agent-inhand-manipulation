@@ -105,6 +105,12 @@ def main() -> None:
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
     manifest = _load_freeze_manifest(args.freeze_manifest)
+    cache_meta = torch.load(args.data, map_location="cpu", weights_only=False)
+    cache_freeze_id = cache_meta.get("freeze_id")
+    if cache_freeze_id is not None and cache_freeze_id != manifest["freeze_id"]:
+        raise ValueError(f"feature cache freeze_id {cache_freeze_id} does not match {manifest['freeze_id']}")
+    if cache_meta.get("action_storage") not in (None, "bounded_projection_of_teacher_output"):
+        raise ValueError("feature cache action storage is not the frozen bounded teacher projection")
     torch.manual_seed(args.seed)
     train = FeatureSequenceDataset(args.data, args.history, "train", args.seed)
     val = FeatureSequenceDataset(args.data, args.history, "val", args.seed)

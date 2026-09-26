@@ -95,6 +95,7 @@ def main() -> None:
         "source_checkpoint": data.get("checkpoint"),
         "source_checkpoint_sha256": data.get("checkpoint_sha256"),
         "freeze_id": data.get("freeze_id"),
+        "action_storage": data.get("action_storage"),
     }
     torch.save(result, output)
     report = {"output": str(output), "samples": int(result["actions"].shape[0]),
