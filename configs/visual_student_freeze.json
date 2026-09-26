@@ -47,7 +47,7 @@
   "visual_protocol": {
     "protocol_id": "visual_student_protocol_v1",
     "stage": "visual_reorientation_student",
-    "evaluation_task": "BrainCo-Direct-Revo3-VisERDexTeacherVisual-Cube-v0",
+    "evaluation_task": "BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0",
     "camera_resolution": [256, 256],
     "control_frequency_hz": 30,
     "vision_stride": 2,
