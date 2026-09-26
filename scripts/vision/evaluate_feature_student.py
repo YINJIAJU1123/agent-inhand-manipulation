@@ -156,9 +156,9 @@ def main():
     cfg.max_consecutive_success = 1
     cfg.record_eval_metrics = True
     cfg.seed = 123
-    if args.cached_features and hasattr(cfg, "goal_yaw"):
-        # Cached-feature diagnostics use the matched VisERDex dynamics but do
-        # not need a live camera.  Keep the language contract deterministic.
+    if hasattr(cfg, "goal_yaw"):
+        # Collection and live evaluation share the deterministic yaw contract;
+        # language names the requested surface without hiding an extra yaw.
         cfg.goal_yaw = 0.0
     env = gym.make(task, cfg=cfg)
     raw = env.unwrapped
