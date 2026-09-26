@@ -26,6 +26,29 @@ num_envs=${VISUAL_NUM_ENVS:-64}
 episodes=${VISUAL_EPISODES:-387}
 stride=${VISUAL_STRIDE:-2}
 mkdir -p "$output"
+if [[ ! -f "$checkpoint" ]]; then
+  echo "frozen teacher checkpoint not found: $checkpoint" >&2
+  exit 3
+fi
+expected_sha=$("$python_bin" - "$manifest" <<'PYJSON'
+import json, sys
+print(json.load(open(sys.argv[1]))["teacher"]["sha256"])
+PYJSON
+)
+actual_sha=$(sha256sum "$checkpoint" | awk '{print $1}')
+if [[ "$actual_sha" != "$expected_sha" ]]; then
+  echo "teacher checkpoint SHA-256 mismatch: expected $expected_sha got $actual_sha" >&2
+  exit 3
+fi
+manifest_scale=$("$python_bin" - "$manifest" "$action_scale" <<'PYJSON'
+import json, sys
+manifest_scale = float(json.load(open(sys.argv[1]))["action_contract"]["action_scale"])
+requested_scale = float(sys.argv[2])
+if abs(manifest_scale - requested_scale) > 1e-8:
+    raise SystemExit(f"action scale {requested_scale} disagrees with freeze manifest {manifest_scale}")
+print(manifest_scale)
+PYJSON
+)
 
 collect() {
   "$python_bin" scripts/rsl_rl/collect_visual_rollouts.py \
