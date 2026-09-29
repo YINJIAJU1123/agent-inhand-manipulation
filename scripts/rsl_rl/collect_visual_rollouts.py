@@ -110,10 +110,9 @@ def main(env_cfg, agent_cfg):
                     k: (v.detach().cpu().half() if k == "depth" else v.detach().cpu())
                     for k, v in camera.items()
                 })
-                # Every captured batch gets one aligned terminal vector. If an
-                # episode ends on an uncaptured step, the terminal bit is
-                # back-filled onto that episode's last captured frame below.
-                terminal_flags.append(torch.zeros(env.unwrapped.num_envs, dtype=torch.bool))
+                # The mutable terminal buffer is created outside inference
+                # mode below. If an episode ends on an uncaptured step, the
+                # terminal bit is back-filled onto its last captured frame.
                 last_capture_batch[:] = len(frames) - 1
                 # Preserve the raw command for the environment. The replay
                 # target is stored below as a bounded projection so the first
@@ -146,6 +145,8 @@ def main(env_cfg, agent_cfg):
                 transition_drop.append(metrics["dropped"].detach().cpu().clone())
             if policy_nn is not None and hasattr(policy_nn, "reset"):
                 policy_nn.reset(dones)
+        if captured:
+            terminal_flags.append(torch.zeros(env.unwrapped.num_envs, dtype=torch.bool))
         done_tensor = dones[0] if isinstance(dones, tuple) else dones
         done_tensor = torch.as_tensor(done_tensor, device=episode_id.device).bool().reshape(-1)
         done_cpu = done_tensor.detach().cpu()
