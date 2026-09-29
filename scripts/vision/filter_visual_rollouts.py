@@ -42,14 +42,19 @@ def main() -> None:
     all_keys = set()
     for envs, episodes in zip(data["env_id"], data["episode_id"]):
         all_keys.update((int(e), int(ep)) for e, ep in zip(torch.as_tensor(envs).reshape(-1), torch.as_tensor(episodes).reshape(-1)))
+    requested = int(data.get("requested_episodes", data.get("episodes", 0)) or 0)
     if args.policy == "all":
-        selected = all_keys
+        eligible = list(all_keys)
     elif not quality_by_key:
         raise ValueError("quality policy requires episode_quality records in the source shard")
     elif args.policy == "success_only":
-        selected = {key for key, row in quality_by_key.items() if bool(row.get("success")) and not bool(row.get("drop")) and not bool(row.get("timeout"))}
+        eligible = [key for key, row in quality_by_key.items()
+                    if bool(row.get("success")) and not bool(row.get("drop")) and not bool(row.get("timeout"))]
     else:
-        selected = {key for key, row in quality_by_key.items() if not bool(row.get("drop"))}
+        eligible = [key for key, row in quality_by_key.items() if not bool(row.get("drop"))]
+    if requested > 0 and len(eligible) > requested:
+        eligible = eligible[:requested]
+    selected = set(eligible)
 
     list_keys = {
         "frames", "actions", "teacher_actions", "student_proprio", "target_face", "instructions",
