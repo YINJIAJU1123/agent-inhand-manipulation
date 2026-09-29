@@ -109,7 +109,7 @@ def main() -> None:
         steps = [int(step_index[i]) for i in ordered]
         diffs = [b - a for a, b in zip(steps, steps[1:])]
         expected_stride = args.expected_stride or int(data.get("stride", 1))
-        contiguous = bool(steps) and steps[0] == 0 and all(diff == expected_stride for diff in diffs)
+        contiguous = bool(steps) and 0 <= steps[0] < expected_stride and all(diff == expected_stride for diff in diffs)
         terminal_indices = [i for i in ordered if bool(terminal[i])]
         is_checked = (env, ep) in checked_keys
         if not contiguous:
