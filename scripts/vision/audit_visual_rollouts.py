@@ -39,7 +39,12 @@ def _batch_lengths(data: dict, keys: list[str]) -> dict:
         values = data.get(key)
         if values is None:
             continue
-        lengths[key] = [int(torch.as_tensor(x).reshape(-1).shape[0]) for x in values]
+        if key == "frames":
+            lengths[key] = [int(torch.as_tensor(x["rgb"]).shape[0]) for x in values]
+        elif key == "instructions":
+            lengths[key] = [len(x) for x in values]
+        else:
+            lengths[key] = [int(torch.as_tensor(x).reshape(-1).shape[0]) for x in values]
     return lengths
 
 
