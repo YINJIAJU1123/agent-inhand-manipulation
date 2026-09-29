@@ -95,11 +95,15 @@ def main() -> None:
     groups: dict[tuple[int, int], list[int]] = defaultdict(list)
     for i, (e, ep) in enumerate(zip(env_id.tolist(), episode_id.tolist())):
         groups[(int(e), int(ep))].append(i)
+    quality_records = data.get("episode_quality", [])
+    quality_keys = {(int(row["env_id"]), int(row["episode_id"])) for row in quality_records}
+    checked_keys = quality_keys or set(groups)
 
     episode_rows = []
     incomplete = 0
     stride_mismatches = 0
     terminal_mismatches = 0
+    observed_incomplete = 0
     for (env, ep), indices in sorted(groups.items()):
         ordered = sorted(indices, key=lambda i: int(step_index[i]))
         steps = [int(step_index[i]) for i in ordered]
@@ -107,11 +111,14 @@ def main() -> None:
         expected_stride = args.expected_stride or int(data.get("stride", 1))
         contiguous = bool(steps) and steps[0] == 0 and all(diff == expected_stride for diff in diffs)
         terminal_indices = [i for i in ordered if bool(terminal[i])]
+        is_checked = (env, ep) in checked_keys
         if not contiguous:
-            incomplete += 1
-        if diffs and any(diff != expected_stride for diff in diffs):
+            observed_incomplete += 1
+            if is_checked:
+                incomplete += 1
+        if diffs and any(diff != expected_stride for diff in diffs) and is_checked:
             stride_mismatches += 1
-        if len(terminal_indices) != 1:
+        if len(terminal_indices) != 1 and is_checked:
             terminal_mismatches += 1
         faces = sorted(set(int(target_face[i]) for i in ordered))
         episode_rows.append({
@@ -124,6 +131,7 @@ def main() -> None:
             "contiguous_at_stride": contiguous,
             "terminal_count": len(terminal_indices),
             "faces": faces,
+            "quality_record": is_checked,
         })
 
     valid_depth = []
@@ -163,6 +171,8 @@ def main() -> None:
         "requested_episodes": data.get("requested_episodes", data.get("episodes")),
         "completed_episodes": int(data.get("episodes", len(groups))),
         "observed_episodes": len(groups),
+        "quality_record_episodes": len(quality_keys),
+        "uncompleted_observed_episodes": max(0, len(groups) - len(quality_keys)) if quality_keys else 0,
         "captured_batches": n_batches,
         "samples": n_samples,
         "stride": int(data.get("stride", 1)),
@@ -170,6 +180,7 @@ def main() -> None:
         "batch_shape_mismatches": batch_shape_mismatches[:20],
         "duplicate_sample_keys": duplicate_keys,
         "episodes_with_noncontiguous_steps": incomplete,
+        "observed_episodes_with_noncontiguous_steps": observed_incomplete,
         "episodes_with_stride_mismatch": stride_mismatches,
         "episodes_with_terminal_count_not_one": terminal_mismatches,
         "camera": {
