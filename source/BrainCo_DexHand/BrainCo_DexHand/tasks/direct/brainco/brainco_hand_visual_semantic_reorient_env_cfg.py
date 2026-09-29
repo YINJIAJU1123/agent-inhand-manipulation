@@ -7,13 +7,11 @@ and for the later vision-language student.  The camera output is exposed by
 PPO observation, so existing state-teacher checkpoints stay compatible.
 """
 
-from isaaclab.assets import RigidObjectCfg
 from isaaclab.markers import VisualizationMarkersCfg
 from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.sensors import TiledCameraCfg
 from isaaclab.utils import configclass
 import isaaclab.sim as sim_utils
-from isaaclab.sim.spawners.materials.physics_materials_cfg import RigidBodyMaterialCfg
 
 from .brainco_hand_semantic_reorient_env_cfg import BrainCoHandSemanticReorientEnvCfg
 
@@ -97,25 +95,11 @@ class BrainCoHandVisualSemanticReorientEnvCfg(BrainCoHandSemanticReorientEnvCfg)
             ),
         },
     )
-    # Use an Isaac primitive for the camera task.  This avoids depending on
-    # the optional URDF importer extension in headless Isaac Sim workers.
-    # A textured six-face USD/OBJ can replace this spawn later without
-    # changing the camera or policy interfaces.
-    object_cfg: RigidObjectCfg = BrainCoHandSemanticReorientEnvCfg().object_cfg.replace(
-        spawn=sim_utils.CuboidCfg(
-            size=(0.07, 0.07, 0.07),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.15, 0.45, 0.85)),
-            physics_material=RigidBodyMaterialCfg(static_friction=1.0, dynamic_friction=1.0),
-            mass_props=sim_utils.MassPropertiesCfg(density=400.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(
-                disable_gravity=False, enable_gyroscopic_forces=True,
-                solver_position_iteration_count=8, solver_velocity_iteration_count=0,
-                sleep_threshold=0.005, stabilization_threshold=0.0025,
-                max_depenetration_velocity=1000.0,
-            ),
-        )
-    )
+    # Keep the exact USD object and physics parameters used by the frozen
+    # state teacher. Replacing it with a primitive cuboid changes contact
+    # geometry and makes camera-task teacher rollouts incomparable to the
+    # checkpoint used to collect them.
+    object_cfg = BrainCoHandSemanticReorientEnvCfg().object_cfg
     # This keeps the observation interface equal to the semantic state
     # teacher.  A multimodal runner should fuse ``capture_camera()`` output.
     include_camera_in_policy: bool = False
