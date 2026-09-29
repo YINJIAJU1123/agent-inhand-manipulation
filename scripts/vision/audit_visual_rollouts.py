@@ -141,7 +141,7 @@ def main() -> None:
         if not values:
             return {"min": None, "p05": None, "median": None, "p95": None, "max": None}
         x = torch.tensor(values, dtype=torch.float64)
-        q = torch.quantile(x, torch.tensor([0.0, 0.05, 0.5, 0.95, 1.0]))
+        q = torch.quantile(x, torch.tensor([0.0, 0.05, 0.5, 0.95, 1.0], dtype=torch.float64))
         return {k: float(v) for k, v in zip(("min", "p05", "median", "p95", "max"), q)}
 
     quality = data.get("episode_quality", [])
