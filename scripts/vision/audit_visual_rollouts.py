@@ -33,6 +33,11 @@ def _as_flat(values, dtype=None):
     return torch.cat([x.reshape(-1) for x in tensors])
 
 
+
+def _cat_samples(values):
+    tensors = [torch.as_tensor(x) for x in values]
+    return torch.cat([x.reshape(x.shape[0], -1) for x in tensors], dim=0)
+
 def _batch_lengths(data: dict, keys: list[str]) -> dict:
     lengths = {}
     for key in keys:
@@ -74,8 +79,8 @@ def main() -> None:
         if len(set(observed.values())) > 1:
             batch_shape_mismatches.append({"batch": batch_idx, "lengths": observed})
 
-    actions = _as_flat(data["actions"])
-    teacher_actions = _as_flat(data.get("teacher_actions", data["actions"]))
+    actions = _cat_samples(data["actions"])
+    teacher_actions = _cat_samples(data.get("teacher_actions", data["actions"]))
     episode_id = _as_flat(data["episode_id"], torch.long).long()
     step_index = _as_flat(data["step_index"], torch.long).long()
     env_id = _as_flat(data["env_id"], torch.long).long()
