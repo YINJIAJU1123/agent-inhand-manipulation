@@ -25,6 +25,6 @@ This passes the working teacher gate for visual data generation: held-at-end suc
 
 ## Camera-task alignment fix
 
-The first camera collection used a primitive cuboid while the frozen teacher was trained on the USD DexCube. The two objects had different collision/contact behavior. After changing `BrainCoHandVisualSemanticReorientEnvCfg.object_cfg` to reuse the exact state-teacher USD object configuration, a 32-episode camera smoke produced 32 successes and 1 drop, with zero rollout audit failures. Formal visual collection is being regenerated with this aligned configuration; previous v2 visual-student data is retained only as a diagnostic run.
+The first camera collection used a primitive cuboid while the frozen teacher was trained on the USD DexCube. The two objects had different collision/contact behavior. After changing `BrainCoHandVisualSemanticReorientEnvCfg.object_cfg` to reuse the exact state-teacher USD object configuration, a 32-episode camera smoke produced 32 successes and 1 drop, with zero rollout audit failures. Formal visual collection has now been regenerated with this aligned configuration: 382/390 episodes succeeded, with 8 drops and no timeouts or structural audit failures. Previous v2 visual-student data is retained only as a diagnostic run.
 
 The per-face/seed gate report is stored in `outputs/teacher_gate_20260930/teacher_gate_hold_fixedyaw.json`.

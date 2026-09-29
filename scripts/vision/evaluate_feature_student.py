@@ -199,6 +199,7 @@ def main():
     image_hist = torch.zeros((n, history, ckpt["rgb_dim"]), device=device)
     prop_hist = torch.zeros((n, history, ckpt["proprio_dim"]), device=device)
     image_features = torch.zeros((n, ckpt["rgb_dim"]), device=device)
+    history_initialized = torch.zeros(n, dtype=torch.bool, device=device)
     done_count = 0
     step_count = 0
     episode_steps = torch.zeros(n, dtype=torch.long, device=device)
@@ -214,7 +215,8 @@ def main():
     while app.is_running() and done_count < args.episodes and step_count < max_vector_steps:
         # Keep state tensors mutable across episode resets.
         with torch.no_grad():
-            if step_count % max(args.vision_stride, 1) == 0:
+            capture_step = step_count % max(args.vision_stride, 1) == 0
+            if capture_step:
                 camera = raw.capture_camera()
                 rgb = camera["rgb"][..., :3].to(torch.uint8)
                 if args.semantic_camera:
@@ -226,9 +228,18 @@ def main():
                     image_features, _ = _features(vlm, processor, images, device, text_features)
             instruction_face = _instruction_faces(raw, device)
             face_text = text_features[instruction_face]
-            image_hist = torch.cat((image_hist[:, 1:], image_features[:, None]), dim=1)
-            proprio = raw.compute_student_proprio().float()
-            prop_hist = torch.cat((prop_hist[:, 1:], proprio[:, None]), dim=1)
+            if capture_step:
+                # Training samples are recorded every vision_stride control steps.
+                # Advance both histories on that same clock and pad a new episode
+                # with its first observation, as FeatureSequenceDataset does.
+                proprio = raw.compute_student_proprio().float()
+                image_hist = torch.cat((image_hist[:, 1:], image_features[:, None]), dim=1)
+                prop_hist = torch.cat((prop_hist[:, 1:], proprio[:, None]), dim=1)
+                new_episode = ~history_initialized
+                if new_episode.any():
+                    image_hist[new_episode] = image_features[new_episode, None, :]
+                    prop_hist[new_episode] = proprio[new_episode, None, :]
+                    history_initialized[new_episode] = True
             out = policy(VisualStudentBatch(image_hist, face_text, prop_hist))
             action = args.action_scale * out["action"]
             _, _, terminated, truncated, info = env.step(action)
@@ -276,6 +287,7 @@ def main():
             image_hist[idx] = 0
             prop_hist[idx] = 0
             image_features[idx] = 0
+            history_initialized[idx] = False
         step_count += 1
         if step_count % 50 == 0:
             print(f"[eval] vector_steps={step_count} episodes={done_count}", flush=True)

@@ -19,4 +19,4 @@ Artifacts:
 - `outputs/teacher_verification_face0/metadata.json`
 - `outputs/teacher_verification_face0/frame_*.png`
 
-The clip is qualitative evidence. The larger formal collection remains the stronger quantitative check: 388 complete teacher quality records, 301 successful, with zero rollout alignment, terminal, stride, batch, or camera audit failures.
+The clip is qualitative evidence. The corrected formal collection is the stronger quantitative check: 390 completed episodes, 382 successful and 8 dropped, with zero rollout alignment, terminal, stride, batch, or camera audit failures.
