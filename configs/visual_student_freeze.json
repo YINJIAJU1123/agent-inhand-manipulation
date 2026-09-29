@@ -17,10 +17,11 @@
   "action_contract": {
     "action_dim": 21,
     "student_output": "tanh_bounded_normalized_command",
-    "action_scale": 6.0,
+    "action_scale": 1.0,
     "post_scale_clipping": "environment_joint_target_saturation",
-    "source": "visual_student_status_20260923",
-    "raw_teacher_actions_are_not_used_as_student_inputs": true
+    "source": "environment_normalized_action_contract_verified_20260930",
+    "raw_teacher_actions_are_not_used_as_student_inputs": true,
+    "note": "The direct environment expects normalized [-1,1] commands; no external multiplier is applied."
   },
   "student_observation": {
     "allowed": [
@@ -48,7 +49,10 @@
     "protocol_id": "visual_student_protocol_v1",
     "stage": "visual_reorientation_student",
     "evaluation_task": "BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0",
-    "camera_resolution": [256, 256],
+    "camera_resolution": [
+      256,
+      256
+    ],
     "control_frequency_hz": 30,
     "vision_stride": 2,
     "episode_horizon_steps": 600,
@@ -61,7 +65,11 @@
       "drop",
       "timeout"
     ],
-    "training_seeds": [0, 1, 2]
+    "training_seeds": [
+      0,
+      1,
+      2
+    ]
   },
   "search_protocol": {
     "status": "not frozen in this visual reorientation stage",

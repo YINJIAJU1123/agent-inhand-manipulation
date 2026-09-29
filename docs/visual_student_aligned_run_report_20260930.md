@@ -6,7 +6,7 @@
 - Visual task: `BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0`
 - Teacher checkpoint: `model_1999.pt`
 - Teacher SHA256: `193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707`
-- Action scale: `6.0`
+- Action scale: `1.0` (normalized environment command; no external multiplier)
 - Goal yaw: `0.0`
 - Camera protocol: semantic RGB features, 256x256 RGB, vision stride 2
 - Student split: fixed episode split, 306 train / 76 validation episodes
@@ -41,6 +41,6 @@ Each condition was trained for 20 epochs with the fixed episode split. Final val
 
 ## Closed-loop evaluation
 
-The live evaluation uses the same camera task, semantic feature encoder, history clock, action scale, and goal-yaw contract as collection. The evaluator history update was corrected to advance only on captured frames and to pad a new episode with its first observation, matching the offline sequence dataset.
+The live evaluation uses the same camera task, semantic feature encoder, history clock, action scale, and goal-yaw contract as collection. The evaluator history update was corrected to advance only on captured frames and to pad a new episode with its first observation, matching the offline sequence dataset. The first live run also exposed that the direct environment already consumes normalized commands; the previous `6.0` multiplier was removed and the frozen action contract is now `1.0`.
 
 The 72-episode per-checkpoint results will be recorded here after all six frozen student checkpoints finish.

@@ -241,7 +241,9 @@ def main():
                     prop_hist[new_episode] = proprio[new_episode, None, :]
                     history_initialized[new_episode] = True
             out = policy(VisualStudentBatch(image_hist, face_text, prop_hist))
-            action = args.action_scale * out["action"]
+            # BrainCo direct tasks consume normalized [-1, 1] commands.
+            # The environment maps them to joint targets internally.
+            action = out["action"]
             _, _, terminated, truncated, info = env.step(action)
             done = (terminated | truncated).to(device=device, dtype=torch.bool)
             metrics = info["semantic_metrics"]
