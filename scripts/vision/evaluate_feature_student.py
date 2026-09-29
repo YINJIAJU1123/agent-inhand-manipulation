@@ -36,6 +36,10 @@ parser.add_argument("--structured-camera", action="store_true",
                     help="Use the deterministic 12-D RGB statistics encoder on live camera frames.")
 parser.add_argument("--semantic-camera", action="store_true",
                     help="Use deterministic marker-aware RGB features on live camera frames.")
+parser.add_argument("--semantic-grid-size", type=int, default=0,
+                    help="Append a low-resolution RGB grid before the semantic marker slots.")
+parser.add_argument("--semantic-depth-grid-size", type=int, default=0,
+                    help="Append a low-resolution normalized depth grid before the semantic marker slots.")
 parser.add_argument("--zero-language", action="store_true",
                     help="Zero the language feature while evaluating a control student.")
 parser.add_argument("--episodes", type=int, default=30)
@@ -57,7 +61,7 @@ elif abs(float(args.action_scale) - manifest_scale) > 1e-8:
     raise ValueError(f"action scale {args.action_scale} disagrees with frozen manifest {manifest_scale}")
 # Camera-enabled teacher tasks still need Isaac's camera extension even when
 # the policy consumes cached features; otherwise the environment cannot spawn.
-args.enable_cameras = args.structured_camera or args.semantic_camera or args.cached_features is None or "Visual" in (args.task or "")
+args.enable_cameras = args.structured_camera or args.semantic_camera or args.semantic_grid_size > 0 or args.semantic_depth_grid_size > 0 or args.cached_features is None or "Visual" in (args.task or "")
 app = AppLauncher(args).app
 
 import gymnasium as gym  # noqa: E402
@@ -99,7 +103,7 @@ def _structured_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
                       center.mean((1, 2)), center.std((1, 2))), dim=-1)
 
 
-def _semantic_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
+def _semantic_rgb_features(rgb: torch.Tensor, grid_size: int = 0, depth: torch.Tensor | None = None, depth_grid_size: int = 0) -> torch.Tensor:
     """Match ``cache_semantic_features.py`` for live RGB frames."""
     rgb = rgb.to(torch.float32)
     if rgb.max() > 1.5:
@@ -129,7 +133,26 @@ def _semantic_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
     center = rgb[:, height // 4 : 3 * height // 4, width // 4 : 3 * width // 4]
     global_stats = torch.cat((rgb.mean((1, 2)), rgb.std((1, 2)),
                               center.mean((1, 2)), center.std((1, 2))), dim=-1)
-    return torch.cat((global_stats, marker), dim=-1)
+    if grid_size < 0:
+        raise ValueError("grid_size must be non-negative")
+    pieces = [global_stats]
+    if grid_size:
+        grid = torch.nn.functional.interpolate(
+            rgb.permute(0, 3, 1, 2), size=(grid_size, grid_size),
+            mode="bilinear", align_corners=False).permute(0, 2, 3, 1).reshape(n, -1)
+        pieces.append(grid)
+    if depth_grid_size:
+        if depth is None:
+            raise ValueError("depth is required when depth_grid_size is nonzero")
+        depth = torch.nan_to_num(depth.to(rgb.dtype), nan=2.0, posinf=2.0, neginf=0.0).clamp(0.0, 2.0) / 2.0
+        if depth.ndim == 3:
+            depth = depth.unsqueeze(-1)
+        dgrid = torch.nn.functional.interpolate(
+            depth.permute(0, 3, 1, 2), size=(depth_grid_size, depth_grid_size),
+            mode="bilinear", align_corners=False).reshape(n, -1)
+        pieces.append(dgrid)
+    pieces.append(marker)
+    return torch.cat(pieces, dim=-1)
 
 
 def _instruction_faces(raw, device):
@@ -220,7 +243,7 @@ def main():
                 camera = raw.capture_camera()
                 rgb = camera["rgb"][..., :3].to(torch.uint8)
                 if args.semantic_camera:
-                    image_features = _semantic_rgb_features(rgb)
+                    image_features = _semantic_rgb_features(rgb, args.semantic_grid_size, camera.get("depth"), args.semantic_depth_grid_size)
                 elif args.structured_camera:
                     image_features = _structured_rgb_features(rgb)
                 else:
@@ -328,6 +351,8 @@ def main():
         "teacher_checkpoint_sha256": freeze_manifest["teacher"]["sha256"],
         "structured_camera": args.structured_camera,
         "semantic_camera": args.semantic_camera,
+        "semantic_grid_size": args.semantic_grid_size,
+        "semantic_depth_grid_size": args.semantic_depth_grid_size,
         "zero_language": args.zero_language,
         "episodes": len(records), "vector_steps": step_count,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),

@@ -22,8 +22,8 @@ FACE_COLORS = torch.tensor(
 )
 
 
-def semantic_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
-    """Return the 36-D feature used by both offline and live evaluation."""
+def semantic_rgb_features(rgb: torch.Tensor, grid_size: int = 0, depth: torch.Tensor | None = None, depth_grid_size: int = 0) -> torch.Tensor:
+    """Return semantic marker statistics with an optional low-resolution RGB grid."""
     rgb = rgb.to(torch.float32)
     if rgb.max() > 1.5:
         rgb = rgb / 255.0
@@ -52,25 +52,50 @@ def semantic_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
     center = rgb[:, height // 4 : 3 * height // 4, width // 4 : 3 * width // 4]
     global_stats = torch.cat((rgb.mean((1, 2)), rgb.std((1, 2)),
                               center.mean((1, 2)), center.std((1, 2))), dim=-1)
-    return torch.cat((global_stats, marker), dim=-1)
+    if grid_size < 0:
+        raise ValueError("grid_size must be non-negative")
+    pieces = [global_stats]
+    if grid_size:
+        grid = torch.nn.functional.interpolate(
+            rgb.permute(0, 3, 1, 2), size=(grid_size, grid_size),
+            mode="bilinear", align_corners=False).permute(0, 2, 3, 1).reshape(n, -1)
+        pieces.append(grid)
+    if depth_grid_size:
+        if depth is None:
+            raise ValueError("depth is required when depth_grid_size is nonzero")
+        depth = torch.nan_to_num(depth.to(rgb.dtype), nan=2.0, posinf=2.0, neginf=0.0).clamp(0.0, 2.0) / 2.0
+        if depth.ndim == 3:
+            depth = depth.unsqueeze(-1)
+        dgrid = torch.nn.functional.interpolate(
+            depth.permute(0, 3, 1, 2), size=(depth_grid_size, depth_grid_size),
+            mode="bilinear", align_corners=False).reshape(n, -1)
+        pieces.append(dgrid)
+    pieces.append(marker)
+    return torch.cat(pieces, dim=-1)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--grid-size", type=int, default=0, help="Append a low-resolution RGB grid before the marker slots.")
+    parser.add_argument("--depth-grid-size", type=int, default=0, help="Append a low-resolution normalized depth grid before the marker slots.")
     args = parser.parse_args()
     data = torch.load(args.data, map_location="cpu", weights_only=False)
     image_features = []
     for frame_batch in data["frames"]:
-        image_features.append(semantic_rgb_features(frame_batch["rgb"]))
+        image_features.append(semantic_rgb_features(frame_batch["rgb"], args.grid_size, frame_batch.get("depth"), args.depth_grid_size))
+    student_proprio = torch.cat(data["student_proprio"]).float()
+    # Older raw shards stored the teacher's unbounded action in the final
+    # proprio slots.  The frozen student contract exposes a normalized command.
+    student_proprio[:, -21:] = student_proprio[:, -21:].clamp(-1.0, 1.0)
     result = {
         "image_features": torch.cat(image_features),
         "language_features": torch.cat([
             torch.nn.functional.one_hot(torch.as_tensor(x, dtype=torch.long).reshape(-1), num_classes=6).float()
             for x in data["target_face"]
         ]),
-        "student_proprio": torch.cat(data["student_proprio"]),
+        "student_proprio": student_proprio,
         "actions": torch.cat(data["actions"]),
         "teacher_actions": torch.cat(data.get("teacher_actions", data["actions"])),
         "target_face": torch.cat(data["target_face"]),
@@ -78,7 +103,9 @@ def main() -> None:
         "step_index": torch.cat(data["step_index"]),
         "env_id": torch.cat(data.get("env_id", [torch.zeros_like(x) for x in data["episode_id"]])),
         "terminal": torch.cat(data.get("terminal", [torch.zeros_like(x) for x in data["episode_id"]])).bool(),
-        "model": "semantic_rgb_marker_stats+face_onehot",
+        "model": f"semantic_rgb_marker_stats+rgb_grid{args.grid_size}+depth_grid{args.depth_grid_size}+face_onehot",
+        "grid_size": args.grid_size,
+        "depth_grid_size": args.depth_grid_size,
         "source": args.data,
         "source_checkpoint": data.get("checkpoint"),
         "source_checkpoint_sha256": data.get("checkpoint_sha256"),

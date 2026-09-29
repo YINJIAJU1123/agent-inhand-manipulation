@@ -43,4 +43,10 @@ Each condition was trained for 20 epochs with the fixed episode split. Final val
 
 The live evaluation uses the same camera task, semantic feature encoder, history clock, action scale, and goal-yaw contract as collection. The evaluator history update was corrected to advance only on captured frames and to pad a new episode with its first observation, matching the offline sequence dataset. The first live run also exposed that the direct environment already consumes normalized commands; the previous `6.0` multiplier was removed and the frozen action contract is now `1.0`.
 
-The 72-episode per-checkpoint results will be recorded here after all six frozen student checkpoints finish.
+## Closed-loop results and diagnosis
+
+The first corrected live run used the old `6.0` multiplier and produced only 1–4/72 successes with 39–57% drops. The direct environment already consumes normalized `[-1,1]` commands, so this multiplier was removed. With normalized actions, drops fell to 7–22%, but success remained about 2.8% on the semantic baseline.
+
+A spatial RGB grid and normalized depth grid were then added, and the previous-action portion of proprioception was clamped to the same normalized contract. A 24-episode depth ablation reached 3/24 (12.5%) in one all-episode split, but was not stable enough to freeze as a final result.
+
+The next experiment is DAgger: the visual policy drives the environment while the frozen teacher labels the visited states. The first 200-episode DAgger shard contains 22,912 labeled samples; its own student-visited state distribution is substantially different from the teacher-only demonstrations. A plain DAgger retrain reached 7/24 (29.2%) in the first closed-loop check, confirming covariate shift as a real bottleneck. The DAgger dataset and collector are now the basis for the next iteration.

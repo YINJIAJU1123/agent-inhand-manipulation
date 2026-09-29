@@ -524,7 +524,9 @@ class InHandManipulationEnv(DirectRLEnv):
                 self.fingertip_pos.view(self.num_envs, self.num_fingertips * 3),
                 self.fingertip_rot.view(self.num_envs, self.num_fingertips * 4),
                 self.fingertip_velocities.view(self.num_envs, self.num_fingertips * 6),
-                self.actions,
+                # The student contract exposes the previous normalized command,
+                # independent of the teacher's unbounded raw policy output.
+                self.actions.clamp(-1.0, 1.0),
             ),
             dim=-1,
         )

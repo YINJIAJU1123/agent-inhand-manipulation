@@ -82,12 +82,39 @@ class VisualLanguageStudent(nn.Module):
             raise ValueError("feature, action and hidden dimensions must be positive")
         if memory_mode not in {"plain", "evidence"}:
             raise ValueError("memory_mode must be 'plain' or 'evidence'")
-        if memory_mode == "evidence" and rgb_dim != 36:
-            raise ValueError("evidence memory currently requires the 36-D semantic RGB feature contract")
+        if memory_mode == "evidence" and rgb_dim < 36:
+            raise ValueError("evidence memory requires the semantic RGB marker feature contract")
         self.action_dim = action_dim
         self.hidden_dim = hidden_dim
         self.memory_mode = memory_mode
-        self.rgb_proj = nn.Sequential(nn.LayerNorm(rgb_dim), nn.Linear(rgb_dim, hidden_dim), nn.SiLU())
+        # Preserve spatial structure for the compact RGB/RGB-D grid frontend.
+        # Feature caches place global RGB statistics first, optional flattened
+        # grids next, and the 24-D marker slots last.  Legacy 36-D caches keep
+        # the original linear path.
+        self.rgb_grid_channels = 0
+        self.rgb_grid_size = 0
+        if rgb_dim > 36:
+            grid_flat = rgb_dim - 36
+            for candidate in (3, 4):
+                side_sq = grid_flat // candidate
+                side = int(side_sq ** 0.5)
+                if candidate * side * side == grid_flat:
+                    self.rgb_grid_channels = candidate
+                    self.rgb_grid_size = side
+                    break
+            if self.rgb_grid_channels == 0:
+                raise ValueError(f"unsupported RGB grid feature dimension: {rgb_dim}")
+            self.rgb_base_proj = nn.Sequential(nn.LayerNorm(36), nn.Linear(36, hidden_dim), nn.SiLU())
+            self.rgb_grid_encoder = nn.Sequential(
+                nn.Conv2d(self.rgb_grid_channels, 32, kernel_size=3, padding=1), nn.SiLU(),
+                nn.Conv2d(32, 64, kernel_size=3, padding=1), nn.SiLU(),
+                nn.AdaptiveAvgPool2d(1), nn.Flatten(), nn.Linear(64, hidden_dim), nn.SiLU(),
+            )
+            self.rgb_proj = None
+        else:
+            self.rgb_proj = nn.Sequential(nn.LayerNorm(rgb_dim), nn.Linear(rgb_dim, hidden_dim), nn.SiLU())
+            self.rgb_base_proj = None
+            self.rgb_grid_encoder = None
         self.lang_proj = nn.Sequential(nn.LayerNorm(language_dim), nn.Linear(language_dim, hidden_dim), nn.SiLU())
         self.proprio_proj = nn.Sequential(nn.LayerNorm(proprio_dim), nn.Linear(proprio_dim, hidden_dim), nn.SiLU())
         self.surface_proj = (
@@ -139,7 +166,23 @@ class VisualLanguageStudent(nn.Module):
         rgb, proprio = batch.rgb_features, batch.proprio
         b, t, _ = rgb.shape
         language_sequence = self._language_sequence(batch.language_features, t)
-        x = self.rgb_proj(rgb) + self.lang_proj(language_sequence)
+        if self.rgb_grid_channels:
+            base = torch.cat((rgb[..., :12], rgb[..., -24:]), dim=-1)
+            base_emb = self.rgb_base_proj(base)
+            grid_flat = rgb[..., 12:-24]
+            if self.rgb_grid_channels == 3:
+                grid = grid_flat.reshape(b, t, 3, self.rgb_grid_size, self.rgb_grid_size)
+            else:
+                plane = self.rgb_grid_size * self.rgb_grid_size
+                grid = torch.cat((
+                    grid_flat[..., :3 * plane].reshape(b, t, 3, self.rgb_grid_size, self.rgb_grid_size),
+                    grid_flat[..., 3 * plane:].reshape(b, t, 1, self.rgb_grid_size, self.rgb_grid_size),
+                ), dim=2)
+            grid_emb = self.rgb_grid_encoder(grid.reshape(b * t, self.rgb_grid_channels, self.rgb_grid_size, self.rgb_grid_size))
+            rgb_emb = base_emb + grid_emb.reshape(b, t, -1)
+        else:
+            rgb_emb = self.rgb_proj(rgb)
+        x = rgb_emb + self.lang_proj(language_sequence)
         if self.memory_mode == "evidence":
             # The semantic frontend reserves the final 24 dimensions for six
             # surfaces x (mass, centroid-x, centroid-y, spread). Attention is
