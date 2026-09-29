@@ -88,7 +88,10 @@ def main(env_cfg, agent_cfg):
     episode_ids, step_indices, env_ids, terminal_flags = [], [], [], []
     environment_ids = torch.arange(env.unwrapped.num_envs, device=env.unwrapped.device)
     transition_success, transition_drop = [], []
+    episode_quality = []
+    last_capture_batch = torch.full((env.unwrapped.num_envs,), -1, dtype=torch.long, device=env.unwrapped.device)
     episode_id = torch.zeros(env.unwrapped.num_envs, dtype=torch.long, device=env.unwrapped.device)
+    episode_target_face = env.unwrapped.target_face.detach().clone()
     step_index = torch.zeros_like(episode_id)
     completed = 0
     step = 0
@@ -107,6 +110,11 @@ def main(env_cfg, agent_cfg):
                     k: (v.detach().cpu().half() if k == "depth" else v.detach().cpu())
                     for k, v in camera.items()
                 })
+                # Every captured batch gets one aligned terminal vector. If an
+                # episode ends on an uncaptured step, the terminal bit is
+                # back-filled onto that episode's last captured frame below.
+                terminal_flags.append(torch.zeros(env.unwrapped.num_envs, dtype=torch.bool))
+                last_capture_batch[:] = len(frames) - 1
                 # Preserve the raw command for the environment. The replay
                 # target is stored below as a bounded projection so the first
                 # student has the same [-1,1] action contract as its head.
@@ -132,22 +140,42 @@ def main(env_cfg, agent_cfg):
                 raw_action = policy(obs)
                 action = raw_action if agent_cfg.clip_actions is None else raw_action.clamp(-1.0, 1.0)
             obs, _, dones, _ = env.step(action)
-            if captured:
-                metrics = env.unwrapped.extras.get("semantic_metrics", {})
-                if metrics:
-                    transition_success.append(metrics["goal_reached"].detach().cpu().clone())
-                    transition_drop.append(metrics["dropped"].detach().cpu().clone())
+            metrics = env.unwrapped.extras.get("semantic_metrics", {})
+            if captured and metrics:
+                transition_success.append(metrics["goal_reached"].detach().cpu().clone())
+                transition_drop.append(metrics["dropped"].detach().cpu().clone())
             if policy_nn is not None and hasattr(policy_nn, "reset"):
                 policy_nn.reset(dones)
         done_tensor = dones[0] if isinstance(dones, tuple) else dones
-        if step % max(args_cli.stride, 1) == 0 and frames:
-            # This flag belongs to the transition/action captured above.  It
-            # is appended after stepping so reset transitions remain explicit.
-            terminal_flags.append(torch.as_tensor(done_tensor).detach().cpu().clone())
         done_tensor = torch.as_tensor(done_tensor, device=episode_id.device).bool().reshape(-1)
+        done_cpu = done_tensor.detach().cpu()
+        if done_tensor.any():
+            metrics = env.unwrapped.extras.get("semantic_metrics", {})
+            reached = metrics.get("goal_reached", torch.zeros_like(done_tensor))
+            dropped = metrics.get("dropped", torch.zeros_like(done_tensor))
+            for idx in torch.nonzero(done_tensor, as_tuple=False).flatten().tolist():
+                quality = {
+                    "env_id": int(environment_ids[idx].item()),
+                    "episode_id": int(episode_id[idx].item()),
+                    "target_face": int(episode_target_face[idx].item()),
+                    "success": bool(torch.as_tensor(reached)[idx].item()),
+                    "drop": bool(torch.as_tensor(dropped)[idx].item()),
+                    "timeout": not bool(torch.as_tensor(reached)[idx].item()) and not bool(torch.as_tensor(dropped)[idx].item()),
+                    "terminal_step": int(step_index[idx].item() + 1),
+                }
+                episode_quality.append(quality)
+            if captured:
+                terminal_flags[-1][done_cpu] = True
+            else:
+                for idx in torch.nonzero(done_tensor, as_tuple=False).flatten().tolist():
+                    batch_idx = int(last_capture_batch[idx].item())
+                    if batch_idx >= 0:
+                        terminal_flags[batch_idx][idx] = True
+            last_capture_batch[done_tensor] = -1
         step_index += 1
         step_index[done_tensor] = 0
         episode_id[done_tensor] += 1
+        episode_target_face[done_tensor] = env.unwrapped.target_face[done_tensor].detach()
         completed += int(torch.as_tensor(done_tensor).sum().item())
         step += 1
 
@@ -174,6 +202,7 @@ def main(env_cfg, agent_cfg):
             "terminal": terminal_flags,
             "transition_goal_reached": transition_success,
             "transition_dropped": transition_drop,
+            "episode_quality": episode_quality,
             "instruction_templates": [
                 "show the {face} marker",
                 "show the {face} marker and keep it visible",
@@ -189,6 +218,7 @@ def main(env_cfg, agent_cfg):
             "freeze_id": freeze_id,
             "goal_yaw": args_cli.goal_yaw,
             "episodes": completed,
+            "requested_episodes": args_cli.episodes,
             "stride": args_cli.stride,
             "depth_dtype": "float16",
             "action_storage": "bounded_projection_of_teacher_output",

@@ -25,7 +25,7 @@ from BrainCo_DexHand.algo.agentic.visual_student import VisualLanguageStudent, V
 
 
 class FeatureSequenceDataset(Dataset):
-    def __init__(self, path: str, history: int = 8, split: str = "train", seed: int = 0):
+    def __init__(self, path: str, history: int = 8, split: str = "train", seed: int = 0, split_manifest: dict | None = None):
         if history <= 0:
             raise ValueError("history must be positive")
         data = torch.load(path, map_location="cpu", weights_only=False)
@@ -34,12 +34,18 @@ class FeatureSequenceDataset(Dataset):
         episode_id = data.get("episode_id", torch.zeros(n, dtype=torch.long)).reshape(-1)
         keys = [(int(e), int(ep)) for e, ep in zip(env_id, episode_id)]
         groups = sorted(set(keys))
-        generator = torch.Generator().manual_seed(seed)
-        permutation = torch.randperm(len(groups), generator=generator).tolist()
-        cut = max(1, int(0.8 * len(groups)))
-        selected = set(groups[i] for i in permutation[:cut]) if split == "train" else set(groups[i] for i in permutation[cut:])
-        if split == "val" and not selected:
-            selected = set(groups[-1:])
+        if split_manifest is not None:
+            selected = {tuple(int(value) for value in item) for item in split_manifest.get(split, [])}
+            unknown = selected.difference(groups)
+            if unknown:
+                raise ValueError(f"split manifest contains {len(unknown)} episode keys absent from {path}")
+        else:
+            generator = torch.Generator().manual_seed(seed)
+            permutation = torch.randperm(len(groups), generator=generator).tolist()
+            cut = max(1, int(0.8 * len(groups)))
+            selected = set(groups[i] for i in permutation[:cut]) if split == "train" else set(groups[i] for i in permutation[cut:])
+            if split == "val" and not selected:
+                selected = set(groups[-1:])
 
         order = sorted(range(n), key=lambda i: (keys[i], int(data["step_index"].reshape(-1)[i])))
         self.rgb, self.lang, self.proprio, self.actions = [], [], [], []
@@ -103,6 +109,7 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    parser.add_argument("--split-manifest", default=None, help="Persisted episode-level train/validation split JSON.")
     args = parser.parse_args()
     manifest = _load_freeze_manifest(args.freeze_manifest)
     cache_meta = torch.load(args.data, map_location="cpu", weights_only=False)
@@ -112,8 +119,15 @@ def main() -> None:
     if cache_meta.get("action_storage") not in (None, "bounded_projection_of_teacher_output"):
         raise ValueError("feature cache action storage is not the frozen bounded teacher projection")
     torch.manual_seed(args.seed)
-    train = FeatureSequenceDataset(args.data, args.history, "train", args.seed)
-    val = FeatureSequenceDataset(args.data, args.history, "val", args.seed)
+    split_manifest = None
+    if args.split_manifest:
+        split_manifest = json.loads(Path(args.split_manifest).read_text())
+        expected_sha = split_manifest.get("source_sha256")
+        actual_sha = hashlib.sha256(Path(args.data).read_bytes()).hexdigest()
+        if expected_sha and expected_sha != actual_sha:
+            raise ValueError(f"split manifest source SHA256 {expected_sha} does not match feature cache {actual_sha}")
+    train = FeatureSequenceDataset(args.data, args.history, "train", args.seed, split_manifest)
+    val = FeatureSequenceDataset(args.data, args.history, "val", args.seed, split_manifest)
     if train.actions.shape[-1] != int(manifest["action_contract"]["action_dim"]):
         raise ValueError(
             f"dataset action dimension {train.actions.shape[-1]} does not match frozen contract "
@@ -159,7 +173,8 @@ def main() -> None:
               "train_samples": len(train), "val_samples": len(val), "device": str(device),
               "seed": args.seed, "history": args.history,
               "action_scale": float(manifest["action_contract"]["action_scale"]),
-              "memory_mode": args.memory_mode, "freeze_id": manifest["freeze_id"], "metrics": history}
+              "memory_mode": args.memory_mode, "freeze_id": manifest["freeze_id"],
+              "split_manifest": args.split_manifest, "metrics": history}
     output.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
 

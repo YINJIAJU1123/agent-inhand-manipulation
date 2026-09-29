@@ -20,7 +20,7 @@ def main() -> None:
     list_keys = {
         "frames", "actions", "teacher_actions", "student_proprio", "target_face",
         "instructions", "episode_id", "step_index", "env_id", "terminal",
-        "transition_goal_reached", "transition_dropped",
+        "transition_goal_reached", "transition_dropped", "episode_quality",
     }
     # Each collection process restarts its environment ids at zero. Allocate a
     # disjoint id range per shard so the trainer cannot join histories from
@@ -37,6 +37,8 @@ def main() -> None:
             values = shard[key]
             if key == "env_id":
                 values = [torch.as_tensor(x).clone() + env_offset for x in values]
+            elif key == "episode_quality":
+                values = [dict(row, env_id=int(row["env_id"]) + env_offset) for row in values]
             merged.setdefault(key, []).extend(values)
         env_offset += max_env + 1
     metadata_keys = (
@@ -50,6 +52,7 @@ def main() -> None:
                 raise ValueError(f"shards disagree on frozen metadata field {key}: {values}")
             merged[key] = values[0]
     merged["episodes"] = sum(int(shard.get("episodes", 0)) for shard in shards)
+    merged["requested_episodes"] = sum(int(shard.get("requested_episodes", shard.get("episodes", 0))) for shard in shards)
     merged["shards"] = [str(path) for path in args.inputs]
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

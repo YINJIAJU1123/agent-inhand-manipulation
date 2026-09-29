@@ -18,13 +18,16 @@ fi
 manifest=${VISUAL_FREEZE_MANIFEST:-$root/configs/visual_student_freeze.json}
 output=${VISUAL_OUTPUT:-$root/outputs/visual_student_v1}
 checkpoint=${TEACHER_CHECKPOINT:?set TEACHER_CHECKPOINT to the frozen model_1999.pt}
-source_data=${VISUAL_SOURCE_DATA:-$output/rollouts_merged.pt}
+raw_data=${VISUAL_RAW_DATA:-$output/rollouts_merged.pt}
+source_data=${VISUAL_SOURCE_DATA:-$output/rollouts_filtered.pt}
 cache=${VISUAL_FEATURE_CACHE:-$output/semantic_features.pt}
 action_scale=${VISUAL_ACTION_SCALE:-6.0}
 task=${VISUAL_TASK:-BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0}
 num_envs=${VISUAL_NUM_ENVS:-64}
 episodes=${VISUAL_EPISODES:-387}
 stride=${VISUAL_STRIDE:-2}
+quality_policy=${VISUAL_QUALITY_POLICY:-success_only}
+split_manifest=${VISUAL_SPLIT_MANIFEST:-$output/episode_split.json}
 mkdir -p "$output"
 if [[ ! -f "$checkpoint" ]]; then
   echo "frozen teacher checkpoint not found: $checkpoint" >&2
@@ -58,9 +61,26 @@ collect() {
     --output "$output/rollout_seed${VISUAL_COLLECT_SEED:-0}.pt" --headless --enable_cameras
 }
 
+audit_rollouts() {
+  local data="$1"
+  local report="$2"
+  "$python_bin" scripts/vision/audit_visual_rollouts.py --data "$data" --report "$report" --expected-stride "$stride"
+}
+
+filter_rollouts() {
+  "$python_bin" scripts/vision/filter_visual_rollouts.py \
+    --data "$raw_data" --output "$source_data" --policy "$quality_policy" \
+    --report "$output/rollouts_filtered.json"
+}
+
 cache_features() {
   "$python_bin" scripts/vision/cache_semantic_features.py \
     --data "$source_data" --output "$cache"
+}
+
+create_split() {
+  "$python_bin" scripts/vision/create_episode_split.py \
+    --data "$cache" --output "$split_manifest" --seed "${VISUAL_SPLIT_SEED:-0}"
 }
 
 train_one() {
@@ -69,7 +89,8 @@ train_one() {
   local prefix="$output/student_${mode}_seed${seed}"
   "$python_bin" scripts/vision/train_feature_student.py \
     --data "$cache" --output "${prefix}.pt" \
-    --seed "$seed" --memory-mode "$mode" --freeze-manifest "$manifest"
+    --seed "$seed" --memory-mode "$mode" --freeze-manifest "$manifest" \
+    --split-manifest "$split_manifest"
   "$python_bin" scripts/vision/evaluate_offline_student.py \
     --data "$cache" --checkpoint "${prefix}.pt" \
     --seed "$seed" --report "${prefix}_offline.json"
@@ -103,8 +124,12 @@ case "$mode" in
     ;;
   all)
     collect
-    "$python_bin" scripts/vision/merge_rollout_shards.py --output "$source_data" "$output"/rollout_seed*.pt
+    "$python_bin" scripts/vision/merge_rollout_shards.py --output "$raw_data" "$output"/rollout_seed*.pt
+    audit_rollouts "$raw_data" "$output/rollouts_raw_audit.json"
+    filter_rollouts
+    audit_rollouts "$source_data" "$output/rollouts_filtered_audit.json"
     cache_features
+    create_split
     for mode_name in ${VISUAL_MEMORY_MODES:-plain evidence}; do
       for seed in ${VISUAL_TRAIN_SEEDS:-0 1 2}; do train_one "$mode_name" "$seed"; done
     done
