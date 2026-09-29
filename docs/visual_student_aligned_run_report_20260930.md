@@ -9,7 +9,7 @@
 - Action scale: `1.0` (normalized environment command; no external multiplier)
 - Goal yaw: `0.0`
 - Camera protocol: semantic RGB features, 256x256 RGB, vision stride 2
-- Student split: fixed episode split, 306 train / 76 validation episodes
+- Student split: fixed episode split for the DAgger round-2 aggregate, 675 train / 169 validation episodes
 
 ## Environment alignment correction
 
@@ -50,3 +50,31 @@ The first corrected live run used the old `6.0` multiplier and produced only 1â€
 A spatial RGB grid and normalized depth grid were then added, and the previous-action portion of proprioception was clamped to the same normalized contract. A 24-episode depth ablation reached 3/24 (12.5%) in one all-episode split, but was not stable enough to freeze as a final result.
 
 The next experiment is DAgger: the visual policy drives the environment while the frozen teacher labels the visited states. The first 200-episode DAgger shard contains 22,912 labeled samples; its own student-visited state distribution is substantially different from the teacher-only demonstrations. A plain DAgger retrain reached 7/24 (29.2%) in the first closed-loop check, confirming covariate shift as a real bottleneck. The DAgger dataset and collector are now the basis for the next iteration.
+
+## DAgger round 2 quick verification
+
+The second round used `dagger_plain_seed1.pt` as the behavior policy while the
+frozen teacher labeled every visited state. It completed 200 requested
+episodes and produced 23,872 aligned RGB-D samples. The aggregate cache combines
+the corrected teacher cache, round 1, and round 2:
+
+- `53,338` samples and `844` episode groups
+- spatial RGB-D feature width `1,060` (16x16 RGB and depth grids)
+- normalized 21-D action contract, `action_scale=1.0`
+- aggregate cache SHA256:
+  `7907b6f98b1cde77e7d1dbe5343813a5684cbe706168c18ee16311cfa28b0ca7`
+
+Two representative models were trained for 40 epochs on the fixed split. The
+quick closed-loop check used 24 episodes per model, four vectorized environments,
+the same camera/task protocol, and no external action multiplier:
+
+| Model | Success | Drop | Checkpoint SHA256 |
+| --- | ---: | ---: | --- |
+| DAgger round 2 plain | 14/24 (58.33%) | 8/24 (33.33%) | `7e242e572dec13e3e8ab203cee8d32273a8fb24b23394bb459916433e8531f0b` |
+| DAgger round 2 evidence | 12/24 (50.00%) | 10/24 (41.67%) | `21f1e3b9db1d48618cdfe53543182ebc47e232a5b834988ac13610556ba929a6` |
+
+This is a clear improvement over the first DAgger quick check (7/24 plain and
+5/24 evidence), but the drop rates and the small evaluation sample do not yet
+support calling the visual student stable. The next gate is a larger paired
+evaluation of the plain model, followed by another DAgger round only if the
+failure cases still show systematic covariate shift.
