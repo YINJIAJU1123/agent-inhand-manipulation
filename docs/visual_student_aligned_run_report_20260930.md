@@ -127,3 +127,21 @@ The targeted data fixed the face-5 gap and kept face 4 high. Face 2 and face 3
 now set the remaining lower bound. This is strong enough to start the larger
 training and paired evaluation phase, but it is still below the frozen teacher
 gate and should not yet be reported as final student stability.
+
+
+## Unified evidence multi-seed check
+
+The unified 110,045-sample cache was trained with three evidence seeds. The
+96-episode checks were:
+
+| Seed | Success | Drop |
+| ---: | ---: | ---: |
+| 1 | 79/96 (82.29%) | 15/96 (15.63%) |
+| 2 | 68/96 (70.83%) | 20/96 (20.83%) |
+| 3 | 76/96 (79.17%) | 16/96 (16.67%) |
+
+The mean success is 77.43% (standard deviation 5.0 percentage points). Seed 1
+is the current candidate, with seed 3 close behind. This confirms the large
+training setup is functioning, while also showing that a final paper claim
+needs more training or a targeted control improvement to close the gap to the
+frozen teacher.
