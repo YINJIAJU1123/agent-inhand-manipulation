@@ -15,7 +15,8 @@ parser = argparse.ArgumentParser(description="DAgger labels for a visual Revo3 s
 parser.add_argument("--teacher-checkpoint", required=True)
 parser.add_argument("--student-checkpoint", required=True)
 parser.add_argument("--task", default="BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0")
-parser.add_argument("--episodes", type=int, default=200)
+parser.add_argument("--episodes", type=int, default=200, help="Number of recorded target episodes.")
+parser.add_argument("--target-faces", default="", help="Comma-separated target face ids to record (for example 4,5). Empty records all faces.")
 parser.add_argument("--num_envs", type=int, default=32)
 parser.add_argument("--vision-stride", type=int, default=2)
 parser.add_argument("--semantic-grid-size", type=int, default=16)
@@ -26,6 +27,9 @@ AppLauncher.add_app_launcher_args(parser)
 args, hydra_args = parser.parse_known_args()
 sys.argv = [sys.argv[0]] + hydra_args
 args.enable_cameras = True
+args.target_faces = tuple(sorted({int(x) for x in args.target_faces.split(",") if x.strip()}))
+if any(x < 0 or x >= 6 for x in args.target_faces):
+    raise ValueError("target face ids must be in [0, 5]")
 app = AppLauncher(args).app
 
 import gymnasium as gym  # noqa: E402
@@ -120,6 +124,8 @@ def main(env_cfg, agent_cfg):
     rgb_hist = torch.zeros((n, history, ckpt["rgb_dim"]), device=device)
     prop_hist = torch.zeros((n, history, ckpt["proprio_dim"]), device=device)
     initialized = torch.zeros(n, dtype=torch.bool, device=device)
+    record_episode = torch.zeros(n, dtype=torch.bool, device=device)
+    record_face = torch.full((n,), -1, dtype=torch.long, device=device)
     episode_id = torch.zeros(n, dtype=torch.long, device=device)
     step_index = torch.zeros(n, dtype=torch.long, device=device)
     env_ids = torch.arange(n, device=device)
@@ -143,12 +149,19 @@ def main(env_cfg, agent_cfg):
                     rgb_hist[fresh] = image[fresh, None]
                     prop_hist[fresh] = prop[fresh, None]
                     initialized[fresh] = True
+                    record_face[fresh] = face[fresh]
+                    if args.target_faces:
+                        record_episode[fresh] = torch.isin(face[fresh], torch.tensor(args.target_faces, device=device))
+                    else:
+                        record_episode[fresh] = True
                 lang = torch.eye(6, device=device)[face]
                 out = student(VisualStudentBatch(rgb_hist, lang, prop_hist))
                 teacher_action = teacher(obs)
-                image_features.append(image.cpu()); language_features.append(lang.cpu()); proprio.append(prop.cpu())
-                actions.append(teacher_action.clamp(-1, 1).cpu()); teacher_actions.append(teacher_action.cpu())
-                target_faces.append(face.cpu()); episodes.append(episode_id.cpu()); steps.append(step_index.cpu()); env_batches.append(env_ids.cpu())
+                keep = record_episode
+                if keep.any():
+                    image_features.append(image[keep].cpu()); language_features.append(lang[keep].cpu()); proprio.append(prop[keep].cpu())
+                    actions.append(teacher_action[keep].clamp(-1, 1).cpu()); teacher_actions.append(teacher_action[keep].cpu())
+                    target_faces.append(face[keep].cpu()); episodes.append(episode_id[keep].cpu()); steps.append(step_index[keep].cpu()); env_batches.append(env_ids[keep].cpu())
             else:
                 out = student(VisualStudentBatch(rgb_hist, lang, prop_hist))
                 teacher_action = teacher(obs)
@@ -161,9 +174,10 @@ def main(env_cfg, agent_cfg):
             metrics = env.unwrapped.extras.get("semantic_metrics", {})
             reached = metrics.get("goal_reached", torch.zeros_like(done)); dropped = metrics.get("dropped", torch.zeros_like(done))
             for idx in torch.nonzero(done, as_tuple=False).flatten().tolist():
-                quality.append({"env_id": int(env_ids[idx]), "episode_id": int(episode_id[idx]), "success": bool(reached[idx]), "drop": bool(dropped[idx])})
-            completed += int(done.sum())
-            episode_id[done] += 1; step_index[done] = 0; initialized[done] = False
+                if bool(record_episode[idx]):
+                    quality.append({"env_id": int(env_ids[idx]), "episode_id": int(episode_id[idx]), "face": int(record_face[idx]), "success": bool(reached[idx]), "drop": bool(dropped[idx])})
+            completed += int((done & record_episode).sum())
+            episode_id[done] += 1; step_index[done] = 0; initialized[done] = False; record_episode[done] = False; record_face[done] = -1
             rgb_hist[done] = 0; prop_hist[done] = 0
         step_index += 1; step += 1
         if step % 100 == 0:
@@ -174,7 +188,7 @@ def main(env_cfg, agent_cfg):
         "target_face": torch.cat(target_faces), "episode_id": torch.cat(episodes), "step_index": torch.cat(steps), "env_id": torch.cat(env_batches),
         "model": f"dagger_semantic_rgb_grid{args.semantic_grid_size}_depth{args.semantic_depth_grid_size}",
         "freeze_id": manifest["freeze_id"], "action_storage": "bounded_projection_of_teacher_output",
-        "source_checkpoint_sha256": manifest["teacher"]["sha256"], "quality": quality,
+        "source_checkpoint_sha256": manifest["teacher"]["sha256"], "quality": quality, "target_faces": list(args.target_faces),
     }
     out = Path(args.output); out.parent.mkdir(parents=True, exist_ok=True); torch.save(result, out)
     print(json.dumps({"output": str(out), "samples": int(result["actions"].shape[0]), "episodes": completed, "quality": quality}, indent=2))

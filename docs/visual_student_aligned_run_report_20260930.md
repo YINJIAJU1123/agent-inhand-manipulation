@@ -104,3 +104,26 @@ this split), while faces 0--3 are between 76.2% and 100%. This points to a
 target-face and late-orientation coverage gap rather than a general camera or
 action-contract failure. The model is improved but is not yet at the frozen
 teacher's 90%+ stability gate.
+
+## Targeted face-4/5 supplementation and unified candidate
+
+The round-4 evidence model was used for a targeted DAgger shard that records
+only target faces 4 and 5. It added 15,043 samples from 240 episodes (face 4:
+103/113 teacher-success episodes; face 5: 84/127). The resulting unified cache
+contains 110,045 samples across 1,635 episode groups.
+
+A unified evidence model trained on this cache reached the following 96-episode
+check under the frozen RGB-D protocol:
+
+- Overall: `79/96 = 82.29%` success, `15/96 = 15.63%` drops
+- Face 0: 91.67% success
+- Face 1: 86.36% success
+- Face 2: 66.67% success
+- Face 3: 72.73% success
+- Face 4: 85.71% success
+- Face 5: 93.75% success
+
+The targeted data fixed the face-5 gap and kept face 4 high. Face 2 and face 3
+now set the remaining lower bound. This is strong enough to start the larger
+training and paired evaluation phase, but it is still below the frozen teacher
+gate and should not yet be reported as final student stability.
