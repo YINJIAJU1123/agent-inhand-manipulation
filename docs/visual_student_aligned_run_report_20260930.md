@@ -78,3 +78,29 @@ This is a clear improvement over the first DAgger quick check (7/24 plain and
 support calling the visual student stable. The next gate is a larger paired
 evaluation of the plain model, followed by another DAgger round only if the
 failure cases still show systematic covariate shift.
+
+## DAgger rounds 3 and 4
+
+The 96-episode check on round 2 exposed that its 24-episode result was
+optimistic: plain reached 36/96 (37.50%) with a 45.83% drop rate. Round 3
+used the round-2 plain policy for another 240-episode teacher-labeled shard,
+then reached 50/96 (52.08%) with a 39.58% drop rate.
+
+Round 4 used the round-3 plain policy. Its behavior rollout contained 19,648
+samples from 240 episodes, with 165 teacher-success episodes and 38 drops.
+After merging all four DAgger rounds with the corrected teacher cache, the
+aggregate contains 95,002 samples across 1,386 episode groups. The quick
+24-episode check was 16/24 for plain and 21/24 for evidence. The larger
+96-episode confirmation was:
+
+| Model | Success | Drop |
+| --- | ---: | ---: |
+| DAgger round 4 plain | 55/96 (57.29%) | 34/96 (35.42%) |
+| DAgger round 4 evidence | 73/96 (76.04%) | 18/96 (18.75%) |
+
+The evidence model is now the best visual-student candidate. Its remaining
+errors are concentrated on target faces 4 and 5 (69.2% and 60.0% success in
+this split), while faces 0--3 are between 76.2% and 100%. This points to a
+target-face and late-orientation coverage gap rather than a general camera or
+action-contract failure. The model is improved but is not yet at the frozen
+teacher's 90%+ stability gate.
