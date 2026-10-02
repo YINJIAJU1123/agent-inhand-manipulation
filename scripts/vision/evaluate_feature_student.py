@@ -42,6 +42,8 @@ parser.add_argument("--semantic-depth-grid-size", type=int, default=0,
                     help="Append a low-resolution normalized depth grid before the semantic marker slots.")
 parser.add_argument("--zero-language", action="store_true",
                     help="Zero the language feature while evaluating a control student.")
+parser.add_argument("--language-mode", choices=("onehot", "hash"), default="onehot",
+                    help="Structured face one-hot or deterministic text-string features.")
 parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--max-steps", type=int, default=300)
@@ -78,6 +80,7 @@ import BrainCo_DexHand  # noqa: F401, E402
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from train_feature_student import VisualLanguageStudent, VisualStudentBatch  # noqa: E402
 from BrainCo_DexHand.algo.agentic.language_goal import FACE_NAMES  # noqa: E402
+from BrainCo_DexHand.algo.agentic.text_features import hashed_text_features  # noqa: E402
 
 
 def _features(model, processor, images, device, text_features):
@@ -186,6 +189,8 @@ def main():
     env = gym.make(task, cfg=cfg)
     raw = env.unwrapped
     ckpt = torch.load(args.checkpoint, map_location=device, weights_only=False)
+    if ckpt.get("language_mode") and ckpt["language_mode"] != args.language_mode:
+        raise ValueError(f"checkpoint language mode {ckpt['language_mode']} disagrees with --language-mode {args.language_mode}")
     if ckpt.get("freeze_id") and ckpt["freeze_id"] != freeze_manifest["freeze_id"]:
         raise ValueError(f"student checkpoint freeze_id {ckpt['freeze_id']} does not match {freeze_manifest['freeze_id']}")
     if ckpt.get("action_scale") is not None and abs(float(ckpt["action_scale"]) - float(args.action_scale)) > 1e-8:
@@ -201,9 +206,13 @@ def main():
     processor = None
     vlm = None
     if args.structured_camera or args.semantic_camera:
-        # The live path uses the same six-dimensional language contract as the
-        # structured cache, so its checkpoint is drop-in compatible.
-        text_features = torch.eye(len(face_names), device=device)
+        # The live path uses the checkpoint language contract; one-hot and
+        # deterministic hash-text modes share the same face prompt ordering.
+        prompts = [f"show the {x} marker" for x in face_names]
+        if args.language_mode == "hash":
+            text_features = hashed_text_features(prompts, dim=ckpt["language_dim"]).to(device)
+        else:
+            text_features = torch.eye(len(face_names), device=device)
         if args.zero_language:
             text_features.zero_()
     else:
@@ -354,6 +363,7 @@ def main():
         "semantic_grid_size": args.semantic_grid_size,
         "semantic_depth_grid_size": args.semantic_depth_grid_size,
         "zero_language": args.zero_language,
+        "language_mode": args.language_mode,
         "episodes": len(records), "vector_steps": step_count,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
         "drop_rate": sum(x["drop"] for x in records) / max(len(records), 1),

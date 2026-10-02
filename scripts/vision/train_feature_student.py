@@ -118,6 +118,9 @@ def main() -> None:
         raise ValueError(f"feature cache freeze_id {cache_freeze_id} does not match {manifest['freeze_id']}")
     if cache_meta.get("action_storage") not in (None, "bounded_projection_of_teacher_output"):
         raise ValueError("feature cache action storage is not the frozen bounded teacher projection")
+    language_mode = cache_meta.get("language_mode", "onehot")
+    if language_mode not in ("onehot", "hash", "vlm"):
+        raise ValueError(f"unsupported language feature mode: {language_mode}")
     torch.manual_seed(args.seed)
     split_manifest = None
     if args.split_manifest:
@@ -165,6 +168,7 @@ def main() -> None:
                 "action_dim": train.actions.shape[-1], "history": args.history,
                 "action_scale": float(manifest["action_contract"]["action_scale"]),
                 "memory_mode": args.memory_mode,
+                "language_mode": language_mode,
                 "freeze_id": manifest["freeze_id"],
                 "freeze_manifest": str(Path(args.freeze_manifest).resolve()),
                 "data_sha256": data_sha256,
@@ -173,7 +177,8 @@ def main() -> None:
               "train_samples": len(train), "val_samples": len(val), "device": str(device),
               "seed": args.seed, "history": args.history,
               "action_scale": float(manifest["action_contract"]["action_scale"]),
-              "memory_mode": args.memory_mode, "freeze_id": manifest["freeze_id"],
+              "memory_mode": args.memory_mode, "language_mode": language_mode,
+              "freeze_id": manifest["freeze_id"],
               "split_manifest": args.split_manifest, "metrics": history}
     output.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
