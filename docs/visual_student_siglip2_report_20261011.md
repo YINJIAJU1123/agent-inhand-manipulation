@@ -29,3 +29,7 @@ All checkpoints carry the frozen ID, action scale, `language_mode=vlm`, and the 
 The live evaluator was launched with the same RGB-D grid (`16x16` RGB and `16x16` depth), `vision_stride=2`, `action_scale=1.0`, and SigLIP2 text path. Isaac Lab initialized successfully and loaded the model. The remote host was concurrently running several queue jobs and its camera/physics step became too slow; the 24-episode run and a 20-step smoke were stopped after confirming initialization but before a valid episode report was written. Therefore this document does **not** claim a SigLIP2 closed-loop success rate.
 
 The next valid gate is a clean single-GPU live run on an otherwise idle device, followed by the fixed 2-target/24-episode protocol. Until that gate is complete, use the offline numbers only to verify the language-conditioned action regression path.
+
+### A100 execution check (2026-10-11)
+
+The A100 entry point is `root@8.130.44.94 -p 6007`. The node exposes eight A100-SXM4-80GB GPUs and the frozen checkpoint plus SigLIP2 weights were transferred successfully. PyTorch sees all eight GPUs. Isaac Sim 5.1, however, cannot create a Vulkan device on this image: the host has no NVIDIA Vulkan ICD under `/usr/share/vulkan/icd.d` (only Mesa/Intel ICD files). The visual evaluator therefore stops during renderer initialization. This node can still be used for offline student evaluation; a camera-enabled closed-loop run requires a driver/image with the NVIDIA Vulkan ICD installed, or the validated 5090 Isaac environment.
