@@ -82,6 +82,9 @@ def main() -> None:
     result = {
         "image_features": torch.cat(image_features),
         "language_features": torch.cat(text_features),
+        "instructions": [str(text) for batch in data.get("instructions", []) for text in batch],
+        "language_mode": "vlm",
+        "language_model": args.model,
         "student_proprio": torch.cat(data["student_proprio"]),
         "actions": torch.cat(data["actions"]),
         "teacher_actions": torch.cat(data.get("teacher_actions", data["actions"])),

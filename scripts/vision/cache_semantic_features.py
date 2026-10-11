@@ -89,12 +89,21 @@ def main() -> None:
     # Older raw shards stored the teacher's unbounded action in the final
     # proprio slots.  The frozen student contract exposes a normalized command.
     student_proprio[:, -21:] = student_proprio[:, -21:].clamp(-1.0, 1.0)
+    instructions = [str(text) for batch in data.get("instructions", []) for text in batch]
+    sample_count = int(student_proprio.shape[0])
+    if instructions and len(instructions) != sample_count:
+        raise ValueError(
+            f"instruction count {len(instructions)} does not match cached samples {sample_count}"
+        )
     result = {
         "image_features": torch.cat(image_features),
         "language_features": torch.cat([
             torch.nn.functional.one_hot(torch.as_tensor(x, dtype=torch.long).reshape(-1), num_classes=6).float()
             for x in data["target_face"]
         ]),
+        "instructions": instructions,
+        "language_mode": "onehot",
+        "language_dim": 6,
         "student_proprio": student_proprio,
         "actions": torch.cat(data["actions"]),
         "teacher_actions": torch.cat(data.get("teacher_actions", data["actions"])),

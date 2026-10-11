@@ -42,7 +42,7 @@ parser.add_argument("--semantic-depth-grid-size", type=int, default=0,
                     help="Append a low-resolution normalized depth grid before the semantic marker slots.")
 parser.add_argument("--zero-language", action="store_true",
                     help="Zero the language feature while evaluating a control student.")
-parser.add_argument("--language-mode", choices=("onehot", "hash"), default="onehot",
+parser.add_argument("--language-mode", choices=("onehot", "hash", "vlm"), default="onehot",
                     help="Structured face one-hot or deterministic text-string features.")
 parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
@@ -91,6 +91,19 @@ def _features(model, processor, images, device, text_features):
         torch.nn.functional.normalize(image_features.float(), dim=-1),
         text_features,
     )
+
+
+def _text_features(model, processor, texts, device):
+    inputs = processor(text=[str(text) for text in texts], return_tensors="pt", padding=True, truncation=True)
+    inputs = {k: v.to(device) for k, v in inputs.items() if torch.is_tensor(v)}
+    if hasattr(model, "get_text_features"):
+        output = model.get_text_features(**inputs)
+    else:
+        encoded = model.text_model(input_ids=inputs["input_ids"], attention_mask=inputs.get("attention_mask"))
+        output = encoded.pooler_output if hasattr(encoded, "pooler_output") else encoded.last_hidden_state[:, 0]
+        if hasattr(model, "text_projection"):
+            output = model.text_projection(output)
+    return torch.nn.functional.normalize(output.float(), dim=-1)
 
 
 def _structured_rgb_features(rgb: torch.Tensor) -> torch.Tensor:
@@ -205,9 +218,18 @@ def main():
     text_prompts = [f"show the {x} marker" for x in face_names]
     processor = None
     vlm = None
-    if args.structured_camera or args.semantic_camera:
-        # The live path uses the checkpoint language contract; one-hot and
-        # deterministic hash-text modes share the same face prompt ordering.
+    text_features = None
+    # ``vlm`` mode uses the actual instruction string for every episode.
+    # The image path remains the existing RGB-D semantic frontend when
+    # --semantic-camera is supplied; SigLIP is used only for language here.
+    if args.language_mode == "vlm" or not (args.structured_camera or args.semantic_camera):
+        if AutoProcessor is None or AutoModel is None:
+            raise RuntimeError("transformers is required for SigLIP evaluation")
+        processor = AutoProcessor.from_pretrained(args.model, use_fast=False)
+        vlm = AutoModel.from_pretrained(args.model).to(device).eval()
+        if args.language_mode != "vlm":
+            text_features = _text_features(vlm, processor, text_prompts, device)
+    else:
         prompts = [f"show the {x} marker" for x in face_names]
         if args.language_mode == "hash":
             text_features = hashed_text_features(prompts, dim=ckpt["language_dim"]).to(device)
@@ -215,17 +237,16 @@ def main():
             text_features = torch.eye(len(face_names), device=device)
         if args.zero_language:
             text_features.zero_()
-    else:
-        if AutoProcessor is None or AutoModel is None:
-            raise RuntimeError("transformers is required for live SigLIP evaluation")
-        processor = AutoProcessor.from_pretrained(args.model, use_fast=False)
-        vlm = AutoModel.from_pretrained(args.model).to(device).eval()
-        with torch.inference_mode():
-            text_inputs = processor(text=text_prompts, return_tensors="pt", padding=True, truncation=True)
-            text_inputs = {k: v.to(device) for k, v in text_inputs.items() if torch.is_tensor(v)}
-            text_features = torch.nn.functional.normalize(vlm.get_text_features(**text_inputs).float(), dim=-1)
 
     obs, _ = env.reset()
+    if args.language_mode == "vlm":
+        current_instruction_texts = [str(text) for text in raw.current_instructions()]
+        text_features = _text_features(vlm, processor, current_instruction_texts, device)
+        if args.zero_language:
+            text_features.zero_()
+        last_instruction_texts = current_instruction_texts
+    else:
+        last_instruction_texts = None
     n = raw.num_envs
     history = int(ckpt.get("history", 8))
     image_hist = torch.zeros((n, history, ckpt["rgb_dim"]), device=device)
@@ -259,7 +280,16 @@ def main():
                     images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
                     image_features, _ = _features(vlm, processor, images, device, text_features)
             instruction_face = _instruction_faces(raw, device)
-            face_text = text_features[instruction_face]
+            if args.language_mode == "vlm":
+                current_instruction_texts = [str(text) for text in raw.current_instructions()]
+                if current_instruction_texts != last_instruction_texts:
+                    text_features = _text_features(vlm, processor, current_instruction_texts, device)
+                    if args.zero_language:
+                        text_features.zero_()
+                    last_instruction_texts = current_instruction_texts
+                face_text = text_features
+            else:
+                face_text = text_features[instruction_face]
             if capture_step:
                 # Training samples are recorded every vision_stride control steps.
                 # Advance both histories on that same clock and pad a new episode
@@ -364,6 +394,7 @@ def main():
         "semantic_depth_grid_size": args.semantic_depth_grid_size,
         "zero_language": args.zero_language,
         "language_mode": args.language_mode,
+        "language_model": args.model if args.language_mode == "vlm" else None,
         "episodes": len(records), "vector_steps": step_count,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
         "drop_rate": sum(x["drop"] for x in records) / max(len(records), 1),

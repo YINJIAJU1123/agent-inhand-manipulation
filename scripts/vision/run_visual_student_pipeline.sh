@@ -20,7 +20,11 @@ output=${VISUAL_OUTPUT:-$root/outputs/visual_student_v1}
 checkpoint=${TEACHER_CHECKPOINT:?set TEACHER_CHECKPOINT to the frozen model_1999.pt}
 raw_data=${VISUAL_RAW_DATA:-$output/rollouts_merged.pt}
 source_data=${VISUAL_SOURCE_DATA:-$output/rollouts_filtered.pt}
-cache=${VISUAL_FEATURE_CACHE:-$output/semantic_features.pt}
+language_mode=${VISUAL_LANGUAGE_MODE:-onehot}
+language_model=${VISUAL_LANGUAGE_MODEL:-google/siglip2-base-patch16-224}
+base_cache=${VISUAL_BASE_CACHE:-}
+semantic_cache=${VISUAL_SEMANTIC_CACHE:-$output/semantic_rgbd_features.pt}
+cache=${VISUAL_FEATURE_CACHE:-$output/${language_mode}_features.pt}
 action_scale=${VISUAL_ACTION_SCALE:-1.0}
 task=${VISUAL_TASK:-BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0}
 num_envs=${VISUAL_NUM_ENVS:-64}
@@ -74,8 +78,31 @@ filter_rollouts() {
 }
 
 cache_features() {
-  "$python_bin" scripts/vision/cache_semantic_features.py \
-    --data "$source_data" --output "$cache"
+  # Always build the deterministic RGB-D cache first.  Language modes are
+  # overlays, so one-hot/hash/SigLIP experiments share identical visual
+  # features, actions, episode splits and freeze metadata.
+  if [[ -n "$base_cache" ]]; then
+    cp "$base_cache" "$semantic_cache"
+  else
+    "$python_bin" scripts/vision/cache_semantic_features.py \
+      --data "$source_data" --output "$semantic_cache"
+  fi
+  case "$language_mode" in
+    onehot)
+      if [[ "$semantic_cache" != "$cache" ]]; then cp "$semantic_cache" "$cache"; fi
+      ;;
+    hash)
+      "$python_bin" scripts/vision/cache_hash_text_features.py \
+        --data "$semantic_cache" --output "$cache"
+      ;;
+    vlm)
+      canonical_flag=()
+      if [[ "${VISUAL_CANONICAL_TEXT:-0}" == "1" ]]; then canonical_flag+=(--canonical-from-target-face); fi
+      "$python_bin" scripts/vision/cache_siglip_text_features.py \
+        --data "$semantic_cache" --output "$cache" --model "$language_model" "${canonical_flag[@]}"
+      ;;
+    *) echo "unsupported VISUAL_LANGUAGE_MODE: $language_mode" >&2; exit 2 ;;
+  esac
 }
 
 create_split() {
@@ -106,6 +133,7 @@ live_eval_one() {
     --num_envs "${VISUAL_EVAL_ENVS:-4}" --max-steps "${VISUAL_EVAL_STEPS:-600}" \
     --vision-stride "$stride" --action-scale "$action_scale" \
     --freeze-manifest "$manifest" --report "${prefix}_live.json" \
+    --language-mode "$language_mode" --model "$language_model" \
     --headless --enable_cameras
 }
 
