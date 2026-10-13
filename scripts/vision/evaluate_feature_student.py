@@ -44,6 +44,10 @@ parser.add_argument("--zero-language", action="store_true",
                     help="Zero the language feature while evaluating a control student.")
 parser.add_argument("--language-mode", choices=("onehot", "hash", "vlm"), default="onehot",
                     help="Structured face one-hot or deterministic text-string features.")
+parser.add_argument("--prompt-style", choices=("canonical", "reorient", "turn", "top", "view", "up"),
+                    default="canonical", help="SigLIP2 prompt template used for language-only evaluation.")
+parser.add_argument("--prompt-adapter", default=None,
+                    help="Prompt canonicalizer checkpoint mapping paraphrase embeddings to canonical embeddings.")
 parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--seed", type=int, default=123,
@@ -173,6 +177,30 @@ def _semantic_rgb_features(rgb: torch.Tensor, grid_size: int = 0, depth: torch.T
     return torch.cat(pieces, dim=-1)
 
 
+PROMPT_TEMPLATES = {
+    "canonical": "show the {color} marker",
+    "reorient": "reorient to the {color} marker",
+    "turn": "turn toward the {color} marker",
+    "top": "bring the {color} marker to the top",
+    "view": "move the {color} marker into view",
+    "up": "place the {color} marker upward",
+}
+
+def _canonicalize_prompt_features(features, adapter, device, face_ids=None):
+    if adapter is None:
+        return features
+    canonical = adapter["canonical_embeddings"].to(device=device, dtype=features.dtype)
+    if face_ids is not None:
+        return canonical[face_ids.to(device=device, dtype=torch.long)]
+    table = adapter["prompt_embeddings"].to(device=device, dtype=features.dtype).reshape(-1, features.shape[-1])
+    scores = torch.nn.functional.normalize(features, dim=-1) @ torch.nn.functional.normalize(table, dim=-1).T
+    nearest = scores.argmax(dim=-1)
+    return canonical[nearest % canonical.shape[0]]
+
+def _prompt_texts(face_ids, style):
+    template = PROMPT_TEMPLATES[style]
+    return [template.format(color=FACE_NAMES[int(face)]) for face in face_ids.detach().cpu().tolist()]
+
 def _instruction_faces(raw, device):
     """Parse the external language command without reading target_face in the actor path."""
     names = {name: index for index, name in enumerate(FACE_NAMES)}
@@ -221,6 +249,11 @@ def main():
     processor = None
     vlm = None
     text_features = None
+    prompt_adapter = None
+    if args.prompt_adapter:
+        prompt_adapter = torch.load(args.prompt_adapter, map_location="cpu", weights_only=False)
+        if prompt_adapter.get("version") != "siglip2_prompt_canonicalizer_v1":
+            raise ValueError("unsupported prompt adapter version")
     # ``vlm`` mode uses the actual instruction string for every episode.
     # The image path remains the existing RGB-D semantic frontend when
     # --semantic-camera is supplied; SigLIP is used only for language here.
@@ -242,8 +275,9 @@ def main():
 
     obs, _ = env.reset()
     if args.language_mode == "vlm":
-        current_instruction_texts = [str(text) for text in raw.current_instructions()]
-        text_features = _text_features(vlm, processor, current_instruction_texts, device)
+        current_instruction_faces = _instruction_faces(raw, device)
+        current_instruction_texts = _prompt_texts(current_instruction_faces, args.prompt_style)
+        text_features = _canonicalize_prompt_features(_text_features(vlm, processor, current_instruction_texts, device), prompt_adapter, device, current_instruction_faces)
         if args.zero_language:
             text_features.zero_()
         last_instruction_texts = current_instruction_texts
@@ -283,9 +317,9 @@ def main():
                     image_features, _ = _features(vlm, processor, images, device, text_features)
             instruction_face = _instruction_faces(raw, device)
             if args.language_mode == "vlm":
-                current_instruction_texts = [str(text) for text in raw.current_instructions()]
+                current_instruction_texts = _prompt_texts(instruction_face, args.prompt_style)
                 if current_instruction_texts != last_instruction_texts:
-                    text_features = _text_features(vlm, processor, current_instruction_texts, device)
+                    text_features = _canonicalize_prompt_features(_text_features(vlm, processor, current_instruction_texts, device), prompt_adapter, device, instruction_face)
                     if args.zero_language:
                         text_features.zero_()
                     last_instruction_texts = current_instruction_texts
@@ -396,6 +430,8 @@ def main():
         "semantic_depth_grid_size": args.semantic_depth_grid_size,
         "zero_language": args.zero_language,
         "language_mode": args.language_mode,
+        "prompt_style": args.prompt_style,
+        "prompt_adapter": os.path.abspath(args.prompt_adapter) if args.prompt_adapter else None,
         "language_model": args.model if args.language_mode == "vlm" else None,
         "episodes": len(records), "vector_steps": step_count, "seed": args.seed,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
