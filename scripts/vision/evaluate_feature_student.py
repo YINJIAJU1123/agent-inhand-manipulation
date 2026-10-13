@@ -46,6 +46,8 @@ parser.add_argument("--language-mode", choices=("onehot", "hash", "vlm"), defaul
                     help="Structured face one-hot or deterministic text-string features.")
 parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
+parser.add_argument("--seed", type=int, default=123,
+                    help="Environment seed for reproducible, independent evaluation runs.")
 parser.add_argument("--max-steps", type=int, default=300)
 parser.add_argument("--vision-stride", type=int, default=4, help="Run the frozen VLM every N control steps.")
 parser.add_argument("--action-scale", type=float, default=None,
@@ -194,7 +196,7 @@ def main():
     cfg = parse_env_cfg(task, device=str(device), num_envs=args.num_envs)
     cfg.max_consecutive_success = 1
     cfg.record_eval_metrics = True
-    cfg.seed = 123
+    cfg.seed = args.seed
     if hasattr(cfg, "goal_yaw"):
         # Collection and live evaluation share the deterministic yaw contract;
         # language names the requested surface without hiding an extra yaw.
@@ -395,7 +397,7 @@ def main():
         "zero_language": args.zero_language,
         "language_mode": args.language_mode,
         "language_model": args.model if args.language_mode == "vlm" else None,
-        "episodes": len(records), "vector_steps": step_count,
+        "episodes": len(records), "vector_steps": step_count, "seed": args.seed,
         "success_rate": sum(x["success"] for x in records) / max(len(records), 1),
         "drop_rate": sum(x["drop"] for x in records) / max(len(records), 1),
         "per_face": {str(k): {"episodes": len(v), "success_rate": sum(x["success"] for x in v) / len(v),
