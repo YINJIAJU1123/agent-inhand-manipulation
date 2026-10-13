@@ -23,6 +23,7 @@ parser.add_argument("--semantic-grid-size", type=int, default=16)
 parser.add_argument("--semantic-depth-grid-size", type=int, default=16)
 parser.add_argument("--output", required=True)
 parser.add_argument("--freeze-manifest", default="configs/visual_student_freeze.json")
+parser.add_argument("--language-model", default=os.environ.get("VISUAL_LANGUAGE_MODEL", "google/siglip2-base-patch16-224"))
 AppLauncher.add_app_launcher_args(parser)
 args, hydra_args = parser.parse_known_args()
 sys.argv = [sys.argv[0]] + hydra_args
@@ -34,6 +35,7 @@ app = AppLauncher(args).app
 
 import gymnasium as gym  # noqa: E402
 import torch  # noqa: E402
+from transformers import AutoModel, AutoProcessor  # noqa: E402
 from isaaclab.envs import DirectMARLEnv, multi_agent_to_single_agent  # noqa: E402
 from isaaclab.utils.assets import retrieve_file_path  # noqa: E402
 from isaaclab.utils.math import *  # noqa: F401,F403,E402
@@ -120,6 +122,25 @@ def main(env_cfg, agent_cfg):
     manifest = json.loads(Path(args.freeze_manifest).read_text())
     student = VisualLanguageStudent(ckpt["rgb_dim"], ckpt["language_dim"], ckpt["proprio_dim"], ckpt["action_dim"], memory_mode=ckpt.get("memory_mode", "plain")).to(device)
     student.load_state_dict(ckpt["model"]); student.eval()
+    if ckpt.get("language_mode", "onehot") == "vlm":
+        processor = AutoProcessor.from_pretrained(args.language_model, use_fast=False)
+        language_model = AutoModel.from_pretrained(args.language_model).to(device).eval()
+        prompts = [f"show the {name} marker" for name in FACE_NAMES]
+        text_inputs = processor(text=prompts, return_tensors="pt", padding=True, truncation=True)
+        text_inputs = {key: value.to(device) for key, value in text_inputs.items() if torch.is_tensor(value)}
+        with torch.inference_mode():
+            if hasattr(language_model, "get_text_features"):
+                language_lookup = language_model.get_text_features(**text_inputs)
+            else:
+                encoded = language_model.text_model(input_ids=text_inputs["input_ids"], attention_mask=text_inputs.get("attention_mask"))
+                language_lookup = encoded.pooler_output if hasattr(encoded, "pooler_output") else encoded.last_hidden_state[:, 0]
+                if hasattr(language_model, "text_projection"):
+                    language_lookup = language_model.text_projection(language_lookup)
+            language_lookup = torch.nn.functional.normalize(language_lookup.float(), dim=-1)
+        if language_lookup.shape[-1] != int(ckpt["language_dim"]):
+            raise ValueError(f"language model output dim {language_lookup.shape[-1]} does not match checkpoint {ckpt['language_dim']}")
+    else:
+        language_lookup = torch.eye(6, device=device)
     history = int(ckpt.get("history", 8)); n = env.unwrapped.num_envs
     rgb_hist = torch.zeros((n, history, ckpt["rgb_dim"]), device=device)
     prop_hist = torch.zeros((n, history, ckpt["proprio_dim"]), device=device)
@@ -154,7 +175,7 @@ def main(env_cfg, agent_cfg):
                         record_episode[fresh] = torch.isin(face[fresh], torch.tensor(args.target_faces, device=device))
                     else:
                         record_episode[fresh] = True
-                lang = torch.eye(6, device=device)[face]
+                lang = language_lookup[face]
                 out = student(VisualStudentBatch(rgb_hist, lang, prop_hist))
                 teacher_action = teacher(obs)
                 keep = record_episode
@@ -189,6 +210,7 @@ def main(env_cfg, agent_cfg):
         "model": f"dagger_semantic_rgb_grid{args.semantic_grid_size}_depth{args.semantic_depth_grid_size}",
         "freeze_id": manifest["freeze_id"], "action_storage": "bounded_projection_of_teacher_output",
         "source_checkpoint_sha256": manifest["teacher"]["sha256"], "quality": quality, "target_faces": list(args.target_faces),
+        "language_mode": ckpt.get("language_mode", "onehot"), "language_model": args.language_model,
     }
     out = Path(args.output); out.parent.mkdir(parents=True, exist_ok=True); torch.save(result, out)
     print(json.dumps({"output": str(out), "samples": int(result["actions"].shape[0]), "episodes": completed, "quality": quality}, indent=2))
