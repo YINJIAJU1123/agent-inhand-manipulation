@@ -1,0 +1,10 @@
+{
+  "goal_head.pt": {
+    "bytes": 2698595,
+    "sha256": "131cb9ba5c7091f81d432fc1f4d4c1c191067db28fa19876c2c84b96907d117a"
+  },
+  "lora/adapter_model.safetensors": {
+    "bytes": 11817664,
+    "sha256": "227fc4f2bc3481a27d4e17884b74f05c3f5aaaa6b03fce1368d31b3d64813d35"
+  }
+}

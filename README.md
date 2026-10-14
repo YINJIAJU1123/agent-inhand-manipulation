@@ -34,6 +34,13 @@ oracle. Feedback uses 66 versus 86 VLM calls but has not improved success;
 visual symbol-to-sticker binding remains the main observed bottleneck.
 These results are separate from the frozen star benchmark.
 
+The [two-track v4 prototype](docs/agentic_two_track_v4_20261014.md) now adds
+Qwen3-VL-4B QLoRA with a directly executed continuous goal latent and an Astra
+tool supervisor. The small development test completed on 2026-10-15 gives
+4/12 latent successes versus 12/12 paired oracle successes. Astra's interface
+is implemented; real API evaluation is pending credentials. This version is
+not yet a stable multi-symbol agent or a demonstrated improvement over v3.
+
 Earlier project status is recorded in [progress_20260926.md](docs/progress_20260926.md).
 Camera setup and environment reproduction are documented in
 [camera validation](docs/camera_placement.md) and [reproduction instructions](docs/reproducibility.md).

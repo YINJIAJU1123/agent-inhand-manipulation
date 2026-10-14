@@ -1,0 +1,112 @@
+{
+  "benchmark": "two_track_semantic_agent_v4_development",
+  "pairing": {
+    "34001": {
+      "modes": [
+        "latent",
+        "oracle"
+      ],
+      "initial_states_equal": true
+    },
+    "34002": {
+      "modes": [
+        "latent",
+        "oracle"
+      ],
+      "initial_states_equal": true
+    }
+  },
+  "shared_protocol": {
+    "checkpoint_sha256": true,
+    "adapter_sha256": true,
+    "call_budget": true,
+    "max_steps": true,
+    "source_sha256": true
+  },
+  "modes": {
+    "latent": {
+      "success": 4,
+      "grounding_correct": 5,
+      "drop": 2,
+      "calls": 54,
+      "stop_claimed": 0,
+      "false_stop": 0,
+      "status": "completed",
+      "episodes": 12,
+      "success_rate": 0.3333333333333333,
+      "by_symbol": {
+        "bars": {
+          "episodes": 2,
+          "success": 0
+        },
+        "circle": {
+          "episodes": 2,
+          "success": 2
+        },
+        "cross": {
+          "episodes": 2,
+          "success": 1
+        },
+        "diamond": {
+          "episodes": 2,
+          "success": 0
+        },
+        "star": {
+          "episodes": 2,
+          "success": 0
+        },
+        "triangle": {
+          "episodes": 2,
+          "success": 1
+        }
+      }
+    },
+    "oracle": {
+      "success": 12,
+      "grounding_correct": 12,
+      "drop": 0,
+      "calls": 0,
+      "stop_claimed": 0,
+      "false_stop": 0,
+      "status": "completed",
+      "episodes": 12,
+      "success_rate": 1.0,
+      "by_symbol": {
+        "bars": {
+          "episodes": 2,
+          "success": 2
+        },
+        "circle": {
+          "episodes": 2,
+          "success": 2
+        },
+        "cross": {
+          "episodes": 2,
+          "success": 2
+        },
+        "diamond": {
+          "episodes": 2,
+          "success": 2
+        },
+        "star": {
+          "episodes": 2,
+          "success": 2
+        },
+        "triangle": {
+          "episodes": 2,
+          "success": 2
+        }
+      }
+    },
+    "astra": {
+      "status": "not_run"
+    }
+  },
+  "limits": "Small development evaluation; no statistical superiority or autonomous completion claim.",
+  "reports": [
+    "34001_latent/report.json",
+    "34001_oracle/report.json",
+    "34002_latent/report.json",
+    "34002_oracle/report.json"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "benchmark": "language_symbol_agent_v4",
+  "checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+  "adapter_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+  "seeds": [
+    34001
+  ],
+  "modes": [
+    "oracle"
+  ],
+  "grounding": "instruction_conditioned_inventory",
+  "instruction_offset": 0,
+  "template_set": "canonical",
+  "no_symbols": false,
+  "feedback_reobservation_enabled": false,
+  "camera_resolution": 512,
+  "student_resolution": 256,
+  "vision_stride": 2,
+  "agent_stride": 10,
+  "call_budget": 6,
+  "max_steps": 600,
+  "env_max_episode_length": 600,
+  "success": "accepted correct visual goal AND executing it AND orientation error <= 0.16 rad without drop; evaluator stops scored slot, not VLM-certified stopping",
+  "video_capture": "existing pre-action RGB every 2 control steps; 15 fps simulation time",
+  "agent_inputs": [
+    "RGB",
+    "actual full instruction",
+    "measured proprioception",
+    "elapsed control steps"
+  ],
+  "oracle_has_target_label": true,
+  "source_sha256": {
+    "evaluate_two_agent_v4.py": "4655a3cf410b0255c38deeb10c191b77f03d3fc45ed935306074771bc066b2a7",
+    "agent_observation_v4.py": "7b0e66cf087abd071b4871594d50a1256209f748ae47300749713bf70e63e77b",
+    "astra_agent_v4.py": "483d9aa245665b74cc80d1a63a75eacae29736982f0a14ebdb558c679d99e115",
+    "latent_goal_v4.py": "ef531d639f817b24b1125e6407b1ba24ec15d59bbb448bc5bc5fbbf486ffa69c",
+    "latent_supervisor_v4.py": "e781cab8158ddc6d8f2d5c305d6c885f76d701ea352ed85e6cb00cb5b2e8e156",
+    "latent_data_v4.py": "ba1c8e08cfe89896a1b3b3445bb1145040508a8f99ab984f2de5d2b6774fc19a",
+    "semantic_agent_v3.py": "a3d8f6ab1adb3f3f255d5af2fa819b14f73ec2ebdaef5b236cd8112c09f291f6",
+    "semantic_protocol_v3.py": "056b927f3409e08b0bfc1db9bbfc09f05a07c9be9bd224fafb7ca3c1e1f68efd",
+    "visual_agent.py": "0013055a232417a2109cff2745a7e1eeaf02f3369e3e74ecd87fb3d5f1fcf9a3",
+    "student_features.py": "584e064b4fb06c47f90e41ba3bb59617e8ea34f4066318b5e93c715ab813d3fb",
+    "symbol_scene.py": "c2085123b958fb882908bc68c66b3d2a981455c8f64cc850e249530fc9431cd5"
+  },
+  "latent_checkpoint_sha256": null,
+  "latent_adapter_sha256": null,
+  "astra_model": null,
+  "layout_split": "test",
+  "reset_markers_refreshed": true,
+  "autonomous_stop_metric": "separately score pre-action stop requests; primary reach metric still uses evaluator termination"
+}

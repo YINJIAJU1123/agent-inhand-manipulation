@@ -1,0 +1,592 @@
+{
+  "metadata": {
+    "benchmark": "language_symbol_agent_v4",
+    "checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+    "adapter_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+    "seeds": [
+      34001
+    ],
+    "modes": [
+      "oracle"
+    ],
+    "grounding": "instruction_conditioned_inventory",
+    "instruction_offset": 0,
+    "template_set": "canonical",
+    "no_symbols": false,
+    "feedback_reobservation_enabled": false,
+    "camera_resolution": 512,
+    "student_resolution": 256,
+    "vision_stride": 2,
+    "agent_stride": 10,
+    "call_budget": 6,
+    "max_steps": 600,
+    "env_max_episode_length": 600,
+    "success": "accepted correct visual goal AND executing it AND orientation error <= 0.16 rad without drop; evaluator stops scored slot, not VLM-certified stopping",
+    "video_capture": "existing pre-action RGB every 2 control steps; 15 fps simulation time",
+    "agent_inputs": [
+      "RGB",
+      "actual full instruction",
+      "measured proprioception",
+      "elapsed control steps"
+    ],
+    "oracle_has_target_label": true,
+    "source_sha256": {
+      "evaluate_two_agent_v4.py": "4655a3cf410b0255c38deeb10c191b77f03d3fc45ed935306074771bc066b2a7",
+      "agent_observation_v4.py": "7b0e66cf087abd071b4871594d50a1256209f748ae47300749713bf70e63e77b",
+      "astra_agent_v4.py": "483d9aa245665b74cc80d1a63a75eacae29736982f0a14ebdb558c679d99e115",
+      "latent_goal_v4.py": "ef531d639f817b24b1125e6407b1ba24ec15d59bbb448bc5bc5fbbf486ffa69c",
+      "latent_supervisor_v4.py": "e781cab8158ddc6d8f2d5c305d6c885f76d701ea352ed85e6cb00cb5b2e8e156",
+      "latent_data_v4.py": "ba1c8e08cfe89896a1b3b3445bb1145040508a8f99ab984f2de5d2b6774fc19a",
+      "semantic_agent_v3.py": "a3d8f6ab1adb3f3f255d5af2fa819b14f73ec2ebdaef5b236cd8112c09f291f6",
+      "semantic_protocol_v3.py": "056b927f3409e08b0bfc1db9bbfc09f05a07c9be9bd224fafb7ca3c1e1f68efd",
+      "visual_agent.py": "0013055a232417a2109cff2745a7e1eeaf02f3369e3e74ecd87fb3d5f1fcf9a3",
+      "student_features.py": "584e064b4fb06c47f90e41ba3bb59617e8ea34f4066318b5e93c715ab813d3fb",
+      "symbol_scene.py": "c2085123b958fb882908bc68c66b3d2a981455c8f64cc850e249530fc9431cd5"
+    },
+    "latent_checkpoint_sha256": null,
+    "latent_adapter_sha256": null,
+    "astra_model": null,
+    "layout_split": "test",
+    "reset_markers_refreshed": true,
+    "autonomous_stop_metric": "separately score pre-action stop requests; primary reach metric still uses evaluator termination"
+  },
+  "elapsed_s": 61.436170489003416,
+  "episodes": [
+    {
+      "seed": 34001,
+      "mode": "oracle",
+      "case": 0,
+      "target_color_index": 2,
+      "target_symbol": "star",
+      "instruction": "Turn the cube so the star sticker faces upward.",
+      "layout": [
+        1,
+        3,
+        0,
+        2,
+        4,
+        5
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 50,
+      "min_orientation_error_rad": 0.14911064505577087,
+      "final_goal": 2,
+      "parsed_goal_symbol": "star",
+      "language_correct": null,
+      "grounding_correct": true,
+      "stop_claimed": false,
+      "false_stop": false,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 50
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "34001_oracle_case0_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.12021750211715698,
+            0.12021750211715698,
+            0.9880717396736145,
+            -0.9880717396736145,
+            0.0962410569190979,
+            -0.0962410569190979
+          ]
+        },
+        {
+          "path": "34001_oracle_case0_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.046880319714546204,
+            0.046880319714546204,
+            0.996752142906189,
+            -0.996752142906189,
+            0.06547695398330688,
+            -0.06547695398330688
+          ]
+        }
+      ],
+      "video": {
+        "path": "34001_oracle_case0_continuous.mp4",
+        "frames": 25,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 34001,
+      "mode": "oracle",
+      "case": 1,
+      "target_color_index": 4,
+      "target_symbol": "circle",
+      "instruction": "Turn the cube so the circle sticker faces upward.",
+      "layout": [
+        2,
+        3,
+        4,
+        5,
+        1,
+        0
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 31,
+      "min_orientation_error_rad": 0.15356838703155518,
+      "final_goal": 4,
+      "parsed_goal_symbol": "circle",
+      "language_correct": null,
+      "grounding_correct": true,
+      "stop_claimed": false,
+      "false_stop": false,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 31
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "34001_oracle_case1_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.17950698733329773,
+            -0.17950698733329773,
+            0.9097480177879333,
+            -0.9097480177879333,
+            0.374347448348999,
+            -0.374347448348999
+          ]
+        },
+        {
+          "path": "34001_oracle_case1_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.03202447667717934,
+            0.03202447667717934,
+            -0.06816470623016357,
+            0.06816470623016357,
+            0.9971599578857422,
+            -0.9971599578857422
+          ]
+        }
+      ],
+      "video": {
+        "path": "34001_oracle_case1_continuous.mp4",
+        "frames": 16,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 34001,
+      "mode": "oracle",
+      "case": 2,
+      "target_color_index": 4,
+      "target_symbol": "triangle",
+      "instruction": "Turn the cube so the triangle sticker faces upward.",
+      "layout": [
+        4,
+        0,
+        5,
+        3,
+        2,
+        1
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 11,
+      "min_orientation_error_rad": 0.14634913206100464,
+      "final_goal": 4,
+      "parsed_goal_symbol": "triangle",
+      "language_correct": null,
+      "grounding_correct": true,
+      "stop_claimed": false,
+      "false_stop": false,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 11
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "34001_oracle_case2_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.1131855696439743,
+            -0.1131855696439743,
+            -0.604907214641571,
+            0.604907214641571,
+            0.7882108688354492,
+            -0.7882108688354492
+          ]
+        }
+      ],
+      "video": {
+        "path": "34001_oracle_case2_continuous.mp4",
+        "frames": 6,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 34001,
+      "mode": "oracle",
+      "case": 3,
+      "target_color_index": 4,
+      "target_symbol": "cross",
+      "instruction": "Turn the cube so the cross sticker faces upward.",
+      "layout": [
+        0,
+        4,
+        2,
+        5,
+        3,
+        1
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 133,
+      "min_orientation_error_rad": 0.12237375974655151,
+      "final_goal": 4,
+      "parsed_goal_symbol": "cross",
+      "language_correct": null,
+      "grounding_correct": true,
+      "stop_claimed": false,
+      "false_stop": false,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 133
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "34001_oracle_case3_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.40556105971336365,
+            0.40556105971336365,
+            0.36351078748703003,
+            -0.36351078748703003,
+            0.8386776447296143,
+            -0.8386776447296143
+          ]
+        },
+        {
+          "path": "34001_oracle_case3_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.3361489772796631,
+            0.3361489772796631,
+            -0.009484544396400452,
+            0.009484544396400452,
+            0.9417610764503479,
+            -0.9417610764503479
+          ]
+        },
+        {
+          "path": "34001_oracle_case3_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.10531007498502731,
+            0.10531007498502731,
+            0.3359163701534271,
+            -0.3359163701534271,
+            0.9359861016273499,
+            -0.9359861016273499
+          ]
+        },
+        {
+          "path": "34001_oracle_case3_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.04374074190855026,
+            0.04374074190855026,
+            0.3401551842689514,
+            -0.3401551842689514,
+            0.9393514394760132,
+            -0.9393514394760132
+          ]
+        },
+        {
+          "path": "34001_oracle_case3_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.06450153887271881,
+            0.06450153887271881,
+            0.10501150786876678,
+            -0.10501150786876678,
+            0.992376983165741,
+            -0.992376983165741
+          ]
+        }
+      ],
+      "video": {
+        "path": "34001_oracle_case3_continuous.mp4",
+        "frames": 67,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 34001,
+      "mode": "oracle",
+      "case": 4,
+      "target_color_index": 3,
+      "target_symbol": "diamond",
+      "instruction": "Turn the cube so the diamond sticker faces upward.",
+      "layout": [
+        3,
+        2,
+        0,
+        4,
+        1,
+        5
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 112,
+      "min_orientation_error_rad": 0.11945688724517822,
+      "final_goal": 3,
+      "parsed_goal_symbol": "diamond",
+      "language_correct": null,
+      "grounding_correct": true,
+      "stop_claimed": false,
+      "false_stop": false,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 112
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "34001_oracle_case4_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.43701785802841187,
+            -0.43701785802841187,
+            0.6652566194534302,
+            -0.6652566194534302,
+            -0.605350136756897,
+            0.605350136756897
+          ]
+        },
+        {
+          "path": "34001_oracle_case4_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.2665713131427765,
+            -0.2665713131427765,
+            0.962333083152771,
+            -0.962333083152771,
+            -0.05342578887939453,
+            0.05342578887939453
+          ]
+        },
+        {
+          "path": "34001_oracle_case4_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.004825770854949951,
+            -0.004825770854949951,
+            0.6165158152580261,
+            -0.6165158152580261,
+            0.7873277068138123,
+            -0.7873277068138123
+          ]
+        },
+        {
+          "path": "34001_oracle_case4_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.10232783108949661,
+            -0.10232783108949661,
+            -0.9467030763626099,
+            0.9467030763626099,
+            0.3054214119911194,
+            -0.3054214119911194
+          ]
+        }
+      ],
+      "video": {
+        "path": "34001_oracle_case4_continuous.mp4",
+        "frames": 56,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 34001,
+      "mode": "oracle",
+      "case": 5,
+      "target_color_index": 4,
+      "target_symbol": "bars",
+      "instruction": "Turn the cube so the bars sticker faces upward.",
+      "layout": [
+        2,
+        1,
+        0,
+        4,
+        5,
+        3
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 33,
+      "min_orientation_error_rad": 0.15861502289772034,
+      "final_goal": 4,
+      "parsed_goal_symbol": "bars",
+      "language_correct": null,
+      "grounding_correct": true,
+      "stop_claimed": false,
+      "false_stop": false,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 33
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "34001_oracle_case5_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.376400351524353,
+            0.376400351524353,
+            -0.8897281885147095,
+            0.8897281885147095,
+            -0.2582768201828003,
+            0.2582768201828003
+          ]
+        },
+        {
+          "path": "34001_oracle_case5_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.018069343641400337,
+            -0.018069343641400337,
+            -0.2693341076374054,
+            0.2693341076374054,
+            0.9628772735595703,
+            -0.9628772735595703
+          ]
+        }
+      ],
+      "video": {
+        "path": "34001_oracle_case5_continuous.mp4",
+        "frames": 17,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    }
+  ]
+}

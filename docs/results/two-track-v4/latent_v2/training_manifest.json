@@ -1,0 +1,89 @@
+{
+  "model_path": "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/models/Qwen3-VL-4B-Instruct",
+  "steps": 600,
+  "accumulation": 2,
+  "seed": 71,
+  "source_sha256": {
+    "train_latent_goal_v4.py": "2a360aef87efd2aac6939c60a44775f0b9218815f06a12de2476ad152e1e513e",
+    "latent_goal_v4.py": "ef531d639f817b24b1125e6407b1ba24ec15d59bbb448bc5bc5fbbf486ffa69c",
+    "agent_observation_v4.py": "7b0e66cf087abd071b4871594d50a1256209f748ae47300749713bf70e63e77b"
+  },
+  "canonical_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+  "student_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+  "training_examples": 817,
+  "positive_examples": 129,
+  "negative_examples": 688,
+  "validation_examples": 72,
+  "trainable_vlm_parameters": 2949120,
+  "head_parameters": 662278,
+  "student_frozen": true,
+  "latent_space": "bounded_skill_span",
+  "positive_sampling": "uniform target color then uniform example",
+  "losses": "readability BCE + visible-target CE + cosine alignment + frozen-student action consistency",
+  "limits": "First version aligns to six known skill prototypes. This is not open-vocabulary control or a learned observation policy.",
+  "train_manifest": {
+    "status": "completed",
+    "split": "train",
+    "seeds": [
+      32001,
+      32002,
+      32003,
+      32004
+    ],
+    "frames": 170,
+    "checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+    "adapter_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+    "frames_sha256": "fabdbaede2128bd8324400ee3d5c8eb7f4bc27262baf170ccd155af6effecb44",
+    "max_steps": 300,
+    "supervision": "Same-state symbol-visible versus symbol-hidden render difference in projected symbol regions, with facing and pixel-count gates. Privileged labels only; counterfactual image/geometry never actor inputs.",
+    "model_inputs": [
+      "RGB full frame",
+      "RGB-derived crop",
+      "instruction"
+    ],
+    "source_sha256": {
+      "collect_latent_data_v4.py": "00190f273696a28bef52003f372ab154fa90cfbbfa4e916bf55157b2d3e1f807",
+      "latent_data_v4.py": "ba1c8e08cfe89896a1b3b3445bb1145040508a8f99ab984f2de5d2b6774fc19a"
+    },
+    "shards": [
+      "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/data/clean/shards/train_32001",
+      "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/data/clean/shards/train_32002",
+      "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/data/clean/shards/train_32003",
+      "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/data/clean/shards/train_32004"
+    ],
+    "raw_frames_sha256": "274b10951b06398f3069797c1351b807c1548bbda1b067a8ecb657fcc372b32f",
+    "label_rule": "facing >= .5 and visible black/white change pixels >= max(35, .65 * projected ink area); clearly absent <=3 pixels or backfacing; discard ambiguous",
+    "label_preparation_source_sha256": "8ee8496572b5b52677b5f068558ba02b7055174aa77c419e1316b1e21f94ea6f"
+  },
+  "val_manifest": {
+    "status": "completed",
+    "split": "val",
+    "seeds": [
+      33001,
+      33002
+    ],
+    "frames": 62,
+    "checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+    "adapter_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+    "frames_sha256": "5fca88d86f7a7bac645f42310dd26213a36b747512fb9446fb6fcd7ec09846ce",
+    "max_steps": 180,
+    "supervision": "Same-state symbol-visible versus symbol-hidden render difference in projected symbol regions, with facing and pixel-count gates. Privileged labels only; counterfactual image/geometry never actor inputs.",
+    "model_inputs": [
+      "RGB full frame",
+      "RGB-derived crop",
+      "instruction"
+    ],
+    "source_sha256": {
+      "collect_latent_data_v4.py": "00190f273696a28bef52003f372ab154fa90cfbbfa4e916bf55157b2d3e1f807",
+      "latent_data_v4.py": "ba1c8e08cfe89896a1b3b3445bb1145040508a8f99ab984f2de5d2b6774fc19a"
+    },
+    "shards": [
+      "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/data/clean/shards/val_33001",
+      "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/data/clean/shards/val_33002"
+    ],
+    "raw_frames_sha256": "19ffbcd16a49f25cbb83f08db40abe61c8d9543acd66a4c3cffca336995d4a71",
+    "label_rule": "facing >= .5 and visible black/white change pixels >= max(35, .65 * projected ink area); clearly absent <=3 pixels or backfacing; discard ambiguous",
+    "label_preparation_source_sha256": "8ee8496572b5b52677b5f068558ba02b7055174aa77c419e1316b1e21f94ea6f"
+  },
+  "nonzero_trained_lora_b_tensors": 72
+}

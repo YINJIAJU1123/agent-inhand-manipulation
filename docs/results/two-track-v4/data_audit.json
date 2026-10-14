@@ -1,0 +1,24 @@
+{
+  "train": {
+    "frames": 170,
+    "seeds": [
+      32001,
+      32002,
+      32003,
+      32004
+    ],
+    "layouts": 24,
+    "readable": 129,
+    "ambiguous_skipped": 203
+  },
+  "val": {
+    "frames": 62,
+    "seeds": [
+      33001,
+      33002
+    ],
+    "layouts": 11,
+    "readable": 52,
+    "ambiguous_skipped": 79
+  }
+}
