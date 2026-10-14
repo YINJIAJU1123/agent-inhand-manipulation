@@ -16,6 +16,7 @@ p.add_argument('--modes',nargs='+',default=['oracle'])
 p.add_argument('--grounding',choices=['direct','inventory'],default='inventory')
 p.add_argument('--max-steps',type=int,default=600)
 p.add_argument('--budget',type=int,default=6)
+p.add_argument('--record-video',action='store_true',help='Save all six pre-action RGB streams at 15 fps of simulation time')
 p.add_argument('--no-symbols',action='store_true',help='Oracle appearance control only')
 p.add_argument('--disable-recovery',action='store_true')
 p.add_argument('--checkpoint',default=str(ROOT/'outputs/visual_student_v3/checkpoints/dagger_target135_r10_face5_sigliptext_evidence_seed5_student.pt'))
@@ -38,6 +39,7 @@ from visual_agent import VisualAgent,VLMClient,Decision
 def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def write(path,data): path.write_text(json.dumps(data,indent=2)+'\n')
 
+recorders=[]
 try:
     dest=Path(a.output); dest.mkdir(parents=True,exist_ok=True)
     device='cuda:0'; n=6
@@ -57,7 +59,7 @@ try:
     if a.no_symbols: symbols.markers.set_visibility(False)
     client=VLMClient(grounding=a.grounding)
     records=[]; start=time.monotonic()
-    metadata={'benchmark':'random_symbol_star_v2_pilot','checkpoint_sha256':sha(a.checkpoint),'adapter_sha256':sha(a.adapter),'seeds':a.seeds,'modes':a.modes,'grounding':a.grounding,'no_symbols':a.no_symbols,'recovery_enabled':not a.disable_recovery,'camera_resolution':512,'student_resolution':256,'vision_stride':2,'agent_stride':10,'call_budget':a.budget,'max_steps':a.max_steps,'env_max_episode_length':int(raw.max_episode_length),'success':'accepted correct visual goal AND executing it AND orientation error <= 0.16 rad without drop; evaluator stops scored slot, not VLM-certified stopping','agent_inputs':['RGB','constant star instruction','elapsed control steps'],'oracle_has_target_label':True,'source_sha256':{name:sha(Path(__file__).parent/name) for name in ['evaluate_visual_agent.py','visual_agent.py','student_features.py','symbol_scene.py','vlm_server.py']}}
+    metadata={'benchmark':'random_symbol_star_v2_pilot','checkpoint_sha256':sha(a.checkpoint),'adapter_sha256':sha(a.adapter),'seeds':a.seeds,'modes':a.modes,'grounding':a.grounding,'no_symbols':a.no_symbols,'recovery_enabled':not a.disable_recovery,'camera_resolution':512,'student_resolution':256,'vision_stride':2,'agent_stride':10,'call_budget':a.budget,'max_steps':a.max_steps,'env_max_episode_length':int(raw.max_episode_length),'success':'accepted correct visual goal AND executing it AND orientation error <= 0.16 rad without drop; evaluator stops scored slot, not VLM-certified stopping','video_capture':'existing pre-action RGB every 2 control steps; 15 fps simulation time' if a.record_video else None,'agent_inputs':['RGB','constant star instruction','elapsed control steps'],'oracle_has_target_label':True,'source_sha256':{name:sha(Path(__file__).parent/name) for name in ['evaluate_visual_agent.py','visual_agent.py','student_features.py','symbol_scene.py','vlm_server.py']}}
     write(dest/'manifest.json',metadata)
     for seed in a.seeds:
       for mode in a.modes:
@@ -77,6 +79,9 @@ try:
         symbols.set_layout(layout)
         initial={'object_rotation':raw.object_rot.cpu().tolist(),'object_position':raw.object_pos.cpu().tolist(),'proprio':raw.compute_student_proprio().cpu().tolist(),'layout':layout}
         write(dest/f'initial_{seed}_{mode}.json',initial)
+        if a.record_video:
+            from rollout_video import RolloutVideo
+            recorders=[RolloutVideo(dest/f'{seed}_{mode}_case{i}_continuous.mp4') for i in range(n)]
         agents=[VisualAgent(mode,client,budget=a.budget,enable_recovery=not a.disable_recovery) for _ in range(n)] if mode!='oracle' else [None]*n
         decisions=[Decision(i,'oracle','privileged_control_upper_bound') if mode=='oracle' else Decision(None,'initial','') for i in range(n)]
         active=[True]*n; success=[False]*n; accidental_reach=[False]*n; dropped=[False]*n; minimum=[float('inf')]*n; steps=[0]*n
@@ -87,6 +92,10 @@ try:
           with torch.inference_mode():
             if step%2==0:
               symbols.update(); camera=raw.capture_camera(); rgb=camera['rgb'][...,:3].to(torch.uint8)
+              if recorders:
+                video_rgb=rgb.cpu().numpy()
+                for i,recorder in enumerate(recorders):
+                    if active[i]:recorder.append(video_rgb[i])
               student_rgb=torch.nn.functional.interpolate(rgb.permute(0,3,1,2).float(),size=(256,256),mode='bilinear',align_corners=False).permute(0,2,3,1)
               depth=camera['depth']
               if depth.ndim==3: depth=depth.unsqueeze(-1)
@@ -129,11 +138,16 @@ try:
               if success[i] or bool(terminated[i] or truncated[i]): active[i]=False
           if step%100==0: print(json.dumps({'seed':seed,'mode':mode,'step':step,'active':sum(active),'success':sum(success),'drop':sum(dropped)}),flush=True)
           if not any(active): break
+        for recorder in recorders:recorder.close()
         for i in range(n):
             agent=agents[i]
             row={'seed':seed,'mode':mode,'case':i,'target_color_index':i,'success':success[i] and not dropped[i],'incidental_reach_without_grounding':accidental_reach[i],'drop':dropped[i],'steps':steps[i],'min_orientation_error_rad':minimum[i] if np.isfinite(minimum[i]) else None,'final_goal':agent.goal if agent else i,'grounding_correct':(agent.goal==i) if agent else True,'calls':agent.calls if agent else 0,'recovery_used':agent.recovery_used if agent else False,'action_states':action_states[i],'trace':agent.trace if agent else [],'snapshots':snapshots[i]}
+            if recorders:
+                row['video']={'path':recorders[i].path.name,'frames':recorders[i].frames,'fps':recorders[i].fps,'time_base':'simulation time, excludes synchronous VLM waiting','terminal_frame':'last available pre-action frame; simulator may reset at terminal step'}
             records.append(row)
         write(dest/'report.json',{'metadata':metadata,'elapsed_s':time.monotonic()-start,'episodes':records})
         print(json.dumps({'completed_seed':seed,'completed_mode':mode,'success':sum(success),'drop':sum(dropped),'elapsed_s':time.monotonic()-start}),flush=True)
     env.close()
-finally: app.close()
+finally:
+    for recorder in recorders:recorder.close()
+    app.close()

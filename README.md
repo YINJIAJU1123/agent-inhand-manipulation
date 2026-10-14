@@ -20,6 +20,8 @@ The added agent mechanisms have not outperformed the periodic baseline; visual
 verification remains unreliable. These are new-task results, not the language
 baseline above. See the [method and reproduction guide](docs/agentic_symbol_method_20261014.md).
 
+A [900-episode frozen evaluation and continuous recording protocol](docs/agentic_symbol_large_eval_20261014.md) is now available, with resumable execution and paired seed-level uncertainty estimates.
+
 Earlier project status is recorded in [progress_20260926.md](docs/progress_20260926.md).
 Camera setup and environment reproduction are documented in
 [camera validation](docs/camera_placement.md) and [reproduction instructions](docs/reproducibility.md).
