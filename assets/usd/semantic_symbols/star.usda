@@ -1,0 +1,40 @@
+#usda 1.0
+(defaultPrim = "Symbol"
+ metersPerUnit = 1
+ upAxis = "Z")
+def Xform "Symbol" {
+    def Material "White" {
+        token outputs:surface.connect = </Symbol/White/Shader.outputs:surface>
+        def Shader "Shader" {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor = (1, 1, 1)
+            float inputs:roughness = 1
+            token outputs:surface
+        }
+    }
+    def Material "Black" {
+        token outputs:surface.connect = </Symbol/Black/Shader.outputs:surface>
+        def Shader "Shader" {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor = (0.01, 0.01, 0.01)
+            float inputs:roughness = 1
+            token outputs:surface
+        }
+    }
+    def Mesh "Outline" (prepend apiSchemas = ["MaterialBindingAPI"]) {
+        point3f[] points = [(5.510910596163089e-19, 0.009, 0), (-0.0022747289263718704, 0.0031308957682310468, 0), (-0.008559508646656382, 0.002781152949374527, 0), (-0.0036805887180622445, -0.001195895768231046, 0), (-0.005290067270632259, -0.007281152949374525, 0), (-7.109074669050384e-19, -0.0038699999999999997, 0), (0.005290067270632256, -0.007281152949374528, 0), (0.003680588718062244, -0.0011958957682310473, 0), (0.008559508646656382, 0.002781152949374524, 0), (0.0022747289263718717, 0.0031308957682310455, 0), (-3.9968028886505634e-19, -2.9976021664879223e-19, 0)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [10, 0, 1, 10, 1, 2, 10, 2, 3, 10, 3, 4, 10, 4, 5, 10, 5, 6, 10, 6, 7, 10, 7, 8, 10, 8, 9, 10, 9, 0]
+        uniform token subdivisionScheme = "none"
+        bool doubleSided = true
+        rel material:binding = </Symbol/White>
+    }
+    def Mesh "Ink" (prepend apiSchemas = ["MaterialBindingAPI"]) {
+        point3f[] points = [(4.592425496802574e-19, 0.0075, 0.00012), (-0.0018956074386432256, 0.0026090798068592056, 0.00012), (-0.007132923872213651, 0.0023176274578121064, 0.00012), (-0.0030671572650518703, -0.0009965798068592051, 0.00012), (-0.004408389392193549, -0.006067627457812105, 0.00012), (-5.924228890875321e-19, -0.003225, 0.00012), (0.004408389392193546, -0.006067627457812107, 0.00012), (0.00306715726505187, -0.000996579806859206, 0.00012), (0.007132923872213652, 0.002317627457812104, 0.00012), (0.0018956074386432265, 0.0026090798068592047, 0.00012), (-3.3306690738754697e-19, -2.498001805406602e-19, 0.00012)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [10, 0, 1, 10, 1, 2, 10, 2, 3, 10, 3, 4, 10, 4, 5, 10, 5, 6, 10, 6, 7, 10, 7, 8, 10, 8, 9, 10, 9, 0]
+        uniform token subdivisionScheme = "none"
+        bool doubleSided = true
+        rel material:binding = </Symbol/Black>
+    }
+}

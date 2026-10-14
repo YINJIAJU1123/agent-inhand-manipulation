@@ -1,0 +1,40 @@
+#usda 1.0
+(defaultPrim = "Symbol"
+ metersPerUnit = 1
+ upAxis = "Z")
+def Xform "Symbol" {
+    def Material "White" {
+        token outputs:surface.connect = </Symbol/White/Shader.outputs:surface>
+        def Shader "Shader" {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor = (1, 1, 1)
+            float inputs:roughness = 1
+            token outputs:surface
+        }
+    }
+    def Material "Black" {
+        token outputs:surface.connect = </Symbol/Black/Shader.outputs:surface>
+        def Shader "Shader" {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor = (0.01, 0.01, 0.01)
+            float inputs:roughness = 1
+            token outputs:surface
+        }
+    }
+    def Mesh "Outline" (prepend apiSchemas = ["MaterialBindingAPI"]) {
+        point3f[] points = [(-0.00225, -0.009, 0), (0.00225, -0.009, 0), (0.00225, 0.009, 0), (-0.00225, 0.009, 0), (0.0, 0.0, 0), (-0.009, -0.00225, 0), (0.009, -0.00225, 0), (0.009, 0.00225, 0), (-0.009, 0.00225, 0), (0.0, 0.0, 0)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [4, 0, 1, 4, 1, 2, 4, 2, 3, 4, 3, 0, 9, 5, 6, 9, 6, 7, 9, 7, 8, 9, 8, 5]
+        uniform token subdivisionScheme = "none"
+        bool doubleSided = true
+        rel material:binding = </Symbol/White>
+    }
+    def Mesh "Ink" (prepend apiSchemas = ["MaterialBindingAPI"]) {
+        point3f[] points = [(-0.001875, -0.0075, 0.00012), (0.001875, -0.0075, 0.00012), (0.001875, 0.0075, 0.00012), (-0.001875, 0.0075, 0.00012), (0.0, 0.0, 0.00012), (-0.0075, -0.001875, 0.00012), (0.0075, -0.001875, 0.00012), (0.0075, 0.001875, 0.00012), (-0.0075, 0.001875, 0.00012), (0.0, 0.0, 0.00012)]
+        int[] faceVertexCounts = [3, 3, 3, 3, 3, 3, 3, 3]
+        int[] faceVertexIndices = [4, 0, 1, 4, 1, 2, 4, 2, 3, 4, 3, 0, 9, 5, 6, 9, 6, 7, 9, 7, 8, 9, 8, 5]
+        uniform token subdivisionScheme = "none"
+        bool doubleSided = true
+        rel material:binding = </Symbol/Black>
+    }
+}

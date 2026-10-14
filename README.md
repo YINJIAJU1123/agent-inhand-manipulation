@@ -12,6 +12,14 @@ for the protocol, controls, per-episode evidence, and limits of this result.
 The earlier [v1 report](docs/visual_student_language_v1_report_20261014.md) has been
 corrected to identify its rule-based color routing.
 
+A separate [VLM agent symbol-task pilot](docs/agentic_symbol_results_20261014.md)
+now tests active inspection, evidence memory, and event-triggered supervision.
+Across 48 held-out pilot episodes, periodic re-observation succeeds in 6/12,
+once-only grounding in 2/12, and the event/memory variant in 2/12 (oracle: 11/12).
+The added agent mechanisms have not outperformed the periodic baseline; visual
+verification remains unreliable. These are new-task results, not the language
+baseline above. See the [method and reproduction guide](docs/agentic_symbol_method_20261014.md).
+
 Earlier project status is recorded in [progress_20260926.md](docs/progress_20260926.md).
 Camera setup and environment reproduction are documented in
 [camera validation](docs/camera_placement.md) and [reproduction instructions](docs/reproducibility.md).

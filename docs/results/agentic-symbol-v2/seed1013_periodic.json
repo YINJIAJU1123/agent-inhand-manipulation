@@ -1,0 +1,2368 @@
+{
+  "metadata": {
+    "benchmark": "random_symbol_star_v2_pilot",
+    "checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+    "adapter_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+    "seeds": [
+      1013
+    ],
+    "modes": [
+      "periodic"
+    ],
+    "grounding": "inventory",
+    "no_symbols": false,
+    "recovery_enabled": true,
+    "camera_resolution": 512,
+    "student_resolution": 256,
+    "vision_stride": 2,
+    "agent_stride": 10,
+    "call_budget": 6,
+    "max_steps": 600,
+    "env_max_episode_length": 600,
+    "success": "accepted correct visual goal AND executing it AND orientation error <= 0.16 rad without drop; evaluator stops scored slot, not VLM-certified stopping",
+    "agent_inputs": [
+      "RGB",
+      "constant star instruction",
+      "elapsed control steps"
+    ],
+    "oracle_has_target_label": true,
+    "source_sha256": {
+      "evaluate_visual_agent.py": "96340052efb94e2d0222674d3ce1fb643cb7b792b0ffd36b274ce034e9332f79",
+      "visual_agent.py": "0013055a232417a2109cff2745a7e1eeaf02f3369e3e74ecd87fb3d5f1fcf9a3",
+      "student_features.py": "584e064b4fb06c47f90e41ba3bb59617e8ea34f4066318b5e93c715ab813d3fb",
+      "symbol_scene.py": "c2085123b958fb882908bc68c66b3d2a981455c8f64cc850e249530fc9431cd5",
+      "vlm_server.py": "f4191fe394f7ca72e9240763230bb0a145030eac06c651d843eafcf8d6802b14"
+    }
+  },
+  "elapsed_s": 117.86652849700022,
+  "episodes": [
+    {
+      "seed": 1013,
+      "mode": "periodic",
+      "case": 0,
+      "target_color_index": 0,
+      "success": true,
+      "incidental_reach_without_grounding": true,
+      "drop": false,
+      "steps": 451,
+      "min_orientation_error_rad": 0.10582007467746735,
+      "final_goal": 0,
+      "grounding_correct": true,
+      "calls": 6,
+      "recovery_used": false,
+      "action_states": {
+        "inspect": 450,
+        "execute": 1
+      },
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"},\n    {\"color\": \"red\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6919542280002133,
+          "image_sha256": "644caec6d5bb5dbf4424988f2a7eaec62a5ec180572aef561733e52ca060c952",
+          "crop_box": [
+            205,
+            202,
+            321,
+            324
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              },
+              {
+                "color": "red",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 90,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"triangle\"},\n    {\"color\": \"green\", \"symbol\": \"unknown\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"},\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"},\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 1.407915793999564,
+          "image_sha256": "bb343695be95778806072c30f4470db37be9a8a9af2c7f6b37eb3e3eb45117d4",
+          "crop_box": [
+            181,
+            0,
+            298,
+            347
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "triangle"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              },
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 180,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"blue\", \"symbol\": \"unknown\"},\n    {\"color\": \"green\", \"symbol\": \"unknown\"},\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.8642373060001773,
+          "image_sha256": "70494caba012cd45de6209c553f674b11bc63d9ba34a064526ac9092af73325e",
+          "crop_box": [
+            184,
+            0,
+            306,
+            343
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 270,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"blue\", \"symbol\": \"unknown\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"},\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.879641515000003,
+          "image_sha256": "1d30a997574441a9f5a5dc91f264b44c48338d3b0375f2bad9ecde539b3397e3",
+          "crop_box": [
+            190,
+            0,
+            317,
+            355
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 360,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.7095252870003605,
+          "image_sha256": "8834e5cae531dacce1718553f11e50f1022628e193ee4f73f4fb7d33c97a64f8",
+          "crop_box": [
+            192,
+            0,
+            316,
+            358
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 450,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": 0,
+          "pending": null,
+          "color": "red",
+          "visible": true,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"star\"},\n    {\"color\": \"yellow\", \"symbol\": \"triangle\"}\n]\n```",
+          "elapsed_s": 0.6866258399995786,
+          "image_sha256": "5673d97b6cdd109f24e70f9a3adf78a902d62d10a86093b76a9eafe21e3373be",
+          "crop_box": [
+            190,
+            0,
+            312,
+            356
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "star"
+              },
+              {
+                "color": "yellow",
+                "symbol": "triangle"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_periodic_case0_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.3537372946739197,
+            -0.3537372946739197,
+            -0.9352433681488037,
+            0.9352433681488037,
+            -0.013779759407043457,
+            0.013779759407043457
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.06402534246444702,
+            -0.06402534246444702,
+            -0.9951748251914978,
+            0.9951748251914978,
+            0.07434803247451782,
+            -0.07434803247451782
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.026920989155769348,
+            -0.026920989155769348,
+            -0.9996262192726135,
+            0.9996262192726135,
+            -0.004734516143798828,
+            0.004734516143798828
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.08759605884552002,
+            0.08759605884552002,
+            -0.994627833366394,
+            0.994627833366394,
+            -0.055153489112854004,
+            0.055153489112854004
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.543245255947113,
+            0.543245255947113,
+            0.3178512454032898,
+            -0.3178512454032898,
+            0.7770811319351196,
+            -0.7770811319351196
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.10333117842674255,
+            -0.10333117842674255,
+            0.9869332313537598,
+            -0.9869332313537598,
+            0.12363344430923462,
+            -0.12363344430923462
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.1359456479549408,
+            0.1359456479549408,
+            0.9893990159034729,
+            -0.9893990159034729,
+            0.051071226596832275,
+            -0.051071226596832275
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.5848660469055176,
+            -0.5848660469055176,
+            0.3544565439224243,
+            -0.3544565439224243,
+            -0.7295835018157959,
+            0.7295835018157959
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.31599774956703186,
+            0.31599774956703186,
+            -0.004300639033317566,
+            0.004300639033317566,
+            -0.9487500190734863,
+            0.9487500190734863
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 4,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.3187353014945984,
+            0.3187353014945984,
+            0.9329529404640198,
+            -0.9329529404640198,
+            0.1673520803451538,
+            -0.1673520803451538
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0300.png",
+          "step": 300,
+          "decision": {
+            "color": 4,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.25400495529174805,
+            0.25400495529174805,
+            -0.23473498225212097,
+            0.23473498225212097,
+            0.9382861852645874,
+            -0.9382861852645874
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0330.png",
+          "step": 330,
+          "decision": {
+            "color": 4,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.020052965730428696,
+            -0.020052965730428696,
+            -0.15630701184272766,
+            0.15630701184272766,
+            0.9875049591064453,
+            -0.9875049591064453
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0360.png",
+          "step": 360,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.06537794321775436,
+            -0.06537794321775436,
+            -0.014784324914216995,
+            0.014784324914216995,
+            0.9977510571479797,
+            -0.9977510571479797
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0390.png",
+          "step": 390,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.9842478036880493,
+            -0.9842478036880493,
+            -0.0979093611240387,
+            0.0979093611240387,
+            -0.14720666408538818,
+            0.14720666408538818
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0420.png",
+          "step": 420,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.9858746528625488,
+            -0.9858746528625488,
+            -0.16723817586898804,
+            0.16723817586898804,
+            -0.009064435958862305,
+            0.009064435958862305
+          ]
+        },
+        {
+          "path": "1013_periodic_case0_step0450.png",
+          "step": 450,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "retain_visual_goal"
+          },
+          "scorer_face_normal_z": [
+            0.999995768070221,
+            -0.999995768070221,
+            0.0016946494579315186,
+            -0.0016946494579315186,
+            0.002296745777130127,
+            -0.002296745777130127
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "periodic",
+      "case": 1,
+      "target_color_index": 1,
+      "success": false,
+      "incidental_reach_without_grounding": true,
+      "drop": true,
+      "steps": 570,
+      "min_orientation_error_rad": 0.04327729344367981,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 6,
+      "recovery_used": false,
+      "action_states": {
+        "inspect": 570
+      },
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\n        \"color\": \"red\",\n        \"symbol\": \"unknown\"\n    },\n    {\n        \"color\": \"blue\",\n        \"symbol\": \"unknown\"\n    }\n]\n```",
+          "elapsed_s": 0.8170350450000115,
+          "image_sha256": "795e7890fecf87d1ba1be896a22b79961a52f4890c8af1dadb98384c0911d369",
+          "crop_box": [
+            220,
+            205,
+            326,
+            322
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 90,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"unknown\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6935639000002993,
+          "image_sha256": "c270bedf53f44ecdab1e621a14d0eb861caa22ce57560b7cd3a81e1d8c97b165",
+          "crop_box": [
+            176,
+            202,
+            299,
+            348
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "unknown"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 180,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"cyan\", \"symbol\": \"bars\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6833345429995461,
+          "image_sha256": "8403ec125b22440d2060aabc3fec3672c25e4f77c71baf3a0c79d1f5f68c0c7f",
+          "crop_box": [
+            187,
+            219,
+            307,
+            335
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "cyan",
+                "symbol": "bars"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 270,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"cross\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6828899579995777,
+          "image_sha256": "216b891c96f4858752d5efc14ad23aa2e5324f0a6ba94e1825213e299ca1afaa",
+          "crop_box": [
+            187,
+            219,
+            308,
+            354
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "cross"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 360,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"triangle\"},\n    {\"color\": \"yellow\", \"symbol\": \"triangle\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.8663460199995825,
+          "image_sha256": "a1682d52fdd1f448d44548da8f9ad424c18d4a190d59583dccaca74b4cb83292",
+          "crop_box": [
+            186,
+            225,
+            314,
+            357
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "triangle"
+              },
+              {
+                "color": "yellow",
+                "symbol": "triangle"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 450,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"},\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.7011207319992536,
+          "image_sha256": "681a758eaf54768cb7788d525375d8df431532a3e62fe28515dcc95c910edb56",
+          "crop_box": [
+            178,
+            213,
+            297,
+            346
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_periodic_case1_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.004923361819237471,
+            0.004923361819237471,
+            -0.9572475552558899,
+            0.9572475552558899,
+            -0.2892286777496338,
+            0.2892286777496338
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.3646097183227539,
+            -0.3646097183227539,
+            0.4288055896759033,
+            -0.4288055896759033,
+            0.8265503644943237,
+            -0.8265503644943237
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.8223644495010376,
+            -0.8223644495010376,
+            0.5659105777740479,
+            -0.5659105777740479,
+            -0.058837890625,
+            0.058837890625
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.9469574689865112,
+            -0.9469574689865112,
+            0.31843477487564087,
+            -0.31843477487564087,
+            0.04325014352798462,
+            -0.04325014352798462
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.11216079443693161,
+            0.11216079443693161,
+            0.3250272274017334,
+            -0.3250272274017334,
+            -0.9390298128128052,
+            0.9390298128128052
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.05083031207323074,
+            -0.05083031207323074,
+            -0.01717248558998108,
+            0.01717248558998108,
+            -0.9985593557357788,
+            0.9985593557357788
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.03657256439328194,
+            -0.03657256439328194,
+            0.043329983949661255,
+            -0.043329983949661255,
+            -0.9983909130096436,
+            0.9983909130096436
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.9192589521408081,
+            -0.9192589521408081,
+            -0.2466820776462555,
+            0.2466820776462555,
+            0.3067750930786133,
+            -0.3067750930786133
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.8936915993690491,
+            -0.8936915993690491,
+            -0.17893248796463013,
+            0.17893248796463013,
+            -0.4114588499069214,
+            0.4114588499069214
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.9995395541191101,
+            -0.9995395541191101,
+            -0.02956957370042801,
+            0.02956957370042801,
+            -0.006780266761779785,
+            0.006780266761779785
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0300.png",
+          "step": 300,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.8978506326675415,
+            -0.8978506326675415,
+            -0.35589954257011414,
+            0.35589954257011414,
+            0.25922858715057373,
+            -0.25922858715057373
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0330.png",
+          "step": 330,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.7943931818008423,
+            0.7943931818008423,
+            -0.5020849108695984,
+            0.5020849108695984,
+            -0.3418337106704712,
+            0.3418337106704712
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0360.png",
+          "step": 360,
+          "decision": {
+            "color": 4,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.16972875595092773,
+            -0.16972875595092773,
+            -0.8613806366920471,
+            0.8613806366920471,
+            0.47876447439193726,
+            -0.47876447439193726
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0390.png",
+          "step": 390,
+          "decision": {
+            "color": 4,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.2035544067621231,
+            0.2035544067621231,
+            -0.07751552760601044,
+            0.07751552760601044,
+            0.9759902358055115,
+            -0.9759902358055115
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0420.png",
+          "step": 420,
+          "decision": {
+            "color": 4,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.0224694162607193,
+            0.0224694162607193,
+            -0.06896544992923737,
+            0.06896544992923737,
+            0.9973659515380859,
+            -0.9973659515380859
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0450.png",
+          "step": 450,
+          "decision": {
+            "color": 1,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.028782891109585762,
+            0.028782891109585762,
+            0.002081621903926134,
+            -0.002081621903926134,
+            0.9995835423469543,
+            -0.9995835423469543
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0480.png",
+          "step": 480,
+          "decision": {
+            "color": 1,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.688397228717804,
+            0.688397228717804,
+            -0.2167396992444992,
+            0.2167396992444992,
+            0.6921944618225098,
+            -0.6921944618225098
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0510.png",
+          "step": 510,
+          "decision": {
+            "color": 1,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.7385892868041992,
+            0.7385892868041992,
+            0.33441418409347534,
+            -0.33441418409347534,
+            -0.5853651762008667,
+            0.5853651762008667
+          ]
+        },
+        {
+          "path": "1013_periodic_case1_step0540.png",
+          "step": 540,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.9956120252609253,
+            0.9956120252609253,
+            -0.09322354197502136,
+            0.09322354197502136,
+            -0.00813758373260498,
+            0.00813758373260498
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "periodic",
+      "case": 2,
+      "target_color_index": 2,
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 474,
+      "min_orientation_error_rad": 0.1554805189371109,
+      "final_goal": 2,
+      "grounding_correct": true,
+      "calls": 6,
+      "recovery_used": false,
+      "action_states": {
+        "inspect": 360,
+        "execute": 114
+      },
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6759496969998509,
+          "image_sha256": "5e3623f9f7ad7ff98d54f0365349507a3a3374727508e23ebb350359178910aa",
+          "crop_box": [
+            190,
+            186,
+            309,
+            311
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 90,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n  {\"color\": \"yellow\", \"symbol\": \"unknown\"},\n  {\"color\": \"green\", \"symbol\": \"unknown\"},\n  {\"color\": \"blue\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.8619309080004314,
+          "image_sha256": "3971c0cc4c9d684b43e62d224e07df4d37a52998abe0feecc34e1ac4a63ed571",
+          "crop_box": [
+            150,
+            208,
+            287,
+            350
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 180,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"bars\"},\n    {\"color\": \"green\", \"symbol\": \"unknown\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"},\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"},\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 1.4340639680003733,
+          "image_sha256": "55c295ecc8e1c0a524c589d47046e0fa3155504c574d25c37c08acbde2da46ac",
+          "crop_box": [
+            170,
+            0,
+            326,
+            305
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "bars"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              },
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 270,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"unknown\"},\n    {\"color\": \"green\", \"symbol\": \"unknown\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"},\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 1.0416527059996952,
+          "image_sha256": "f8198921dddbc420f209b654435d590746e211e9e2bb9885990902f9feaff479",
+          "crop_box": [
+            165,
+            0,
+            338,
+            316
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "unknown"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              },
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 360,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": 2,
+          "pending": null,
+          "color": "blue",
+          "visible": true,
+          "raw": "```json\n[\n    {\"color\": \"blue\", \"symbol\": \"star\"},\n    {\"color\": \"green\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6880645250002999,
+          "image_sha256": "c82b9b2d1a15b25a40bd45bfecd909ddcd4fdc6b091c19ec6e2356c5e0ed6b1d",
+          "crop_box": [
+            150,
+            195,
+            285,
+            338
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "blue",
+                "symbol": "star"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 450,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": 2,
+          "accepted_goal": 2,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"green\", \"symbol\": \"triangle\"},\n    {\"color\": \"red\", \"symbol\": \"unknown\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"},\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 1.043558120999478,
+          "image_sha256": "92b005d6829d17c6a8bc91e2ed806efdcc5a938e7adf4caf6783d64fd6a2dc4a",
+          "crop_box": [
+            187,
+            186,
+            317,
+            333
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "green",
+                "symbol": "triangle"
+              },
+              {
+                "color": "red",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              },
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_periodic_case2_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.8921847939491272,
+            -0.8921847939491272,
+            -0.38939279317855835,
+            0.38939279317855835,
+            0.2288661003112793,
+            -0.2288661003112793
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.9111117124557495,
+            0.9111117124557495,
+            -0.20293569564819336,
+            0.20293569564819336,
+            0.358737587928772,
+            -0.358737587928772
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.006707821041345596,
+            -0.006707821041345596,
+            -0.5297884941101074,
+            0.5297884941101074,
+            -0.8481031656265259,
+            0.8481031656265259
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.04051768779754639,
+            -0.04051768779754639,
+            -0.9832097291946411,
+            0.9832097291946411,
+            -0.1779230833053589,
+            0.1779230833053589
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.23576690256595612,
+            -0.23576690256595612,
+            -0.16962793469429016,
+            0.16962793469429016,
+            0.9568909406661987,
+            -0.9568909406661987
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.4040132462978363,
+            0.4040132462978363,
+            0.049783721566200256,
+            -0.049783721566200256,
+            0.9133974313735962,
+            -0.9133974313735962
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.4359758496284485,
+            0.4359758496284485,
+            -0.4754725694656372,
+            0.4754725694656372,
+            0.7641013860702515,
+            -0.7641013860702515
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.7489522695541382,
+            0.7489522695541382,
+            -0.662162184715271,
+            0.662162184715271,
+            0.0247308611869812,
+            -0.0247308611869812
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.9358081221580505,
+            0.9358081221580505,
+            0.30770790576934814,
+            -0.30770790576934814,
+            0.17198479175567627,
+            -0.17198479175567627
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.630391538143158,
+            0.630391538143158,
+            0.7670074701309204,
+            -0.7670074701309204,
+            0.11960810422897339,
+            -0.11960810422897339
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0300.png",
+          "step": 300,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.9995827078819275,
+            0.9995827078819275,
+            -0.008516967296600342,
+            0.008516967296600342,
+            -0.0276031494140625,
+            0.0276031494140625
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0330.png",
+          "step": 330,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.7238228917121887,
+            0.7238228917121887,
+            -0.1896006166934967,
+            0.1896006166934967,
+            -0.663424015045166,
+            0.663424015045166
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0360.png",
+          "step": 360,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "retain_visual_goal"
+          },
+          "scorer_face_normal_z": [
+            0.3448556661605835,
+            -0.3448556661605835,
+            0.2711147665977478,
+            -0.2711147665977478,
+            -0.8986498117446899,
+            0.8986498117446899
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0390.png",
+          "step": 390,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "retain_visual_goal"
+          },
+          "scorer_face_normal_z": [
+            0.03403381258249283,
+            -0.03403381258249283,
+            -0.02488003484904766,
+            0.02488003484904766,
+            -0.9991106986999512,
+            0.9991106986999512
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0420.png",
+          "step": 420,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "retain_visual_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.5603726506233215,
+            0.5603726506233215,
+            -0.13862548768520355,
+            0.13862548768520355,
+            -0.8165565729141235,
+            0.8165565729141235
+          ]
+        },
+        {
+          "path": "1013_periodic_case2_step0450.png",
+          "step": 450,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "retain_visual_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.8873782753944397,
+            0.8873782753944397,
+            0.45160359144210815,
+            -0.45160359144210815,
+            0.09281110763549805,
+            -0.09281110763549805
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "periodic",
+      "case": 3,
+      "target_color_index": 3,
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": true,
+      "steps": 281,
+      "min_orientation_error_rad": 1.0938198566436768,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 4,
+      "recovery_used": false,
+      "action_states": {
+        "inspect": 281
+      },
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6932146420003846,
+          "image_sha256": "b0c812aab277ac5bf9097e8df8b46f596daea78dd23d5916712050f3202a0a8e",
+          "crop_box": [
+            199,
+            206,
+            315,
+            313
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 90,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"cyan\", \"symbol\": \"cross\"},\n    {\"color\": \"green\", \"symbol\": \"unknown\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.8651385860002847,
+          "image_sha256": "31f291c1f301b799d80bc9c4a7ed5575e749931a39dff9e254d4b1a21d6e1ce5",
+          "crop_box": [
+            150,
+            187,
+            284,
+            320
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "cyan",
+                "symbol": "cross"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 180,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"star\"},\n    {\"color\": \"yellow\", \"symbol\": \"star\"},\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.8615347200002361,
+          "image_sha256": "2617d639010f4bd8445f3747e411773c527dfd1285b21a95cebe5a2704e0a828",
+          "crop_box": [
+            192,
+            211,
+            315,
+            342
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "star"
+              },
+              {
+                "color": "yellow",
+                "symbol": "star"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 270,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"triangle\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"},\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.878895062999618,
+          "image_sha256": "8f9e3ca5c93984f4881301b6fcb63e0996b8c75f4ed669e2c0c4dabad0c172e0",
+          "crop_box": [
+            79,
+            232,
+            234,
+            379
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "triangle"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_periodic_case3_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.008026006631553173,
+            -0.008026006631553173,
+            0.8767095804214478,
+            -0.8767095804214478,
+            -0.4809530973434448,
+            0.4809530973434448
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.40322113037109375,
+            -0.40322113037109375,
+            0.26742711663246155,
+            -0.26742711663246155,
+            -0.8751542568206787,
+            0.8751542568206787
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.006580151617527008,
+            0.006580151617527008,
+            -0.4731472134590149,
+            0.4731472134590149,
+            -0.8809584379196167,
+            0.8809584379196167
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 1,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.2824215292930603,
+            -0.2824215292930603,
+            0.32599151134490967,
+            -0.32599151134490967,
+            -0.9022016525268555,
+            0.9022016525268555
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 1,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.17793279886245728,
+            0.17793279886245728,
+            -0.5171946287155151,
+            0.5171946287155151,
+            -0.8371677398681641,
+            0.8371677398681641
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 1,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.08737961202859879,
+            0.08737961202859879,
+            -0.16673968732357025,
+            0.16673968732357025,
+            -0.9821212291717529,
+            0.9821212291717529
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.05404668301343918,
+            0.05404668301343918,
+            -0.7852007150650024,
+            0.7852007150650024,
+            -0.6168782711029053,
+            0.6168782711029053
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.021258831024169922,
+            0.021258831024169922,
+            -0.7905364632606506,
+            0.7905364632606506,
+            -0.6120452880859375,
+            0.6120452880859375
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.3965781033039093,
+            0.3965781033039093,
+            -0.645889937877655,
+            0.645889937877655,
+            -0.6523432731628418,
+            0.6523432731628418
+          ]
+        },
+        {
+          "path": "1013_periodic_case3_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.6698477864265442,
+            -0.6698477864265442,
+            0.6726309061050415,
+            -0.6726309061050415,
+            -0.31443774700164795,
+            0.31443774700164795
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "periodic",
+      "case": 4,
+      "target_color_index": 4,
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": true,
+      "steps": 33,
+      "min_orientation_error_rad": 0.5134162306785583,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 1,
+      "recovery_used": false,
+      "action_states": {
+        "inspect": 33
+      },
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"bars\"},\n    {\"color\": \"green\", \"symbol\": \"diamond\"},\n    {\"color\": \"blue\", \"symbol\": \"circle\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 1.0411190919994624,
+          "image_sha256": "3993dd59eee5ed271082f6a362a8de29f3ae86ed636ac65028a2a06124965278",
+          "crop_box": [
+            200,
+            186,
+            328,
+            328
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "bars"
+              },
+              {
+                "color": "green",
+                "symbol": "diamond"
+              },
+              {
+                "color": "blue",
+                "symbol": "circle"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_periodic_case4_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.769219160079956,
+            0.769219160079956,
+            0.42541271448135376,
+            -0.42541271448135376,
+            0.476787269115448,
+            -0.476787269115448
+          ]
+        },
+        {
+          "path": "1013_periodic_case4_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.995018482208252,
+            0.995018482208252,
+            -0.07252851873636246,
+            0.07252851873636246,
+            0.0683942437171936,
+            -0.0683942437171936
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "periodic",
+      "case": 5,
+      "target_color_index": 5,
+      "success": true,
+      "incidental_reach_without_grounding": true,
+      "drop": false,
+      "steps": 275,
+      "min_orientation_error_rad": 0.011517379432916641,
+      "final_goal": 5,
+      "grounding_correct": true,
+      "calls": 4,
+      "recovery_used": false,
+      "action_states": {
+        "inspect": 270,
+        "execute": 5
+      },
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6773720310002318,
+          "image_sha256": "049ec79c27592ad71b0f2f424d32cf152940620efd460a0bfa0116b6c9a60144",
+          "crop_box": [
+            200,
+            200,
+            319,
+            333
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 90,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"diamond\"},\n    {\"color\": \"green\", \"symbol\": \"unknown\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"},\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 1.0360334369997872,
+          "image_sha256": "22abadf62ed875d0cff3d7ef57b8d3ef37a3175d880adc36eec13fc55c92f814",
+          "crop_box": [
+            183,
+            217,
+            302,
+            345
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "diamond"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              },
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 180,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"},\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.7104021900004227,
+          "image_sha256": "1f896ff6fea24dc66dde884245937afde4d7df7d11c393742960739a1bc72036",
+          "crop_box": [
+            186,
+            211,
+            302,
+            338
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        },
+        {
+          "step": 270,
+          "reason": "periodic",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": 5,
+          "pending": null,
+          "color": "cyan",
+          "visible": true,
+          "raw": "```json\n[\n    {\n        \"color\": \"cyan\",\n        \"symbol\": \"star\"\n    }\n]\n```",
+          "elapsed_s": 0.5796660060004797,
+          "image_sha256": "7ffe2ecaa953bdbd15706a2cd7ff15ae08b812bf05161f154c7c1ba99f8ade86",
+          "crop_box": [
+            190,
+            223,
+            312,
+            355
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "cyan",
+                "symbol": "star"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_periodic_case5_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.0022742152214050293,
+            0.0022742152214050293,
+            -0.9999974966049194,
+            0.9999974966049194,
+            0.0003158450126647949,
+            -0.0003158450126647949
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.17906925082206726,
+            -0.17906925082206726,
+            -0.9645702838897705,
+            0.9645702838897705,
+            0.19374805688858032,
+            -0.19374805688858032
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.0636364072561264,
+            -0.0636364072561264,
+            -0.9925796389579773,
+            0.9925796389579773,
+            -0.10361361503601074,
+            0.10361361503601074
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.060035355389118195,
+            -0.060035355389118195,
+            -0.992412269115448,
+            0.992412269115448,
+            -0.10729992389678955,
+            0.10729992389678955
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.04957986995577812,
+            -0.04957986995577812,
+            0.9973093867301941,
+            -0.9973093867301941,
+            -0.053997159004211426,
+            0.053997159004211426
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 2,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.1435396671295166,
+            -0.1435396671295166,
+            0.9009612202644348,
+            -0.9009612202644348,
+            -0.4094696044921875,
+            0.4094696044921875
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            0.04595508426427841,
+            -0.04595508426427841,
+            0.9833085536956787,
+            -0.9833085536956787,
+            0.17604637145996094,
+            -0.17604637145996094
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.07632875442504883,
+            0.07632875442504883,
+            0.1013709306716919,
+            -0.1013709306716919,
+            -0.9919158220291138,
+            0.9919158220291138
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 5,
+            "state": "inspect",
+            "reason": "unvisited_visible_surface_first"
+          },
+          "scorer_face_normal_z": [
+            -0.035811446607112885,
+            0.035811446607112885,
+            0.03626352176070213,
+            -0.03626352176070213,
+            -0.9987000226974487,
+            0.9987000226974487
+          ]
+        },
+        {
+          "path": "1013_periodic_case5_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "retain_visual_goal"
+          },
+          "scorer_face_normal_z": [
+            0.03417367488145828,
+            -0.03417367488145828,
+            -0.04433611035346985,
+            0.04433611035346985,
+            -0.9984316825866699,
+            0.9984316825866699
+          ]
+        }
+      ]
+    }
+  ]
+}

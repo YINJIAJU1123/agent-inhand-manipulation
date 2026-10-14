@@ -1,0 +1,462 @@
+{
+  "metadata": {
+    "benchmark": "random_symbol_star_v2_pilot",
+    "checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+    "adapter_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+    "seeds": [
+      1013
+    ],
+    "modes": [
+      "once"
+    ],
+    "grounding": "inventory",
+    "no_symbols": false,
+    "recovery_enabled": true,
+    "camera_resolution": 512,
+    "student_resolution": 256,
+    "vision_stride": 2,
+    "agent_stride": 10,
+    "call_budget": 6,
+    "max_steps": 600,
+    "env_max_episode_length": 600,
+    "success": "accepted correct visual goal AND executing it AND orientation error <= 0.16 rad without drop; evaluator stops scored slot, not VLM-certified stopping",
+    "agent_inputs": [
+      "RGB",
+      "constant star instruction",
+      "elapsed control steps"
+    ],
+    "oracle_has_target_label": true,
+    "source_sha256": {
+      "evaluate_visual_agent.py": "96340052efb94e2d0222674d3ce1fb643cb7b792b0ffd36b274ce034e9332f79",
+      "visual_agent.py": "0013055a232417a2109cff2745a7e1eeaf02f3369e3e74ecd87fb3d5f1fcf9a3",
+      "student_features.py": "584e064b4fb06c47f90e41ba3bb59617e8ea34f4066318b5e93c715ab813d3fb",
+      "symbol_scene.py": "c2085123b958fb882908bc68c66b3d2a981455c8f64cc850e249530fc9431cd5",
+      "vlm_server.py": "f4191fe394f7ca72e9240763230bb0a145030eac06c651d843eafcf8d6802b14"
+    }
+  },
+  "elapsed_s": 6.291709195999829,
+  "episodes": [
+    {
+      "seed": 1013,
+      "mode": "once",
+      "case": 0,
+      "target_color_index": 0,
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 0,
+      "min_orientation_error_rad": null,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 1,
+      "recovery_used": false,
+      "action_states": {},
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"},\n    {\"color\": \"red\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.7008036990000619,
+          "image_sha256": "5b185a9fa9092c6d2f9eb34c436732efcc2d1758b5aa8cace321aae43a00e9f4",
+          "crop_box": [
+            205,
+            202,
+            321,
+            324
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              },
+              {
+                "color": "red",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_once_case0_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": null,
+            "state": "abstain",
+            "reason": "no_visual_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.3537372946739197,
+            -0.3537372946739197,
+            -0.9352433681488037,
+            0.9352433681488037,
+            -0.013779759407043457,
+            0.013779759407043457
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "once",
+      "case": 1,
+      "target_color_index": 1,
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 0,
+      "min_orientation_error_rad": null,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 1,
+      "recovery_used": false,
+      "action_states": {},
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"unknown\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6754831950001972,
+          "image_sha256": "0cf4b2771941df24b51c7df23ca02c10aefd6348eb57b1f72a75628cc01c949e",
+          "crop_box": [
+            220,
+            205,
+            326,
+            322
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "unknown"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_once_case1_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": null,
+            "state": "abstain",
+            "reason": "no_visual_evidence"
+          },
+          "scorer_face_normal_z": [
+            -0.004923361819237471,
+            0.004923361819237471,
+            -0.9572475552558899,
+            0.9572475552558899,
+            -0.2892286777496338,
+            0.2892286777496338
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "once",
+      "case": 2,
+      "target_color_index": 2,
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 0,
+      "min_orientation_error_rad": null,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 1,
+      "recovery_used": false,
+      "action_states": {},
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6720940109998992,
+          "image_sha256": "15005ccf65ad987f6a6d0d1be5c9644a59a94bfc09c550ed2a9dbbe06a8b4d23",
+          "crop_box": [
+            190,
+            186,
+            306,
+            413
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_once_case2_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": null,
+            "state": "abstain",
+            "reason": "no_visual_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.8921847939491272,
+            -0.8921847939491272,
+            -0.38939279317855835,
+            0.38939279317855835,
+            0.2288661003112793,
+            -0.2288661003112793
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "once",
+      "case": 3,
+      "target_color_index": 3,
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 0,
+      "min_orientation_error_rad": null,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 1,
+      "recovery_used": false,
+      "action_states": {},
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"cyan\", \"symbol\": \"unknown\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6845109879996016,
+          "image_sha256": "fde1a4610a588d4fe1fe96a2c4ec4d52f539f0512c16fe396ecfefa9733dc454",
+          "crop_box": [
+            199,
+            206,
+            314,
+            313
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_once_case3_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": null,
+            "state": "abstain",
+            "reason": "no_visual_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.008026006631553173,
+            -0.008026006631553173,
+            0.8767095804214478,
+            -0.8767095804214478,
+            -0.4809530973434448,
+            0.4809530973434448
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "once",
+      "case": 4,
+      "target_color_index": 4,
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 0,
+      "min_orientation_error_rad": null,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 1,
+      "recovery_used": false,
+      "action_states": {},
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"bars\"},\n    {\"color\": \"green\", \"symbol\": \"diamond\"},\n    {\"color\": \"blue\", \"symbol\": \"circle\"},\n    {\"color\": \"magenta\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 1.0388346039999306,
+          "image_sha256": "d1ebb545ceca30daa57c4c03f49d0a1e6fb0caab17e42b2f6b3e9dbe96f0251d",
+          "crop_box": [
+            200,
+            186,
+            328,
+            328
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "bars"
+              },
+              {
+                "color": "green",
+                "symbol": "diamond"
+              },
+              {
+                "color": "blue",
+                "symbol": "circle"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_once_case4_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": null,
+            "state": "abstain",
+            "reason": "no_visual_evidence"
+          },
+          "scorer_face_normal_z": [
+            -0.769219160079956,
+            0.769219160079956,
+            0.42541271448135376,
+            -0.42541271448135376,
+            0.476787269115448,
+            -0.476787269115448
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 1013,
+      "mode": "once",
+      "case": 5,
+      "target_color_index": 5,
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 0,
+      "min_orientation_error_rad": null,
+      "final_goal": null,
+      "grounding_correct": false,
+      "calls": 1,
+      "recovery_used": false,
+      "action_states": {},
+      "trace": [
+        {
+          "step": 0,
+          "reason": "initial_grounding",
+          "operation": "ground",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "pending": null,
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.6743413419999342,
+          "image_sha256": "9c6a5c607aa0e17e57b9b4d0eebd795c4a77e2712c52f378cd7eda56548ce74c",
+          "crop_box": [
+            200,
+            200,
+            319,
+            333
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "grounding": "inventory"
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "1013_once_case5_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": null,
+            "state": "abstain",
+            "reason": "no_visual_evidence"
+          },
+          "scorer_face_normal_z": [
+            -0.0022742152214050293,
+            0.0022742152214050293,
+            -0.9999974966049194,
+            0.9999974966049194,
+            0.0003158450126647949,
+            -0.0003158450126647949
+          ]
+        }
+      ]
+    }
+  ]
+}
