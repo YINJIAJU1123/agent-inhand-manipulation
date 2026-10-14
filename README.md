@@ -4,15 +4,17 @@ Research fork of [BrainCoTech/RevoLab](https://github.com/BrainCoTech/RevoLab)
 for goal-conditioned Revo3 reorientation and visual-language control.
 Upstream assets and license notices are retained.
 
-Current status: a state-conditioned RL teacher has preliminary evaluation
-reports; the visual student and rollout collector are experimental. A standalone
-Docker build now renders 256×256 RGB-D frames and passes six-face goal-reset
-checks. See [camera validation](docs/camera_placement.md) and
-[reproduction instructions](docs/reproducibility.md). This establishes sensor
-operation, not a trained visual-language policy or validated 5090 deployment.
+Current status (2026-10-14): a frozen RGB-D student is driven by a trained
+six-color goal classifier on frozen SigLIP2 text features. On two evaluation
+seeds, held-out English instruction templates achieve 600/768 closed-loop
+successes (78.13%). See the [text-grounding v2 report](docs/visual_student_language_v2_report_20261014.md)
+for the protocol, controls, per-episode evidence, and limits of this result.
+The earlier [v1 report](docs/visual_student_language_v1_report_20261014.md) has been
+corrected to identify its rule-based color routing.
 
-The latest project status and the boundary between diagnostic results and paper
-evidence are tracked in [progress_20260926.md](docs/progress_20260926.md).
+Earlier project status is recorded in [progress_20260926.md](docs/progress_20260926.md).
+Camera setup and environment reproduction are documented in
+[camera validation](docs/camera_placement.md) and [reproduction instructions](docs/reproducibility.md).
 
 The frozen visual-student contract is recorded in [visual_student_protocol_v1.md](docs/visual_student_protocol_v1.md), with the machine-readable manifest at [configs/visual_student_freeze.json](configs/visual_student_freeze.json).
 

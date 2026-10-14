@@ -8,6 +8,7 @@ GRU/action head remains the single low-level controller and emits the same
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -44,10 +45,14 @@ parser.add_argument("--zero-language", action="store_true",
                     help="Zero the language feature while evaluating a control student.")
 parser.add_argument("--language-mode", choices=("onehot", "hash", "vlm"), default="onehot",
                     help="Structured face one-hot or deterministic text-string features.")
-parser.add_argument("--prompt-style", choices=("canonical", "reorient", "turn", "top", "view", "up"),
+parser.add_argument("--prompt-style", choices=("canonical", "reorient", "turn", "top", "view", "up", "heldout"),
                     default="canonical", help="SigLIP2 prompt template used for language-only evaluation.")
 parser.add_argument("--prompt-adapter", default=None,
                     help="Prompt canonicalizer checkpoint mapping paraphrase embeddings to canonical embeddings.")
+parser.add_argument("--instruction-color-offset", type=int, default=0,
+                    help="Negative control: change commanded color while scoring the original goal.")
+parser.add_argument("--text-feature-cache", default=None,
+                    help="Optional exact-text encoder cache; contains no target labels. Unknown text fails.")
 parser.add_argument("--episodes", type=int, default=30)
 parser.add_argument("--num_envs", type=int, default=4)
 parser.add_argument("--seed", type=int, default=123,
@@ -84,6 +89,7 @@ from isaaclab_tasks.utils import parse_env_cfg  # noqa: E402
 import BrainCo_DexHand  # noqa: F401, E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from text_grounding import encode_texts, ground_features, HELDOUT_TEMPLATES
 from train_feature_student import VisualLanguageStudent, VisualStudentBatch  # noqa: E402
 from BrainCo_DexHand.algo.agentic.language_goal import FACE_NAMES  # noqa: E402
 from BrainCo_DexHand.algo.agentic.text_features import hashed_text_features  # noqa: E402
@@ -186,16 +192,33 @@ PROMPT_TEMPLATES = {
     "up": "place the {color} marker upward",
 }
 
-def _canonicalize_prompt_features(features, adapter, device, face_ids=None):
+def _canonicalize_prompt_features(features, adapter, device):
+    # Inference accepts text features only. Simulator labels cannot route the goal.
     if adapter is None:
         return features
+    if adapter.get("version") == "siglip2_text_classifier_v2":
+        return ground_features(features, adapter)[0]
     canonical = adapter["canonical_embeddings"].to(device=device, dtype=features.dtype)
-    if face_ids is not None:
-        return canonical[face_ids.to(device=device, dtype=torch.long)]
     table = adapter["prompt_embeddings"].to(device=device, dtype=features.dtype).reshape(-1, features.shape[-1])
     scores = torch.nn.functional.normalize(features, dim=-1) @ torch.nn.functional.normalize(table, dim=-1).T
-    nearest = scores.argmax(dim=-1)
-    return canonical[nearest % canonical.shape[0]]
+    return canonical[scores.argmax(dim=-1) % canonical.shape[0]]
+
+
+def _benchmark_instructions(raw, style, template_indices, color_offset):
+    """Benchmark-only prompt generation; labels are never passed to grounding.
+
+    Canonical instructions pass through verbatim. Heldout paraphrases are generated
+    from the environment goal, just as the simulator generates its instructions.
+    Offset is an explicit wrong-command control scored against the original goal.
+    """
+    originals = list(raw.current_instructions())
+    if style == "canonical" and color_offset == 0:
+        return originals
+    faces = _instruction_faces(raw, "cpu").tolist()
+    templates = HELDOUT_TEMPLATES if style == "heldout" else [PROMPT_TEMPLATES[style]]
+    return [templates[int(t) % len(templates)].format(color=FACE_NAMES[(face + color_offset) % 6])
+            for face, t in zip(faces, template_indices)]
+
 
 def _prompt_texts(face_ids, style):
     template = PROMPT_TEMPLATES[style]
@@ -252,19 +275,26 @@ def main():
     prompt_adapter = None
     if args.prompt_adapter:
         prompt_adapter = torch.load(args.prompt_adapter, map_location="cpu", weights_only=False)
-        if prompt_adapter.get("version") != "siglip2_prompt_canonicalizer_v1":
+        if prompt_adapter.get("version") not in ("siglip2_prompt_canonicalizer_v1", "siglip2_text_classifier_v2"):
             raise ValueError("unsupported prompt adapter version")
+    text_cache = None
+    if args.text_feature_cache:
+        if args.language_mode != "vlm" or not prompt_adapter or prompt_adapter.get("version") != "siglip2_text_classifier_v2":
+            raise ValueError("text cache requires text-only classifier v2")
+        text_cache = torch.load(args.text_feature_cache, map_location="cpu", weights_only=False)
+        if text_cache["version"] != "siglip2_full_text_cache_v1" or text_cache["max_length"] != prompt_adapter["max_length"]:
+            raise ValueError("text cache encoding contract mismatch")
     # ``vlm`` mode uses the actual instruction string for every episode.
     # The image path remains the existing RGB-D semantic frontend when
     # --semantic-camera is supplied; SigLIP is used only for language here.
-    if args.language_mode == "vlm" or not (args.structured_camera or args.semantic_camera):
+    if (args.language_mode == "vlm" and text_cache is None) or not (args.structured_camera or args.semantic_camera):
         if AutoProcessor is None or AutoModel is None:
             raise RuntimeError("transformers is required for SigLIP evaluation")
         processor = AutoProcessor.from_pretrained(args.model, use_fast=False)
         vlm = AutoModel.from_pretrained(args.model).to(device).eval()
         if args.language_mode != "vlm":
             text_features = _text_features(vlm, processor, text_prompts, device)
-    else:
+    elif args.language_mode != "vlm":
         prompts = [f"show the {x} marker" for x in face_names]
         if args.language_mode == "hash":
             text_features = hashed_text_features(prompts, dim=ckpt["language_dim"]).to(device)
@@ -274,16 +304,33 @@ def main():
             text_features.zero_()
 
     obs, _ = env.reset()
-    if args.language_mode == "vlm":
-        current_instruction_faces = _instruction_faces(raw, device)
-        current_instruction_texts = _prompt_texts(current_instruction_faces, args.prompt_style)
-        text_features = _canonicalize_prompt_features(_text_features(vlm, processor, current_instruction_texts, device), prompt_adapter, device, current_instruction_faces)
-        if args.zero_language:
-            text_features.zero_()
-        last_instruction_texts = current_instruction_texts
-    else:
-        last_instruction_texts = None
     n = raw.num_envs
+    template_indices = list(range(n))
+    prompt_cache = {}
+
+    def infer_instructions(texts):
+        # Cache keys contain the complete text, never a parsed face or target id.
+        missing = list(dict.fromkeys(t for t in texts if t not in prompt_cache))
+        if missing:
+            if prompt_adapter and prompt_adapter.get("version") == "siglip2_text_classifier_v2":
+                if text_cache is None:
+                    encoded = encode_texts(vlm, processor, missing, device, prompt_adapter["max_length"])
+                else:
+                    encoded = torch.stack([text_cache["embeddings"][text] for text in missing]).to(device)
+                routed, predictions, _ = ground_features(encoded, prompt_adapter)
+            else:
+                encoded = _text_features(vlm, processor, missing, device)
+                routed = _canonicalize_prompt_features(encoded, prompt_adapter, device)
+                predictions = torch.full((len(missing),), -1, device=device)
+            for text, feature, predicted in zip(missing, routed, predictions):
+                prompt_cache[text] = (feature.detach(), int(predicted))
+        features = torch.stack([prompt_cache[t][0] for t in texts])
+        if args.zero_language:
+            features = torch.zeros_like(features)
+        return features, [prompt_cache[t][1] for t in texts]
+
+    episode_texts = [None] * n
+    episode_predictions = [-1] * n
     history = int(ckpt.get("history", 8))
     image_hist = torch.zeros((n, history, ckpt["rgb_dim"]), device=device)
     prop_hist = torch.zeros((n, history, ckpt["proprio_dim"]), device=device)
@@ -315,16 +362,12 @@ def main():
                 else:
                     images = [Image.fromarray(x.cpu().numpy()) for x in rgb]
                     image_features, _ = _features(vlm, processor, images, device, text_features)
-            instruction_face = _instruction_faces(raw, device)
             if args.language_mode == "vlm":
-                current_instruction_texts = _prompt_texts(instruction_face, args.prompt_style)
-                if current_instruction_texts != last_instruction_texts:
-                    text_features = _canonicalize_prompt_features(_text_features(vlm, processor, current_instruction_texts, device), prompt_adapter, device, instruction_face)
-                    if args.zero_language:
-                        text_features.zero_()
-                    last_instruction_texts = current_instruction_texts
-                face_text = text_features
+                episode_texts = _benchmark_instructions(raw, args.prompt_style, template_indices,
+                                                       args.instruction_color_offset)
+                face_text, episode_predictions = infer_instructions(episode_texts)
             else:
+                instruction_face = _instruction_faces(raw, device)
                 face_text = text_features[instruction_face]
             if capture_step:
                 # Training samples are recorded every vision_stride control steps.
@@ -367,6 +410,8 @@ def main():
                 break
             records.append({
                 "face": int(episode_face[idx].item()),
+                "instruction": episode_texts[idx],
+                "predicted_face": episode_predictions[idx],
                 "success": bool(episode_success[idx].item()) and not bool(episode_drop[idx].item()),
                 "ever_reach": bool(episode_ever_reach[idx].item()),
                 "time_to_first_reach_steps": int(episode_first_reach[idx].item()),
@@ -376,6 +421,7 @@ def main():
                 "steps": int(episode_steps[idx].item()),
             })
             done_count += 1
+            template_indices[idx] += 1
             episode_steps[idx] = 0
             episode_success[idx] = False
             episode_ever_reach[idx] = False
@@ -402,6 +448,8 @@ def main():
                 continue
             records.append({
                 "face": int(episode_face[idx].item()),
+                "instruction": episode_texts[idx],
+                "predicted_face": episode_predictions[idx],
                 "success": False,
                 "ever_reach": bool(episode_ever_reach[idx].item()),
                 "time_to_first_reach_steps": int(episode_first_reach[idx].item()),
@@ -417,6 +465,12 @@ def main():
         per_face[record["face"]].append(record)
     report = {
         "task": task, "checkpoint": os.path.abspath(args.checkpoint), "model": args.model,
+        "checkpoint_sha256": hashlib.sha256(Path(args.checkpoint).read_bytes()).hexdigest(),
+        "prompt_adapter_sha256": hashlib.sha256(Path(args.prompt_adapter).read_bytes()).hexdigest() if args.prompt_adapter else None,
+        "evaluator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "num_envs": n, "max_steps": args.max_steps,
+        "gpu": torch.cuda.get_device_name(device) if device.type == "cuda" else "cpu",
+        "torch_version": torch.__version__,
         "vision_stride": args.vision_stride,
         "action_scale": args.action_scale,
         "cached_features": None,
@@ -431,6 +485,15 @@ def main():
         "zero_language": args.zero_language,
         "language_mode": args.language_mode,
         "prompt_style": args.prompt_style,
+        "instruction_color_offset": args.instruction_color_offset,
+        "text_feature_cache": args.text_feature_cache,
+        "text_cache_sha256": hashlib.sha256(Path(args.text_feature_cache).read_bytes()).hexdigest() if args.text_feature_cache else None,
+        "text_encoder_sha256": text_cache["model_sha256"] if text_cache else None,
+        "grounding_method": (prompt_adapter.get("version") if prompt_adapter else args.language_mode),
+        "grounding_uses_target_labels": False if args.language_mode == "vlm" else True,
+        "grounding_accuracy_against_scored_goal": (
+            sum(x["predicted_face"] == x["face"] for x in records) / max(len(records), 1)
+            if prompt_adapter and prompt_adapter.get("version") == "siglip2_text_classifier_v2" else None),
         "prompt_adapter": os.path.abspath(args.prompt_adapter) if args.prompt_adapter else None,
         "language_model": args.model if args.language_mode == "vlm" else None,
         "episodes": len(records), "vector_steps": step_count, "seed": args.seed,

@@ -1,7 +1,11 @@
-# Visual student language version v1
+# Visual student rule-routed baseline v1 (corrected)
 
 日期：2026-10-14  
 分支：`experiment/viserdex-revo3-cube`
+
+## 结论更正（2026-10-14）
+
+本轮 79.30% **不能作为学得的语言 grounding 或改写泛化证据**。实际执行时，评测器从原始指令解析颜色，并把颜色索引传入 `_canonicalize_prompt_features`，直接选择 canonical embedding；改写后的 SigLIP2 文本向量被绕过。下面的数值保留为规则颜色路由下的视觉控制结果。此前将其描述为“语言训练已完成”不准确。
 
 ## 版本定义
 
@@ -9,9 +13,9 @@
 
 - teacher、RGB-D frontend、GRU、action head、action scale `1.0` 和评测协议保持不变；
 - SigLIP2 `siglip2-base-patch16-224` 只负责把指令编码成 768-D 文本向量；
-- 新增 `siglip2_prompt_canonicalizer_v1`，把同一颜色目标的改写指令映射到 canonical embedding；
+- `siglip2_prompt_canonicalizer_v1` 存储模板向量，但本轮实际通过规则解析的颜色索引选择 canonical embedding；
 - canonical embedding 和评测脚本使用同一个 slow tokenizer 和同一模板 batch，避免 SigLIP2 文本 pooling 的 batch padding 偏差；
-- 语言 adapter 不改控制器参数，因此这是一版可归因、可复现的语言 grounding baseline。
+- 控制器参数未改；本轮属于规则颜色路由的控制基线，不能证明学得的语言理解。
 
 模板集合：
 
@@ -38,7 +42,7 @@
 - seed 123：face0 73.13%、face1 74.63%、face2 85.25%、face3 77.27%、face4 86.15%、face5 77.59%；
 - seed 456：face0 80.00%、face1 78.46%、face2 66.67%、face3 85.00%、face4 85.71%、face5 86.15%。
 
-canonical 与 rewrite 的 aggregate 差异在 2 个百分点以内，说明语言改写没有破坏已有控制策略。round 10 原始 RGB-D + SigLIP2 student 的双 seed 基线为 80.08%（615/768），本版保持在同一水平范围内。
+canonical 与 rewrite 对同一颜色实际提供相同的控制器输入，因此两者的差异不能用于判断语言改写效果。round 10 原始基线为 80.08%（615/768）；这里只保留控制成功率的数值比较。
 
 ## 文件与校验
 

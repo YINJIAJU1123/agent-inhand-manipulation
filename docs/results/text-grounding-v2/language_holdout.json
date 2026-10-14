@@ -1,0 +1,530 @@
+{
+  "version": "siglip2_text_classifier_v2",
+  "checkpoint": "outputs/visual_student_v3/checkpoints/siglip2_text_classifier_v2.pt",
+  "checkpoint_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+  "train_count": 108,
+  "test_count": 72,
+  "seed": 123,
+  "train_accuracy": 1.0,
+  "heldout_accuracy": 1.0,
+  "batch_invariance_max_abs_error": 5.960464477539063e-08,
+  "confusion_matrix": [
+    [
+      12,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      12,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      12,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      12,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      12,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      12
+    ]
+  ],
+  "train_templates": [
+    "show the {color} marker",
+    "reorient to the {color} marker",
+    "turn toward the {color} marker",
+    "bring the {color} marker to the top",
+    "move the {color} marker into view",
+    "place the {color} marker upward",
+    "rotate the cube to show its {color} face",
+    "make the {color} side face up",
+    "I want to see the {color} surface",
+    "please expose the {color} patch",
+    "the goal is the {color} face",
+    "orient the {color} side upward",
+    "show me {color}",
+    "target the {color} surface",
+    "please turn the block until {color} is visible",
+    "bring {color} into view",
+    "the requested color is {color}",
+    "position the {color} face on top"
+  ],
+  "heldout_templates": [
+    "Could you present the {color} side of the cube?",
+    "Adjust your grip so that the {color} patch ends up facing upwards.",
+    "Let me have a look at the {color} face.",
+    "Your next task: expose the surface colored {color}.",
+    "Turn the object in your hand to reveal {color}.",
+    "Keep rotating until you can show me the {color} marking.",
+    "I'd like the upward facing side to be {color}.",
+    "Please bring the side painted {color} to the top.",
+    "Can you display the cube's {color} panel?",
+    "Reposition this block with its {color} region uppermost.",
+    "The surface I am asking for is {color}.",
+    "Make {color} the visible face by turning the cube."
+  ],
+  "limitations": "Six English color goals; template holdout only. No negation, spatial reasoning, or VLM recovery claims.",
+  "predictions": [
+    {
+      "text": "Could you present the red side of the cube?",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9964441657066345
+    },
+    {
+      "text": "Could you present the green side of the cube?",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9909194707870483
+    },
+    {
+      "text": "Could you present the blue side of the cube?",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9906901121139526
+    },
+    {
+      "text": "Could you present the yellow side of the cube?",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9974896907806396
+    },
+    {
+      "text": "Could you present the magenta side of the cube?",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9958261847496033
+    },
+    {
+      "text": "Could you present the cyan side of the cube?",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9980529546737671
+    },
+    {
+      "text": "Adjust your grip so that the red patch ends up facing upwards.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.982776403427124
+    },
+    {
+      "text": "Adjust your grip so that the green patch ends up facing upwards.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9975394010543823
+    },
+    {
+      "text": "Adjust your grip so that the blue patch ends up facing upwards.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9808922410011292
+    },
+    {
+      "text": "Adjust your grip so that the yellow patch ends up facing upwards.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9944304823875427
+    },
+    {
+      "text": "Adjust your grip so that the magenta patch ends up facing upwards.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.996245801448822
+    },
+    {
+      "text": "Adjust your grip so that the cyan patch ends up facing upwards.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9924006462097168
+    },
+    {
+      "text": "Let me have a look at the red face.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9985890984535217
+    },
+    {
+      "text": "Let me have a look at the green face.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9994219541549683
+    },
+    {
+      "text": "Let me have a look at the blue face.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9987945556640625
+    },
+    {
+      "text": "Let me have a look at the yellow face.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9993733763694763
+    },
+    {
+      "text": "Let me have a look at the magenta face.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9991494417190552
+    },
+    {
+      "text": "Let me have a look at the cyan face.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.999636173248291
+    },
+    {
+      "text": "Your next task: expose the surface colored red.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9951431751251221
+    },
+    {
+      "text": "Your next task: expose the surface colored green.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9859482049942017
+    },
+    {
+      "text": "Your next task: expose the surface colored blue.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9507544040679932
+    },
+    {
+      "text": "Your next task: expose the surface colored yellow.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.991080105304718
+    },
+    {
+      "text": "Your next task: expose the surface colored magenta.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9814360737800598
+    },
+    {
+      "text": "Your next task: expose the surface colored cyan.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9928252696990967
+    },
+    {
+      "text": "Turn the object in your hand to reveal red.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9882450103759766
+    },
+    {
+      "text": "Turn the object in your hand to reveal green.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9948111772537231
+    },
+    {
+      "text": "Turn the object in your hand to reveal blue.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9536592364311218
+    },
+    {
+      "text": "Turn the object in your hand to reveal yellow.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9855632781982422
+    },
+    {
+      "text": "Turn the object in your hand to reveal magenta.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9852690100669861
+    },
+    {
+      "text": "Turn the object in your hand to reveal cyan.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9985332489013672
+    },
+    {
+      "text": "Keep rotating until you can show me the red marking.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.988335371017456
+    },
+    {
+      "text": "Keep rotating until you can show me the green marking.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9929046034812927
+    },
+    {
+      "text": "Keep rotating until you can show me the blue marking.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9917464256286621
+    },
+    {
+      "text": "Keep rotating until you can show me the yellow marking.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9973891377449036
+    },
+    {
+      "text": "Keep rotating until you can show me the magenta marking.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9963592886924744
+    },
+    {
+      "text": "Keep rotating until you can show me the cyan marking.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9967674016952515
+    },
+    {
+      "text": "I'd like the upward facing side to be red.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9897023439407349
+    },
+    {
+      "text": "I'd like the upward facing side to be green.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9974697828292847
+    },
+    {
+      "text": "I'd like the upward facing side to be blue.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9809738993644714
+    },
+    {
+      "text": "I'd like the upward facing side to be yellow.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9860617518424988
+    },
+    {
+      "text": "I'd like the upward facing side to be magenta.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9976279139518738
+    },
+    {
+      "text": "I'd like the upward facing side to be cyan.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9982427358627319
+    },
+    {
+      "text": "Please bring the side painted red to the top.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9998394250869751
+    },
+    {
+      "text": "Please bring the side painted green to the top.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9994706511497498
+    },
+    {
+      "text": "Please bring the side painted blue to the top.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9987605810165405
+    },
+    {
+      "text": "Please bring the side painted yellow to the top.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.999879002571106
+    },
+    {
+      "text": "Please bring the side painted magenta to the top.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9992071986198425
+    },
+    {
+      "text": "Please bring the side painted cyan to the top.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9743312001228333
+    },
+    {
+      "text": "Can you display the cube's red panel?",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9983651041984558
+    },
+    {
+      "text": "Can you display the cube's green panel?",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9912514090538025
+    },
+    {
+      "text": "Can you display the cube's blue panel?",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9454717040061951
+    },
+    {
+      "text": "Can you display the cube's yellow panel?",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9989522695541382
+    },
+    {
+      "text": "Can you display the cube's magenta panel?",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9974653720855713
+    },
+    {
+      "text": "Can you display the cube's cyan panel?",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9997462630271912
+    },
+    {
+      "text": "Reposition this block with its red region uppermost.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9922286868095398
+    },
+    {
+      "text": "Reposition this block with its green region uppermost.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9962019324302673
+    },
+    {
+      "text": "Reposition this block with its blue region uppermost.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9962502121925354
+    },
+    {
+      "text": "Reposition this block with its yellow region uppermost.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9977619647979736
+    },
+    {
+      "text": "Reposition this block with its magenta region uppermost.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9919792413711548
+    },
+    {
+      "text": "Reposition this block with its cyan region uppermost.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9616085886955261
+    },
+    {
+      "text": "The surface I am asking for is red.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9916449189186096
+    },
+    {
+      "text": "The surface I am asking for is green.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9945540428161621
+    },
+    {
+      "text": "The surface I am asking for is blue.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9936633110046387
+    },
+    {
+      "text": "The surface I am asking for is yellow.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.9926455020904541
+    },
+    {
+      "text": "The surface I am asking for is magenta.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9946253895759583
+    },
+    {
+      "text": "The surface I am asking for is cyan.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.994457483291626
+    },
+    {
+      "text": "Make red the visible face by turning the cube.",
+      "expected": 0,
+      "predicted": 0,
+      "confidence": 0.9970190525054932
+    },
+    {
+      "text": "Make green the visible face by turning the cube.",
+      "expected": 1,
+      "predicted": 1,
+      "confidence": 0.9922747015953064
+    },
+    {
+      "text": "Make blue the visible face by turning the cube.",
+      "expected": 2,
+      "predicted": 2,
+      "confidence": 0.9927910566329956
+    },
+    {
+      "text": "Make yellow the visible face by turning the cube.",
+      "expected": 3,
+      "predicted": 3,
+      "confidence": 0.996496856212616
+    },
+    {
+      "text": "Make magenta the visible face by turning the cube.",
+      "expected": 4,
+      "predicted": 4,
+      "confidence": 0.9959167838096619
+    },
+    {
+      "text": "Make cyan the visible face by turning the cube.",
+      "expected": 5,
+      "predicted": 5,
+      "confidence": 0.9965677261352539
+    }
+  ]
+}
