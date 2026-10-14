@@ -1,0 +1,4346 @@
+{
+  "metadata": {
+    "benchmark": "language_symbol_agent_v3",
+    "checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+    "adapter_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+    "seeds": [
+      31101
+    ],
+    "modes": [
+      "feedback"
+    ],
+    "grounding": "instruction_conditioned_inventory",
+    "instruction_offset": 1,
+    "template_set": "paraphrase",
+    "no_symbols": false,
+    "feedback_reobservation_enabled": true,
+    "camera_resolution": 512,
+    "student_resolution": 256,
+    "vision_stride": 2,
+    "agent_stride": 10,
+    "call_budget": 6,
+    "max_steps": 600,
+    "env_max_episode_length": 600,
+    "success": "accepted correct visual goal AND executing it AND orientation error <= 0.16 rad without drop; evaluator stops scored slot, not VLM-certified stopping",
+    "video_capture": "existing pre-action RGB every 2 control steps; 15 fps simulation time",
+    "agent_inputs": [
+      "RGB",
+      "actual full instruction",
+      "measured proprioception",
+      "elapsed control steps"
+    ],
+    "oracle_has_target_label": true,
+    "source_sha256": {
+      "evaluate_semantic_agent_v3.py": "ce7c276b095e20c6681ac3dfb87b26afb4f4f7e6439ef9995387848048a7e3ce",
+      "semantic_agent_v3.py": "a3d8f6ab1adb3f3f255d5af2fa819b14f73ec2ebdaef5b236cd8112c09f291f6",
+      "semantic_protocol_v3.py": "056b927f3409e08b0bfc1db9bbfc09f05a07c9be9bd224fafb7ca3c1e1f68efd",
+      "visual_agent.py": "0013055a232417a2109cff2745a7e1eeaf02f3369e3e74ecd87fb3d5f1fcf9a3",
+      "student_features.py": "584e064b4fb06c47f90e41ba3bb59617e8ea34f4066318b5e93c715ab813d3fb",
+      "symbol_scene.py": "c2085123b958fb882908bc68c66b3d2a981455c8f64cc850e249530fc9431cd5",
+      "vlm_server.py": "f4191fe394f7ca72e9240763230bb0a145030eac06c651d843eafcf8d6802b14"
+    }
+  },
+  "elapsed_s": 110.80053061700164,
+  "episodes": [
+    {
+      "seed": 31101,
+      "mode": "feedback",
+      "case": 0,
+      "target_color_index": 4,
+      "target_symbol": "circle",
+      "instruction": "Reorient the cube until its round-symbol sticker faces upward.",
+      "layout": [
+        4,
+        2,
+        5,
+        3,
+        1,
+        0
+      ],
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 599,
+      "min_orientation_error_rad": 1.0242878198623657,
+      "final_goal": 2,
+      "parsed_goal_symbol": "circle",
+      "language_correct": true,
+      "grounding_correct": false,
+      "calls": 3,
+      "recovery_used": false,
+      "action_states": {
+        "execute": 599
+      },
+      "trace": [
+        {
+          "step": 0,
+          "operation": "parse_language",
+          "reason": "initial_language_parsing",
+          "instruction": "Reorient the cube until its round-symbol sticker faces upward.",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "goal_symbol": "circle",
+          "goal_direction": "up",
+          "raw": "{\"goal_symbol\":\"circle\",\"goal_direction\":\"up\"}",
+          "parsed": {
+            "goal_symbol": "circle",
+            "goal_direction": "up"
+          },
+          "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Reorient the cube until its round-symbol sticker faces upward.\"",
+          "observations": [],
+          "elapsed_s": 0.25900895000086166,
+          "image_sha256": null,
+          "input_text_sha256": "63ac0c59c040b93691a468fc9161f615247596de37cfdee6fa20327c6e923a8f"
+        },
+        {
+          "step": 0,
+          "operation": "visual_grounding",
+          "reason": "initial_visual_grounding",
+          "instruction": "Reorient the cube until its round-symbol sticker faces upward.",
+          "previous_goal": null,
+          "accepted_goal": 2,
+          "binding": "bind_visible_semantic_target",
+          "feedback": {
+            "previous_skill": null,
+            "previous_state": "initial",
+            "change_since_vlm": null,
+            "image_change": null,
+            "proprio_change": null,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"blue\", \"symbol\": \"circle\"},\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.8722919470019406,
+          "image_sha256": "76335f0a94c1433df228c9171eb6b6e10ec1613393ce54d5a07401c4e4d492d8",
+          "crop_box": [
+            199,
+            197,
+            330,
+            335
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "blue",
+                "symbol": "circle"
+              },
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "circle",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Reorient the cube until its round-symbol sticker faces upward.\"\nGoal previously parsed from that instruction: circle, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": null, \"image_change\": null, \"previous_skill\": null, \"previous_state\": \"initial\", \"proprio_change\": null, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "blue",
+              "symbol": "circle"
+            }
+          ]
+        },
+        {
+          "step": 190,
+          "operation": "visual_grounding",
+          "reason": "execution_view_changed",
+          "instruction": "Reorient the cube until its round-symbol sticker faces upward.",
+          "previous_goal": 2,
+          "accepted_goal": 2,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "feedback": {
+            "previous_skill": 2,
+            "previous_state": "execute",
+            "change_since_vlm": 0.042094629257917404,
+            "image_change": 0.010693039745092392,
+            "proprio_change": 0.20741190016269684,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"diamond\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"},\n    {\"color\": \"yellow\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.9024596230010502,
+          "image_sha256": "f2c5da7e4e5dee4ca20f1f845db3f74a40e3723837d6911db1ab4ba3ebf2f654",
+          "crop_box": [
+            184,
+            214,
+            309,
+            350
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "diamond"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              },
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "circle",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Reorient the cube until its round-symbol sticker faces upward.\"\nGoal previously parsed from that instruction: circle, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": 0.042094629257917404, \"image_change\": 0.010693039745092392, \"previous_skill\": 2, \"previous_state\": \"execute\", \"proprio_change\": 0.20741190016269684, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "red",
+              "symbol": "diamond"
+            }
+          ]
+        }
+      ],
+      "feedback_trace": [
+        {
+          "step": 0,
+          "previous_skill": null,
+          "previous_state": "initial",
+          "change_since_vlm": null,
+          "image_change": null,
+          "proprio_change": null,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 10,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04309576377272606,
+          "image_change": 0.04309576377272606,
+          "proprio_change": 0.45515355467796326,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 20,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0471392460167408,
+          "image_change": 0.022501148283481598,
+          "proprio_change": 0.46909770369529724,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 30,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.044856131076812744,
+          "image_change": 0.01735026016831398,
+          "proprio_change": 0.5139330625534058,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 40,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04345734789967537,
+          "image_change": 0.017397811636328697,
+          "proprio_change": 0.6298022270202637,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 50,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04499431326985359,
+          "image_change": 0.013517412357032299,
+          "proprio_change": 0.4145675301551819,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 60,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04525760933756828,
+          "image_change": 0.008095575496554375,
+          "proprio_change": 0.30315709114074707,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 70,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04553621634840965,
+          "image_change": 0.01979709230363369,
+          "proprio_change": 0.5765983462333679,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 80,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04376499727368355,
+          "image_change": 0.01077218633145094,
+          "proprio_change": 0.37421345710754395,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 90,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04270099475979805,
+          "image_change": 0.011153236962854862,
+          "proprio_change": 0.29173195362091064,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 100,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04328501597046852,
+          "image_change": 0.011159620247781277,
+          "proprio_change": 0.11148051172494888,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 110,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04141327366232872,
+          "image_change": 0.01289413496851921,
+          "proprio_change": 0.33274853229522705,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 120,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04157475009560585,
+          "image_change": 0.017660463228821754,
+          "proprio_change": 0.27097851037979126,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 130,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.042001765221357346,
+          "image_change": 0.016607945784926414,
+          "proprio_change": 0.4817543923854828,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 140,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.042477916926145554,
+          "image_change": 0.01010199636220932,
+          "proprio_change": 0.19446337223052979,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 150,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.041834209114313126,
+          "image_change": 0.009651054628193378,
+          "proprio_change": 0.2659108638763428,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 160,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0386485792696476,
+          "image_change": 0.02123481035232544,
+          "proprio_change": 0.31125593185424805,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 170,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0374821275472641,
+          "image_change": 0.017859922721982002,
+          "proprio_change": 0.4969819188117981,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 180,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03983002528548241,
+          "image_change": 0.01537830475717783,
+          "proprio_change": 0.16069118678569794,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 190,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.042094629257917404,
+          "image_change": 0.010693039745092392,
+          "proprio_change": 0.20741190016269684,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 200,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.029441123828291893,
+          "image_change": 0.029441123828291893,
+          "proprio_change": 0.5257772207260132,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 210,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.026472503319382668,
+          "image_change": 0.027592038735747337,
+          "proprio_change": 0.4701666533946991,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 220,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03030215948820114,
+          "image_change": 0.022996453568339348,
+          "proprio_change": 0.4573816955089569,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 230,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03415064886212349,
+          "image_change": 0.016943998634815216,
+          "proprio_change": 0.3679537773132324,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 240,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03321908041834831,
+          "image_change": 0.031556691974401474,
+          "proprio_change": 0.43275150656700134,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 250,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.031550947576761246,
+          "image_change": 0.014370467513799667,
+          "proprio_change": 0.3923250734806061,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 260,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03592824563384056,
+          "image_change": 0.02111353538930416,
+          "proprio_change": 0.2901870906352997,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 270,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.034335747361183167,
+          "image_change": 0.01802300289273262,
+          "proprio_change": 0.27740228176116943,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 280,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0402289479970932,
+          "image_change": 0.02512318640947342,
+          "proprio_change": 0.3479471802711487,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 290,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03781147673726082,
+          "image_change": 0.018992865458130836,
+          "proprio_change": 0.4455412030220032,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 300,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03800966218113899,
+          "image_change": 0.018089065328240395,
+          "proprio_change": 0.26273924112319946,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 310,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03534805402159691,
+          "image_change": 0.029289856553077698,
+          "proprio_change": 0.44605761766433716,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 320,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03188827261328697,
+          "image_change": 0.03600930795073509,
+          "proprio_change": 0.48713335394859314,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 330,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.037352874875068665,
+          "image_change": 0.03416021913290024,
+          "proprio_change": 0.22370457649230957,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 340,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.031160639598965645,
+          "image_change": 0.0337868295609951,
+          "proprio_change": 0.3454129695892334,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 350,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02822106145322323,
+          "image_change": 0.03153562545776367,
+          "proprio_change": 0.6581130623817444,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 360,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.038320183753967285,
+          "image_change": 0.024167368188500404,
+          "proprio_change": 0.6501837968826294,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 370,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.036294613033533096,
+          "image_change": 0.007422193884849548,
+          "proprio_change": 0.33347880840301514,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 380,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03603866323828697,
+          "image_change": 0.008638429455459118,
+          "proprio_change": 0.21693739295005798,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 390,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03568601980805397,
+          "image_change": 0.0074049606919288635,
+          "proprio_change": 0.16995373368263245,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 400,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03675640746951103,
+          "image_change": 0.016359655186533928,
+          "proprio_change": 0.24463124573230743,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 410,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0359840951859951,
+          "image_change": 0.023613663390278816,
+          "proprio_change": 0.2846001386642456,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 420,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.031119471415877342,
+          "image_change": 0.024382466450333595,
+          "proprio_change": 0.4753871560096741,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 430,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03461084142327309,
+          "image_change": 0.033797357231378555,
+          "proprio_change": 0.5206950902938843,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 440,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.029317619279026985,
+          "image_change": 0.026458457112312317,
+          "proprio_change": 0.42213571071624756,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 450,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.030895760282874107,
+          "image_change": 0.0204806849360466,
+          "proprio_change": 0.43681323528289795,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 460,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.025378495454788208,
+          "image_change": 0.024641288444399834,
+          "proprio_change": 0.5168355107307434,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 470,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.031138300895690918,
+          "image_change": 0.024715328589081764,
+          "proprio_change": 0.5543456673622131,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 480,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0373394675552845,
+          "image_change": 0.026653451845049858,
+          "proprio_change": 0.4179163873195648,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 490,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.027480021119117737,
+          "image_change": 0.028011389076709747,
+          "proprio_change": 0.44167131185531616,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 500,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.029883449897170067,
+          "image_change": 0.02798234485089779,
+          "proprio_change": 0.5592888593673706,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 510,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.029344744980335236,
+          "image_change": 0.021246297284960747,
+          "proprio_change": 0.581873893737793,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 520,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.027204284444451332,
+          "image_change": 0.023758871480822563,
+          "proprio_change": 0.6573540568351746,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 530,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03408617898821831,
+          "image_change": 0.02300155907869339,
+          "proprio_change": 0.44243085384368896,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 540,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03850911557674408,
+          "image_change": 0.02259848453104496,
+          "proprio_change": 0.3174859285354614,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 550,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.030864164233207703,
+          "image_change": 0.01901201345026493,
+          "proprio_change": 0.3932291269302368,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 560,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.033093344420194626,
+          "image_change": 0.024083754047751427,
+          "proprio_change": 0.41919732093811035,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 570,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03261846303939819,
+          "image_change": 0.03438393399119377,
+          "proprio_change": 0.5296151041984558,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 580,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03357204794883728,
+          "image_change": 0.031748492270708084,
+          "proprio_change": 0.6865456104278564,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 590,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.030507683753967285,
+          "image_change": 0.020932266488671303,
+          "proprio_change": 0.619218111038208,
+          "visually_quiet_ticks": 0
+        }
+      ],
+      "transitions": [
+        {
+          "step": 0,
+          "from": {
+            "color": null,
+            "state": "initial",
+            "reason": "not_observed"
+          },
+          "to": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "31101_feedback_case0_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.11809234321117401,
+            0.11809234321117401,
+            0.975607693195343,
+            -0.975607693195343,
+            0.18505185842514038,
+            -0.18505185842514038
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.1352100968360901,
+            0.1352100968360901,
+            0.9889132976531982,
+            -0.9889132976531982,
+            -0.06138801574707031,
+            0.06138801574707031
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.09862402081489563,
+            0.09862402081489563,
+            0.9940378665924072,
+            -0.9940378665924072,
+            -0.04649388790130615,
+            0.04649388790130615
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.3133910000324249,
+            0.3133910000324249,
+            0.9472736120223999,
+            -0.9472736120223999,
+            -0.0667722225189209,
+            0.0667722225189209
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.25654542446136475,
+            0.25654542446136475,
+            0.9603635668754578,
+            -0.9603635668754578,
+            -0.10902225971221924,
+            0.10902225971221924
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.29687395691871643,
+            0.29687395691871643,
+            0.9362638592720032,
+            -0.9362638592720032,
+            -0.18781757354736328,
+            0.18781757354736328
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.09016460180282593,
+            0.09016460180282593,
+            0.9898642301559448,
+            -0.9898642301559448,
+            -0.10972082614898682,
+            0.10972082614898682
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0190.png",
+          "step": 190,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.06574350595474243,
+            0.06574350595474243,
+            0.9933323860168457,
+            -0.9933323860168457,
+            -0.09470129013061523,
+            0.09470129013061523
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.09669467806816101,
+            0.09669467806816101,
+            0.9853465557098389,
+            -0.9853465557098389,
+            -0.14050602912902832,
+            0.14050602912902832
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.07392136752605438,
+            -0.07392136752605438,
+            0.9818735718727112,
+            -0.9818735718727112,
+            -0.17452716827392578,
+            0.17452716827392578
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.1552010029554367,
+            0.1552010029554367,
+            0.9837431311607361,
+            -0.9837431311607361,
+            0.09034168720245361,
+            -0.09034168720245361
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0300.png",
+          "step": 300,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.3082563579082489,
+            0.3082563579082489,
+            0.9512063264846802,
+            -0.9512063264846802,
+            0.013572514057159424,
+            -0.013572514057159424
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0330.png",
+          "step": 330,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.016624465584754944,
+            -0.016624465584754944,
+            0.9994909167289734,
+            -0.9994909167289734,
+            0.027226507663726807,
+            -0.027226507663726807
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0360.png",
+          "step": 360,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.0007582232356071472,
+            -0.0007582232356071472,
+            0.9996070861816406,
+            -0.9996070861816406,
+            0.028018653392791748,
+            -0.028018653392791748
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0390.png",
+          "step": 390,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.05500894784927368,
+            -0.05500894784927368,
+            0.9980430603027344,
+            -0.9980430603027344,
+            -0.02972733974456787,
+            0.02972733974456787
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0420.png",
+          "step": 420,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.042002204805612564,
+            0.042002204805612564,
+            0.9980608224868774,
+            -0.9980608224868774,
+            0.04593628644943237,
+            -0.04593628644943237
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0450.png",
+          "step": 450,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.05776044726371765,
+            -0.05776044726371765,
+            0.9923730492591858,
+            -0.9923730492591858,
+            -0.10889923572540283,
+            0.10889923572540283
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0480.png",
+          "step": 480,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.08193844556808472,
+            0.08193844556808472,
+            0.9637405276298523,
+            -0.9637405276298523,
+            -0.2539489269256592,
+            0.2539489269256592
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0510.png",
+          "step": 510,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.0509219616651535,
+            0.0509219616651535,
+            0.9884018898010254,
+            -0.9884018898010254,
+            0.14306920766830444,
+            -0.14306920766830444
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0540.png",
+          "step": 540,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.09834447503089905,
+            -0.09834447503089905,
+            0.9935948252677917,
+            -0.9935948252677917,
+            0.055654287338256836,
+            -0.055654287338256836
+          ]
+        },
+        {
+          "path": "31101_feedback_case0_step0570.png",
+          "step": 570,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.12946921586990356,
+            0.12946921586990356,
+            0.9719702005386353,
+            -0.9719702005386353,
+            0.19624388217926025,
+            -0.19624388217926025
+          ]
+        }
+      ],
+      "video": {
+        "path": "31101_feedback_case0_continuous.mp4",
+        "frames": 300,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 31101,
+      "mode": "feedback",
+      "case": 1,
+      "target_color_index": 5,
+      "target_symbol": "triangle",
+      "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+      "layout": [
+        5,
+        1,
+        3,
+        4,
+        0,
+        2
+      ],
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": true,
+      "steps": 541,
+      "min_orientation_error_rad": 1.4473674297332764,
+      "final_goal": 0,
+      "parsed_goal_symbol": "triangle",
+      "language_correct": true,
+      "grounding_correct": false,
+      "calls": 6,
+      "recovery_used": false,
+      "action_states": {
+        "inspect": 140,
+        "execute": 401
+      },
+      "trace": [
+        {
+          "step": 0,
+          "operation": "parse_language",
+          "reason": "initial_language_parsing",
+          "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "goal_symbol": "triangle",
+          "goal_direction": "up",
+          "raw": "{\"goal_symbol\":\"triangle\",\"goal_direction\":\"up\"}",
+          "parsed": {
+            "goal_symbol": "triangle",
+            "goal_direction": "up"
+          },
+          "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Make the sticker marked with a three-cornered shape face the ceiling.\"",
+          "observations": [],
+          "elapsed_s": 0.2359726530048647,
+          "image_sha256": null,
+          "input_text_sha256": "5fcd68b396de93fe0c3679b34e52ec602a52e81a7c35fa2b816e8042e7534324"
+        },
+        {
+          "step": 0,
+          "operation": "visual_grounding",
+          "reason": "initial_visual_grounding",
+          "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "feedback": {
+            "previous_skill": null,
+            "previous_state": "initial",
+            "change_since_vlm": null,
+            "image_change": null,
+            "proprio_change": null,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\n        \"color\": \"red\",\n        \"symbol\": \"diamond\"\n    },\n    {\n        \"color\": \"yellow\",\n        \"symbol\": \"unknown\"\n    },\n    {\n        \"color\": \"unknown\",\n        \"symbol\": \"unknown\"\n    }\n]\n```",
+          "elapsed_s": 1.0583088630010025,
+          "image_sha256": "943bc00263d149cc9d4e15e7e56503eea79bd75b44bd77b5a59365f40844e2c3",
+          "crop_box": [
+            210,
+            201,
+            330,
+            330
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "diamond"
+              },
+              {
+                "color": "yellow",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "triangle",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Make the sticker marked with a three-cornered shape face the ceiling.\"\nGoal previously parsed from that instruction: triangle, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": null, \"image_change\": null, \"previous_skill\": null, \"previous_state\": \"initial\", \"proprio_change\": null, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "red",
+              "symbol": "diamond"
+            }
+          ]
+        },
+        {
+          "step": 70,
+          "operation": "visual_grounding",
+          "reason": "new_observation_after_motion",
+          "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "feedback": {
+            "previous_skill": 0,
+            "previous_state": "inspect",
+            "change_since_vlm": 0.052542250603437424,
+            "image_change": 0.025722526013851166,
+            "proprio_change": 0.43673163652420044,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"diamond\"},\n    {\"color\": \"yellow\", \"symbol\": \"bars\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.8968214410051587,
+          "image_sha256": "5ea7ce82efa40dadfcafc0889afa366834dfb7e035d5c1f97474386eadf87ef0",
+          "crop_box": [
+            178,
+            207,
+            299,
+            345
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "diamond"
+              },
+              {
+                "color": "yellow",
+                "symbol": "bars"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "triangle",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Make the sticker marked with a three-cornered shape face the ceiling.\"\nGoal previously parsed from that instruction: triangle, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": 0.052542250603437424, \"image_change\": 0.025722526013851166, \"previous_skill\": 0, \"previous_state\": \"inspect\", \"proprio_change\": 0.43673163652420044, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "red",
+              "symbol": "diamond"
+            },
+            {
+              "color": "yellow",
+              "symbol": "bars"
+            }
+          ]
+        },
+        {
+          "step": 140,
+          "operation": "visual_grounding",
+          "reason": "new_observation_after_motion",
+          "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+          "previous_goal": null,
+          "accepted_goal": 0,
+          "binding": "bind_visible_semantic_target",
+          "feedback": {
+            "previous_skill": 3,
+            "previous_state": "inspect",
+            "change_since_vlm": 0.032500382512807846,
+            "image_change": 0.008102276362478733,
+            "proprio_change": 0.2695487439632416,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\n        \"color\": \"red\",\n        \"symbol\": \"triangle\"\n    },\n    {\n        \"color\": \"unknown\",\n        \"symbol\": \"unknown\"\n    },\n    {\n        \"color\": \"unknown\",\n        \"symbol\": \"unknown\"\n    }\n]\n```",
+          "elapsed_s": 1.099893542996142,
+          "image_sha256": "325a01c309ce48cc1afb174b2284022959a10b6173c4c72beba93527d5123d4d",
+          "crop_box": [
+            180,
+            199,
+            298,
+            323
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "triangle"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "triangle",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Make the sticker marked with a three-cornered shape face the ceiling.\"\nGoal previously parsed from that instruction: triangle, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": 0.032500382512807846, \"image_change\": 0.008102276362478733, \"previous_skill\": 3, \"previous_state\": \"inspect\", \"proprio_change\": 0.2695487439632416, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "red",
+              "symbol": "triangle"
+            }
+          ]
+        },
+        {
+          "step": 470,
+          "operation": "visual_grounding",
+          "reason": "execution_view_changed",
+          "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+          "previous_goal": 0,
+          "accepted_goal": 0,
+          "binding": "conflicting_candidate_awaits_more_evidence",
+          "feedback": {
+            "previous_skill": 0,
+            "previous_state": "execute",
+            "change_since_vlm": 0.04181155562400818,
+            "image_change": 0.03209507465362549,
+            "proprio_change": 0.4110656976699829,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"blue\", \"symbol\": \"triangle\"},\n    {\"color\": \"green\", \"symbol\": \"circle\"},\n    {\"color\": \"red\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.9457739490026142,
+          "image_sha256": "f7f70a00fcab48f453cb423ae4c836330cd14c3be60be28beb957b7e62a40627",
+          "crop_box": [
+            162,
+            201,
+            308,
+            339
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "blue",
+                "symbol": "triangle"
+              },
+              {
+                "color": "green",
+                "symbol": "circle"
+              },
+              {
+                "color": "red",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "triangle",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Make the sticker marked with a three-cornered shape face the ceiling.\"\nGoal previously parsed from that instruction: triangle, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": 0.04181155562400818, \"image_change\": 0.03209507465362549, \"previous_skill\": 0, \"previous_state\": \"execute\", \"proprio_change\": 0.4110656976699829, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "blue",
+              "symbol": "triangle"
+            },
+            {
+              "color": "green",
+              "symbol": "circle"
+            }
+          ]
+        },
+        {
+          "step": 510,
+          "operation": "visual_grounding",
+          "reason": "resolve_goal_conflict",
+          "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+          "previous_goal": 0,
+          "accepted_goal": 0,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "feedback": {
+            "previous_skill": 0,
+            "previous_state": "execute",
+            "change_since_vlm": 0.032167840749025345,
+            "image_change": 0.035784631967544556,
+            "proprio_change": 0.41723138093948364,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.9062998199951835,
+          "image_sha256": "30007c14fc6b20140672c04397ed7bc19ac45a147a8fb5ee8b13a8d3a30e7018",
+          "crop_box": [
+            160,
+            193,
+            287,
+            321
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "triangle",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Make the sticker marked with a three-cornered shape face the ceiling.\"\nGoal previously parsed from that instruction: triangle, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": 0.032167840749025345, \"image_change\": 0.035784631967544556, \"previous_skill\": 0, \"previous_state\": \"execute\", \"proprio_change\": 0.41723138093948364, \"visually_quiet_ticks\": 0}",
+          "observations": []
+        }
+      ],
+      "feedback_trace": [
+        {
+          "step": 0,
+          "previous_skill": null,
+          "previous_state": "initial",
+          "change_since_vlm": null,
+          "image_change": null,
+          "proprio_change": null,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 10,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.04324192926287651,
+          "image_change": 0.04324192926287651,
+          "proprio_change": 0.6551979184150696,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 20,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.046045560389757156,
+          "image_change": 0.027814477682113647,
+          "proprio_change": 0.6225767135620117,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 30,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.04449933394789696,
+          "image_change": 0.02802766114473343,
+          "proprio_change": 0.4948848485946655,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 40,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.04348574951291084,
+          "image_change": 0.018465328961610794,
+          "proprio_change": 0.2816753387451172,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 50,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.04200558736920357,
+          "image_change": 0.01580244116485119,
+          "proprio_change": 0.3479348123073578,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 60,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.043474260717630386,
+          "image_change": 0.015158419497311115,
+          "proprio_change": 0.43885713815689087,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 70,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.052542250603437424,
+          "image_change": 0.025722526013851166,
+          "proprio_change": 0.43673163652420044,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 80,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.025616571307182312,
+          "image_change": 0.025616571307182312,
+          "proprio_change": 0.4225294291973114,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 90,
+          "previous_skill": 0,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.026943549513816833,
+          "image_change": 0.02020399272441864,
+          "proprio_change": 0.3114455044269562,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 100,
+          "previous_skill": 3,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.028874335810542107,
+          "image_change": 0.015681805089116096,
+          "proprio_change": 0.2404371201992035,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 110,
+          "previous_skill": 3,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.03132818639278412,
+          "image_change": 0.01842990517616272,
+          "proprio_change": 0.22198224067687988,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 120,
+          "previous_skill": 3,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.030670126900076866,
+          "image_change": 0.016507098451256752,
+          "proprio_change": 0.3480198383331299,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 130,
+          "previous_skill": 3,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.03239442780613899,
+          "image_change": 0.01765248365700245,
+          "proprio_change": 0.38656872510910034,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 140,
+          "previous_skill": 3,
+          "previous_state": "inspect",
+          "change_since_vlm": 0.032500382512807846,
+          "image_change": 0.008102276362478733,
+          "proprio_change": 0.2695487439632416,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 150,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.013248058967292309,
+          "image_change": 0.013248058967292309,
+          "proprio_change": 0.27714723348617554,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 160,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.010230609215795994,
+          "image_change": 0.011439505033195019,
+          "proprio_change": 0.26331809163093567,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 170,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.007758565247058868,
+          "image_change": 0.010774101130664349,
+          "proprio_change": 0.22422152757644653,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 180,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.012536381371319294,
+          "image_change": 0.009236812591552734,
+          "proprio_change": 0.20268034934997559,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 190,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.011695134453475475,
+          "image_change": 0.007089333143085241,
+          "proprio_change": 0.2230611890554428,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 200,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.010347412899136543,
+          "image_change": 0.013704744167625904,
+          "proprio_change": 0.24976509809494019,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 210,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.013413690961897373,
+          "image_change": 0.012756587006151676,
+          "proprio_change": 0.2315341830253601,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 220,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.010067849420011044,
+          "image_change": 0.011026859283447266,
+          "proprio_change": 0.2669382691383362,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 230,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.015587341040372849,
+          "image_change": 0.01039592269808054,
+          "proprio_change": 0.23568589985370636,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 240,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.014762048609554768,
+          "image_change": 0.0058657582849264145,
+          "proprio_change": 0.19005057215690613,
+          "visually_quiet_ticks": 1
+        },
+        {
+          "step": 250,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.013594004325568676,
+          "image_change": 0.006932316813617945,
+          "proprio_change": 0.27459871768951416,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 260,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.023550154641270638,
+          "image_change": 0.021318741142749786,
+          "proprio_change": 0.34845298528671265,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 270,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0302839707583189,
+          "image_change": 0.015691379085183144,
+          "proprio_change": 0.303713321685791,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 280,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03358130156993866,
+          "image_change": 0.02494383417069912,
+          "proprio_change": 0.3055582642555237,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 290,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.023351013660430908,
+          "image_change": 0.02981579303741455,
+          "proprio_change": 0.4682408571243286,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 300,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.025730187073349953,
+          "image_change": 0.014524930156767368,
+          "proprio_change": 0.3995029628276825,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 310,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.026470905169844627,
+          "image_change": 0.01146567240357399,
+          "proprio_change": 0.1489965319633484,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 320,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02807106263935566,
+          "image_change": 0.00831163115799427,
+          "proprio_change": 0.17057663202285767,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 330,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02411215752363205,
+          "image_change": 0.013815805315971375,
+          "proprio_change": 0.2363346517086029,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 340,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02239391766488552,
+          "image_change": 0.010631765238940716,
+          "proprio_change": 0.19010195136070251,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 350,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.018743297085165977,
+          "image_change": 0.012982855550944805,
+          "proprio_change": 0.35204988718032837,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 360,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.017712479457259178,
+          "image_change": 0.012305964715778828,
+          "proprio_change": 0.3182362914085388,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 370,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.020143037661910057,
+          "image_change": 0.008521624840795994,
+          "proprio_change": 0.19490300118923187,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 380,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.021401718258857727,
+          "image_change": 0.01296019647270441,
+          "proprio_change": 0.23532409965991974,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 390,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.021341079846024513,
+          "image_change": 0.009292024187743664,
+          "proprio_change": 0.18127015233039856,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 400,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.019083816558122635,
+          "image_change": 0.010206992737948895,
+          "proprio_change": 0.18385618925094604,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 410,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.030118336901068687,
+          "image_change": 0.024268535897135735,
+          "proprio_change": 0.39361751079559326,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 420,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0363909937441349,
+          "image_change": 0.024556078016757965,
+          "proprio_change": 0.534356415271759,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 430,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.034356489777565,
+          "image_change": 0.033470239490270615,
+          "proprio_change": 0.8216917514801025,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 440,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03181200101971626,
+          "image_change": 0.03326408192515373,
+          "proprio_change": 0.7870575785636902,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 450,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.036061327904462814,
+          "image_change": 0.015848077833652496,
+          "proprio_change": 0.5267910957336426,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 460,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.037754666060209274,
+          "image_change": 0.025803588330745697,
+          "proprio_change": 0.3662072420120239,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 470,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04181155562400818,
+          "image_change": 0.03209507465362549,
+          "proprio_change": 0.4110656976699829,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 480,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0438508503139019,
+          "image_change": 0.0438508503139019,
+          "proprio_change": 0.8017379641532898,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 490,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.036557264626026154,
+          "image_change": 0.038159336894750595,
+          "proprio_change": 0.6538429260253906,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 500,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04186740517616272,
+          "image_change": 0.03521529212594032,
+          "proprio_change": 0.37478846311569214,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 510,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.032167840749025345,
+          "image_change": 0.035784631967544556,
+          "proprio_change": 0.41723138093948364,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 520,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.029505273327231407,
+          "image_change": 0.029505273327231407,
+          "proprio_change": 0.7396149635314941,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 530,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0472215861082077,
+          "image_change": 0.04091636836528778,
+          "proprio_change": 0.40536805987358093,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 540,
+          "previous_skill": 0,
+          "previous_state": "execute",
+          "change_since_vlm": 0.05083391070365906,
+          "image_change": 0.038310930132865906,
+          "proprio_change": 0.4936786890029907,
+          "visually_quiet_ticks": 0
+        }
+      ],
+      "transitions": [
+        {
+          "step": 0,
+          "from": {
+            "color": null,
+            "state": "initial",
+            "reason": "not_observed"
+          },
+          "to": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          }
+        },
+        {
+          "step": 90,
+          "from": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          },
+          "to": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          }
+        },
+        {
+          "step": 140,
+          "from": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          },
+          "to": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "31101_feedback_case1_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.912043571472168,
+            -0.912043571472168,
+            -0.3509504795074463,
+            0.3509504795074463,
+            0.2121562361717224,
+            -0.2121562361717224
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.9934860467910767,
+            -0.9934860467910767,
+            -0.06576647609472275,
+            0.06576647609472275,
+            -0.09305953979492188,
+            0.09305953979492188
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.9856173396110535,
+            -0.9856173396110535,
+            0.14934076368808746,
+            -0.14934076368808746,
+            -0.07909214496612549,
+            0.07909214496612549
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0070.png",
+          "step": 70,
+          "decision": {
+            "color": 0,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.969433069229126,
+            -0.969433069229126,
+            0.127119779586792,
+            -0.127119779586792,
+            0.20985734462738037,
+            -0.20985734462738037
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.9924098253250122,
+            -0.9924098253250122,
+            -0.03174947202205658,
+            0.03174947202205658,
+            0.11880373954772949,
+            -0.11880373954772949
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 3,
+            "state": "inspect",
+            "reason": "seek_unobserved_semantic_evidence"
+          },
+          "scorer_face_normal_z": [
+            0.9590266346931458,
+            -0.9590266346931458,
+            -0.27933043241500854,
+            0.27933043241500854,
+            0.04735112190246582,
+            -0.04735112190246582
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0140.png",
+          "step": 140,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9545297026634216,
+            -0.9545297026634216,
+            -0.28956523537635803,
+            0.28956523537635803,
+            0.07088589668273926,
+            -0.07088589668273926
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.949103057384491,
+            -0.949103057384491,
+            -0.31365644931793213,
+            0.31365644931793213,
+            0.02868521213531494,
+            -0.02868521213531494
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9494536519050598,
+            -0.9494536519050598,
+            -0.31257811188697815,
+            0.31257811188697815,
+            0.02885061502456665,
+            -0.02885061502456665
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9428133964538574,
+            -0.9428133964538574,
+            -0.3302355408668518,
+            0.3302355408668518,
+            0.04524564743041992,
+            -0.04524564743041992
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9516668915748596,
+            -0.9516668915748596,
+            -0.30537956953048706,
+            0.30537956953048706,
+            0.03276407718658447,
+            -0.03276407718658447
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9768878221511841,
+            -0.9768878221511841,
+            -0.1824958473443985,
+            0.1824958473443985,
+            -0.1112891435623169,
+            0.1112891435623169
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0300.png",
+          "step": 300,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9930359721183777,
+            -0.9930359721183777,
+            -0.10287395864725113,
+            0.10287395864725113,
+            -0.057413578033447266,
+            0.057413578033447266
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0330.png",
+          "step": 330,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9771531820297241,
+            -0.9771531820297241,
+            -0.21229612827301025,
+            0.21229612827301025,
+            -0.010080695152282715,
+            0.010080695152282715
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0360.png",
+          "step": 360,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9507158994674683,
+            -0.9507158994674683,
+            -0.3099151849746704,
+            0.3099151849746704,
+            0.009563326835632324,
+            -0.009563326835632324
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0390.png",
+          "step": 390,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9741436243057251,
+            -0.9741436243057251,
+            -0.22012317180633545,
+            0.22012317180633545,
+            -0.05089128017425537,
+            0.05089128017425537
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0420.png",
+          "step": 420,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.9958724975585938,
+            -0.9958724975585938,
+            0.04635213315486908,
+            -0.04635213315486908,
+            -0.0780324935913086,
+            0.0780324935913086
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0450.png",
+          "step": 450,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.4696604013442993,
+            0.4696604013442993,
+            0.7680246829986572,
+            -0.7680246829986572,
+            -0.43538105487823486,
+            0.43538105487823486
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0470.png",
+          "step": 470,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.9607181549072266,
+            0.9607181549072266,
+            -0.1656232476234436,
+            0.1656232476234436,
+            0.22268664836883545,
+            -0.22268664836883545
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0480.png",
+          "step": 480,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.7046830058097839,
+            0.7046830058097839,
+            -0.620045006275177,
+            0.620045006275177,
+            0.34491467475891113,
+            -0.34491467475891113
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0510.png",
+          "step": 510,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.3112936317920685,
+            -0.3112936317920685,
+            -0.4487963020801544,
+            0.4487963020801544,
+            0.8376623392105103,
+            -0.8376623392105103
+          ]
+        },
+        {
+          "path": "31101_feedback_case1_step0540.png",
+          "step": 540,
+          "decision": {
+            "color": 0,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.3547865152359009,
+            -0.3547865152359009,
+            0.18311886489391327,
+            -0.18311886489391327,
+            -0.9168390035629272,
+            0.9168390035629272
+          ]
+        }
+      ],
+      "video": {
+        "path": "31101_feedback_case1_continuous.mp4",
+        "frames": 271,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 31101,
+      "mode": "feedback",
+      "case": 2,
+      "target_color_index": 5,
+      "target_symbol": "cross",
+      "instruction": "Rotate the cube to put the plus-sign sticker on top.",
+      "layout": [
+        1,
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 599,
+      "min_orientation_error_rad": 1.1848900318145752,
+      "final_goal": 3,
+      "parsed_goal_symbol": "cross",
+      "language_correct": true,
+      "grounding_correct": false,
+      "calls": 3,
+      "recovery_used": false,
+      "action_states": {
+        "execute": 599
+      },
+      "trace": [
+        {
+          "step": 0,
+          "operation": "parse_language",
+          "reason": "initial_language_parsing",
+          "instruction": "Rotate the cube to put the plus-sign sticker on top.",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "goal_symbol": "cross",
+          "goal_direction": "up",
+          "raw": "{\"goal_symbol\":\"cross\",\"goal_direction\":\"up\"}",
+          "parsed": {
+            "goal_symbol": "cross",
+            "goal_direction": "up"
+          },
+          "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Rotate the cube to put the plus-sign sticker on top.\"",
+          "observations": [],
+          "elapsed_s": 0.2372105449976516,
+          "image_sha256": null,
+          "input_text_sha256": "66c224062dec492dae831498327e58a59d77fcc37988a59159e78f2e15a3b49c"
+        },
+        {
+          "step": 0,
+          "operation": "visual_grounding",
+          "reason": "initial_visual_grounding",
+          "instruction": "Rotate the cube to put the plus-sign sticker on top.",
+          "previous_goal": null,
+          "accepted_goal": 3,
+          "binding": "bind_visible_semantic_target",
+          "feedback": {
+            "previous_skill": null,
+            "previous_state": "initial",
+            "change_since_vlm": null,
+            "image_change": null,
+            "proprio_change": null,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\n        \"color\": \"yellow\",\n        \"symbol\": \"cross\"\n    },\n    {\n        \"color\": \"cyan\",\n        \"symbol\": \"unknown\"\n    },\n    {\n        \"color\": \"magenta\",\n        \"symbol\": \"unknown\"\n    }\n]\n```",
+          "elapsed_s": 1.066948105006304,
+          "image_sha256": "b3500ef0bfd0d3d508bb9d6cc71f499b6eeaf99548f67b0b200f8fc40922d02b",
+          "crop_box": [
+            177,
+            186,
+            308,
+            414
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "yellow",
+                "symbol": "cross"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "cross",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Rotate the cube to put the plus-sign sticker on top.\"\nGoal previously parsed from that instruction: cross, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": null, \"image_change\": null, \"previous_skill\": null, \"previous_state\": \"initial\", \"proprio_change\": null, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "yellow",
+              "symbol": "cross"
+            }
+          ]
+        },
+        {
+          "step": 160,
+          "operation": "visual_grounding",
+          "reason": "execution_view_changed",
+          "instruction": "Rotate the cube to put the plus-sign sticker on top.",
+          "previous_goal": 3,
+          "accepted_goal": 3,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "feedback": {
+            "previous_skill": 3,
+            "previous_state": "execute",
+            "change_since_vlm": 0.043517664074897766,
+            "image_change": 0.006927211303263903,
+            "proprio_change": 0.2437138557434082,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"red\", \"symbol\": \"star\"},\n    {\"color\": \"green\", \"symbol\": \"circle\"},\n    {\"color\": \"blue\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.8989913900004467,
+          "image_sha256": "febe9863f527ca32bf185f1f45a6161df79dd5f66cbc603a634147cb699f0c2e",
+          "crop_box": [
+            185,
+            193,
+            304,
+            332
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "red",
+                "symbol": "star"
+              },
+              {
+                "color": "green",
+                "symbol": "circle"
+              },
+              {
+                "color": "blue",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "cross",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Rotate the cube to put the plus-sign sticker on top.\"\nGoal previously parsed from that instruction: cross, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": 0.043517664074897766, \"image_change\": 0.006927211303263903, \"previous_skill\": 3, \"previous_state\": \"execute\", \"proprio_change\": 0.2437138557434082, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "red",
+              "symbol": "star"
+            },
+            {
+              "color": "green",
+              "symbol": "circle"
+            }
+          ]
+        }
+      ],
+      "feedback_trace": [
+        {
+          "step": 0,
+          "previous_skill": null,
+          "previous_state": "initial",
+          "change_since_vlm": null,
+          "image_change": null,
+          "proprio_change": null,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 10,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04385180398821831,
+          "image_change": 0.04385180398821831,
+          "proprio_change": 0.8546422719955444,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 20,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.05006222799420357,
+          "image_change": 0.027162477374076843,
+          "proprio_change": 0.32806867361068726,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 30,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.053754016757011414,
+          "image_change": 0.025257224217057228,
+          "proprio_change": 0.33784836530685425,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 40,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04911023750901222,
+          "image_change": 0.032752182334661484,
+          "proprio_change": 0.6423568725585938,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 50,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.046465229243040085,
+          "image_change": 0.030655764043331146,
+          "proprio_change": 0.5079029202461243,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 60,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04359234496951103,
+          "image_change": 0.017772799357771873,
+          "proprio_change": 0.5191766023635864,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 70,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04261673986911774,
+          "image_change": 0.007359643001109362,
+          "proprio_change": 0.1872383952140808,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 80,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0435384102165699,
+          "image_change": 0.006321486085653305,
+          "proprio_change": 0.2046331912279129,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 90,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.043093856424093246,
+          "image_change": 0.006676686927676201,
+          "proprio_change": 0.13394105434417725,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 100,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04516633227467537,
+          "image_change": 0.0048234532587230206,
+          "proprio_change": 0.2082742601633072,
+          "visually_quiet_ticks": 1
+        },
+        {
+          "step": 110,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04737381264567375,
+          "image_change": 0.013322419486939907,
+          "proprio_change": 0.29044395685195923,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 120,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.047158390283584595,
+          "image_change": 0.009822751395404339,
+          "proprio_change": 0.17537716031074524,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 130,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.045969605445861816,
+          "image_change": 0.006695197429507971,
+          "proprio_change": 0.28960973024368286,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 140,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04677000269293785,
+          "image_change": 0.004501123446971178,
+          "proprio_change": 0.35005611181259155,
+          "visually_quiet_ticks": 1
+        },
+        {
+          "step": 150,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.046063750982284546,
+          "image_change": 0.004339959006756544,
+          "proprio_change": 0.2104034274816513,
+          "visually_quiet_ticks": 2
+        },
+        {
+          "step": 160,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.043517664074897766,
+          "image_change": 0.006927211303263903,
+          "proprio_change": 0.2437138557434082,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 170,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.014551100321114063,
+          "image_change": 0.014551100321114063,
+          "proprio_change": 0.314585417509079,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 180,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.010716657154262066,
+          "image_change": 0.007276667281985283,
+          "proprio_change": 0.18688493967056274,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 190,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.007422193884849548,
+          "image_change": 0.005982242990285158,
+          "proprio_change": 0.2288084477186203,
+          "visually_quiet_ticks": 1
+        },
+        {
+          "step": 200,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.011635773815214634,
+          "image_change": 0.01305242907255888,
+          "proprio_change": 0.31205981969833374,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 210,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.015495110303163528,
+          "image_change": 0.01924562081694603,
+          "proprio_change": 0.4323531985282898,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 220,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.015084698796272278,
+          "image_change": 0.018441712483763695,
+          "proprio_change": 0.3958231210708618,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 230,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0158857349306345,
+          "image_change": 0.01930338330566883,
+          "proprio_change": 0.35096636414527893,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 240,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.015369688160717487,
+          "image_change": 0.011481630615890026,
+          "proprio_change": 0.17143681645393372,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 250,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.018346291035413742,
+          "image_change": 0.0069824219681322575,
+          "proprio_change": 0.20193172991275787,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 260,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.021906912326812744,
+          "image_change": 0.011549926362931728,
+          "proprio_change": 0.2661570906639099,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 270,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.016479013487696648,
+          "image_change": 0.01741728000342846,
+          "proprio_change": 0.2864634394645691,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 280,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.028205743059515953,
+          "image_change": 0.022131266072392464,
+          "proprio_change": 0.3430035710334778,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 290,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02730991691350937,
+          "image_change": 0.018443310633301735,
+          "proprio_change": 0.17789632081985474,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 300,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03248857334256172,
+          "image_change": 0.018991587683558464,
+          "proprio_change": 0.27722468972206116,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 310,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.027305131778120995,
+          "image_change": 0.026930145919322968,
+          "proprio_change": 0.31739187240600586,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 320,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.022517425939440727,
+          "image_change": 0.01615668274462223,
+          "proprio_change": 0.20969989895820618,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 330,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03204688802361488,
+          "image_change": 0.019490400329232216,
+          "proprio_change": 0.28383561968803406,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 340,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.026851000264286995,
+          "image_change": 0.016428271308541298,
+          "proprio_change": 0.1957462728023529,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 350,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.022241050377488136,
+          "image_change": 0.021725961938500404,
+          "proprio_change": 0.2685864567756653,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 360,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.022783905267715454,
+          "image_change": 0.011139514856040478,
+          "proprio_change": 0.19777989387512207,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 370,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.018659682944417,
+          "image_change": 0.017552275210618973,
+          "proprio_change": 0.2239532619714737,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 380,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.022425511851906776,
+          "image_change": 0.015261183492839336,
+          "proprio_change": 0.23169469833374023,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 390,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02336314134299755,
+          "image_change": 0.011185790412127972,
+          "proprio_change": 0.25086453557014465,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 400,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.028898270800709724,
+          "image_change": 0.012859988957643509,
+          "proprio_change": 0.22077390551567078,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 410,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.022592103108763695,
+          "image_change": 0.015248415060341358,
+          "proprio_change": 0.2284855991601944,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 420,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.026739299297332764,
+          "image_change": 0.011937360279262066,
+          "proprio_change": 0.1659293919801712,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 430,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.027505869045853615,
+          "image_change": 0.00928181130439043,
+          "proprio_change": 0.20796123147010803,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 440,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.028422117233276367,
+          "image_change": 0.017910348251461983,
+          "proprio_change": 0.2399163544178009,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 450,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02933134138584137,
+          "image_change": 0.01064804196357727,
+          "proprio_change": 0.22253771126270294,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 460,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02684621512889862,
+          "image_change": 0.011737578548491001,
+          "proprio_change": 0.25324326753616333,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 470,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.027700228616595268,
+          "image_change": 0.009964766912162304,
+          "proprio_change": 0.2951158285140991,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 480,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02863306552171707,
+          "image_change": 0.01508150901645422,
+          "proprio_change": 0.26997217535972595,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 490,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.031046709045767784,
+          "image_change": 0.006009689066559076,
+          "proprio_change": 0.13414797186851501,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 500,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.018875421956181526,
+          "image_change": 0.02452448569238186,
+          "proprio_change": 0.33767572045326233,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 510,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0197990071028471,
+          "image_change": 0.007375918794423342,
+          "proprio_change": 0.33392560482025146,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 520,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.01707356609404087,
+          "image_change": 0.010176674462854862,
+          "proprio_change": 0.21823622286319733,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 530,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.02408502995967865,
+          "image_change": 0.022472426295280457,
+          "proprio_change": 0.31580206751823425,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 540,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.022327536717057228,
+          "image_change": 0.01994900032877922,
+          "proprio_change": 0.4083862602710724,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 550,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.022856667637825012,
+          "image_change": 0.016286252066493034,
+          "proprio_change": 0.30263328552246094,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 560,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.021257147192955017,
+          "image_change": 0.010653466917574406,
+          "proprio_change": 0.28183650970458984,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 570,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.019141901284456253,
+          "image_change": 0.010487515479326248,
+          "proprio_change": 0.23273277282714844,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 580,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.026680581271648407,
+          "image_change": 0.016931550577282906,
+          "proprio_change": 0.2582218050956726,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 590,
+          "previous_skill": 3,
+          "previous_state": "execute",
+          "change_since_vlm": 0.022324346005916595,
+          "image_change": 0.013311888091266155,
+          "proprio_change": 0.2400970160961151,
+          "visually_quiet_ticks": 0
+        }
+      ],
+      "transitions": [
+        {
+          "step": 0,
+          "from": {
+            "color": null,
+            "state": "initial",
+            "reason": "not_observed"
+          },
+          "to": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "31101_feedback_case2_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.33841872215270996,
+            -0.33841872215270996,
+            -0.8868024945259094,
+            0.8868024945259094,
+            0.31472891569137573,
+            -0.31472891569137573
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.028659529983997345,
+            -0.028659529983997345,
+            -0.9516714811325073,
+            0.9516714811325073,
+            -0.30577731132507324,
+            0.30577731132507324
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.07417701184749603,
+            -0.07417701184749603,
+            -0.9926382303237915,
+            0.9926382303237915,
+            0.09574401378631592,
+            -0.09574401378631592
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.08598296344280243,
+            -0.08598296344280243,
+            -0.9920316338539124,
+            0.9920316338539124,
+            0.09208548069000244,
+            -0.09208548069000244
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.050872836261987686,
+            -0.050872836261987686,
+            -0.9949979186058044,
+            0.9949979186058044,
+            0.0859684944152832,
+            -0.0859684944152832
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.05013014376163483,
+            -0.05013014376163483,
+            -0.9941256642341614,
+            0.9941256642341614,
+            0.09592139720916748,
+            -0.09592139720916748
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0160.png",
+          "step": 160,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.07004747539758682,
+            -0.07004747539758682,
+            -0.9944332242012024,
+            0.9944332242012024,
+            0.07871383428573608,
+            -0.07871383428573608
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.015632271766662598,
+            -0.015632271766662598,
+            -0.9992412328720093,
+            0.9992412328720093,
+            0.03567022085189819,
+            -0.03567022085189819
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.08837234228849411,
+            0.08837234228849411,
+            -0.9958822131156921,
+            0.9958822131156921,
+            0.02021944522857666,
+            -0.02021944522857666
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.004878506064414978,
+            0.004878506064414978,
+            -0.9967712163925171,
+            0.9967712163925171,
+            -0.08014512062072754,
+            0.08014512062072754
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.13035042583942413,
+            0.13035042583942413,
+            -0.9858895540237427,
+            0.9858895540237427,
+            -0.10502612590789795,
+            0.10502612590789795
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0300.png",
+          "step": 300,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.026473579928278923,
+            -0.026473579928278923,
+            -0.9996033906936646,
+            0.9996033906936646,
+            -0.009602189064025879,
+            0.009602189064025879
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0330.png",
+          "step": 330,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.1003306582570076,
+            -0.1003306582570076,
+            -0.987708568572998,
+            0.987708568572998,
+            0.11985558271408081,
+            -0.11985558271408081
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0360.png",
+          "step": 360,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.02286558598279953,
+            -0.02286558598279953,
+            -0.9991493225097656,
+            0.9991493225097656,
+            -0.034319281578063965,
+            0.034319281578063965
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0390.png",
+          "step": 390,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.010443069040775299,
+            0.010443069040775299,
+            -0.9992485642433167,
+            0.9992485642433167,
+            -0.03732168674468994,
+            0.03732168674468994
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0420.png",
+          "step": 420,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.05573851987719536,
+            -0.05573851987719536,
+            -0.9944032430648804,
+            0.9944032430648804,
+            -0.08975064754486084,
+            0.08975064754486084
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0450.png",
+          "step": 450,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.04098813980817795,
+            -0.04098813980817795,
+            -0.9972060322761536,
+            0.9972060322761536,
+            -0.06244850158691406,
+            0.06244850158691406
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0480.png",
+          "step": 480,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.03689604997634888,
+            -0.03689604997634888,
+            -0.9931214451789856,
+            0.9931214451789856,
+            0.11112254858016968,
+            -0.11112254858016968
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0510.png",
+          "step": 510,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.03253959119319916,
+            0.03253959119319916,
+            -0.9875345230102539,
+            0.9875345230102539,
+            -0.15400159358978271,
+            0.15400159358978271
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0540.png",
+          "step": 540,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.11813963949680328,
+            0.11813963949680328,
+            -0.9816237688064575,
+            0.9816237688064575,
+            -0.14985895156860352,
+            0.14985895156860352
+          ]
+        },
+        {
+          "path": "31101_feedback_case2_step0570.png",
+          "step": 570,
+          "decision": {
+            "color": 3,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.059894584119319916,
+            0.059894584119319916,
+            -0.9902881979942322,
+            0.9902881979942322,
+            -0.12546682357788086,
+            0.12546682357788086
+          ]
+        }
+      ],
+      "video": {
+        "path": "31101_feedback_case2_continuous.mp4",
+        "frames": 300,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 31101,
+      "mode": "feedback",
+      "case": 3,
+      "target_color_index": 2,
+      "target_symbol": "diamond",
+      "instruction": "I want the sticker carrying a rhombus to face upward.",
+      "layout": [
+        3,
+        1,
+        4,
+        5,
+        2,
+        0
+      ],
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": true,
+      "steps": 238,
+      "min_orientation_error_rad": 1.380150556564331,
+      "final_goal": 2,
+      "parsed_goal_symbol": "diamond",
+      "language_correct": true,
+      "grounding_correct": true,
+      "calls": 4,
+      "recovery_used": false,
+      "action_states": {
+        "execute": 238
+      },
+      "trace": [
+        {
+          "step": 0,
+          "operation": "parse_language",
+          "reason": "initial_language_parsing",
+          "instruction": "I want the sticker carrying a rhombus to face upward.",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "goal_symbol": "diamond",
+          "goal_direction": "up",
+          "raw": "{\"goal_symbol\":\"diamond\",\"goal_direction\":\"up\"}",
+          "parsed": {
+            "goal_symbol": "diamond",
+            "goal_direction": "up"
+          },
+          "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"I want the sticker carrying a rhombus to face upward.\"",
+          "observations": [],
+          "elapsed_s": 0.2369166860007681,
+          "image_sha256": null,
+          "input_text_sha256": "3bb1a090a03c94982e3388d66c341fd38f7c58e7eed9643652a20d91236cdebb"
+        },
+        {
+          "step": 0,
+          "operation": "visual_grounding",
+          "reason": "initial_visual_grounding",
+          "instruction": "I want the sticker carrying a rhombus to face upward.",
+          "previous_goal": null,
+          "accepted_goal": 5,
+          "binding": "bind_visible_semantic_target",
+          "feedback": {
+            "previous_skill": null,
+            "previous_state": "initial",
+            "change_since_vlm": null,
+            "image_change": null,
+            "proprio_change": null,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\n        \"color\": \"cyan\",\n        \"symbol\": \"diamond\"\n    },\n    {\n        \"color\": \"green\",\n        \"symbol\": \"unknown\"\n    },\n    {\n        \"color\": \"magenta\",\n        \"symbol\": \"unknown\"\n    }\n]\n```",
+          "elapsed_s": 1.0697084269995685,
+          "image_sha256": "827f511c8628e8f4130b7b0156b6e09ce3f33d5aa4d94cdbbfaf9ae2445f60a8",
+          "crop_box": [
+            190,
+            176,
+            324,
+            303
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "cyan",
+                "symbol": "diamond"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "magenta",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "diamond",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"I want the sticker carrying a rhombus to face upward.\"\nGoal previously parsed from that instruction: diamond, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": null, \"image_change\": null, \"previous_skill\": null, \"previous_state\": \"initial\", \"proprio_change\": null, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "cyan",
+              "symbol": "diamond"
+            }
+          ]
+        },
+        {
+          "step": 160,
+          "operation": "visual_grounding",
+          "reason": "execution_view_changed",
+          "instruction": "I want the sticker carrying a rhombus to face upward.",
+          "previous_goal": 5,
+          "accepted_goal": 5,
+          "binding": "conflicting_candidate_awaits_more_evidence",
+          "feedback": {
+            "previous_skill": 5,
+            "previous_state": "execute",
+            "change_since_vlm": 0.0440739206969738,
+            "image_change": 0.012832541950047016,
+            "proprio_change": 0.20598554611206055,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\n        \"color\": \"blue\",\n        \"symbol\": \"diamond\"\n    },\n    {\n        \"color\": \"green\",\n        \"symbol\": \"unknown\"\n    },\n    {\n        \"color\": \"cyan\",\n        \"symbol\": \"unknown\"\n    }\n]\n```",
+          "elapsed_s": 1.0999798310003825,
+          "image_sha256": "c0a27e01230275aa63e2bc389d268203b8335bc2d2748e8c70af62c5b4e81a37",
+          "crop_box": [
+            185,
+            221,
+            305,
+            335
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "blue",
+                "symbol": "diamond"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "cyan",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "diamond",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"I want the sticker carrying a rhombus to face upward.\"\nGoal previously parsed from that instruction: diamond, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": 0.0440739206969738, \"image_change\": 0.012832541950047016, \"previous_skill\": 5, \"previous_state\": \"execute\", \"proprio_change\": 0.20598554611206055, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "blue",
+              "symbol": "diamond"
+            }
+          ]
+        },
+        {
+          "step": 210,
+          "operation": "visual_grounding",
+          "reason": "resolve_goal_conflict",
+          "instruction": "I want the sticker carrying a rhombus to face upward.",
+          "previous_goal": 5,
+          "accepted_goal": 2,
+          "binding": "revise_goal_after_distinct_evidence",
+          "feedback": {
+            "previous_skill": 5,
+            "previous_state": "execute",
+            "change_since_vlm": 0.017632698640227318,
+            "image_change": 0.01981496252119541,
+            "proprio_change": 0.4305780231952667,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\"color\": \"blue\", \"symbol\": \"diamond\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"},\n    {\"color\": \"unknown\", \"symbol\": \"unknown\"}\n]\n```",
+          "elapsed_s": 0.9045605760038598,
+          "image_sha256": "579f8c8fa35db03570339bf5bb139e279aa9154d21b2c07b7a095f9ccbd2eb42",
+          "crop_box": [
+            180,
+            219,
+            301,
+            339
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "blue",
+                "symbol": "diamond"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              },
+              {
+                "color": "unknown",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "diamond",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"I want the sticker carrying a rhombus to face upward.\"\nGoal previously parsed from that instruction: diamond, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": 0.017632698640227318, \"image_change\": 0.01981496252119541, \"previous_skill\": 5, \"previous_state\": \"execute\", \"proprio_change\": 0.4305780231952667, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "blue",
+              "symbol": "diamond"
+            }
+          ]
+        }
+      ],
+      "feedback_trace": [
+        {
+          "step": 0,
+          "previous_skill": null,
+          "previous_state": "initial",
+          "change_since_vlm": null,
+          "image_change": null,
+          "proprio_change": null,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 10,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04376116394996643,
+          "image_change": 0.04376116394996643,
+          "proprio_change": 0.46959686279296875,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 20,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04981425777077675,
+          "image_change": 0.034934449940919876,
+          "proprio_change": 0.4155306816101074,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 30,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.05179387331008911,
+          "image_change": 0.03475892171263695,
+          "proprio_change": 0.6675986051559448,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 40,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.05015541985630989,
+          "image_change": 0.016336677595973015,
+          "proprio_change": 0.5507996082305908,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 50,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.045184846967458725,
+          "image_change": 0.031931355595588684,
+          "proprio_change": 0.47430410981178284,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 60,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.056595947593450546,
+          "image_change": 0.03755808249115944,
+          "proprio_change": 0.6562440991401672,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 70,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0464349091053009,
+          "image_change": 0.03344918042421341,
+          "proprio_change": 0.4202956557273865,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 80,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04538270831108093,
+          "image_change": 0.02808000147342682,
+          "proprio_change": 0.5649724006652832,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 90,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.043297458440065384,
+          "image_change": 0.010008808225393295,
+          "proprio_change": 0.34457075595855713,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 100,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04368872568011284,
+          "image_change": 0.008242059499025345,
+          "proprio_change": 0.14739316701889038,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 110,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04488931968808174,
+          "image_change": 0.012639782391488552,
+          "proprio_change": 0.20803742110729218,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 120,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.044662099331617355,
+          "image_change": 0.01217703241854906,
+          "proprio_change": 0.24578945338726044,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 130,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.041157957166433334,
+          "image_change": 0.016029665246605873,
+          "proprio_change": 0.35793715715408325,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 140,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.039873749017715454,
+          "image_change": 0.008940971456468105,
+          "proprio_change": 0.3693387508392334,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 150,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04540281370282173,
+          "image_change": 0.01696505956351757,
+          "proprio_change": 0.3188234567642212,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 160,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.0440739206969738,
+          "image_change": 0.012832541950047016,
+          "proprio_change": 0.20598554611206055,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 170,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.010307840071618557,
+          "image_change": 0.010307840071618557,
+          "proprio_change": 0.27243170142173767,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 180,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.008863740600645542,
+          "image_change": 0.010366561822593212,
+          "proprio_change": 0.26745301485061646,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 190,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.012113843113183975,
+          "image_change": 0.00866715144366026,
+          "proprio_change": 0.3227912187576294,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 200,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.014070157893002033,
+          "image_change": 0.01555542927235365,
+          "proprio_change": 0.2664925456047058,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 210,
+          "previous_skill": 5,
+          "previous_state": "execute",
+          "change_since_vlm": 0.017632698640227318,
+          "image_change": 0.01981496252119541,
+          "proprio_change": 0.4305780231952667,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 220,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.03902771323919296,
+          "image_change": 0.03902771323919296,
+          "proprio_change": 0.7524887919425964,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 230,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.042854178696870804,
+          "image_change": 0.04832835495471954,
+          "proprio_change": 0.577434241771698,
+          "visually_quiet_ticks": 0
+        }
+      ],
+      "transitions": [
+        {
+          "step": 0,
+          "from": {
+            "color": null,
+            "state": "initial",
+            "reason": "not_observed"
+          },
+          "to": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          }
+        },
+        {
+          "step": 210,
+          "from": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "to": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "31101_feedback_case3_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.6191713809967041,
+            0.6191713809967041,
+            0.13652896881103516,
+            -0.13652896881103516,
+            0.7732959985733032,
+            -0.7732959985733032
+          ]
+        },
+        {
+          "path": "31101_feedback_case3_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.2977340817451477,
+            0.2977340817451477,
+            -0.8646000623703003,
+            0.8646000623703003,
+            0.4047480821609497,
+            -0.4047480821609497
+          ]
+        },
+        {
+          "path": "31101_feedback_case3_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.03983601927757263,
+            -0.03983601927757263,
+            -0.9982670545578003,
+            0.9982670545578003,
+            -0.04331183433532715,
+            0.04331183433532715
+          ]
+        },
+        {
+          "path": "31101_feedback_case3_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.06558449566364288,
+            -0.06558449566364288,
+            -0.03143799304962158,
+            0.03143799304962158,
+            -0.9973514080047607,
+            0.9973514080047607
+          ]
+        },
+        {
+          "path": "31101_feedback_case3_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.03697492927312851,
+            -0.03697492927312851,
+            0.06141119450330734,
+            -0.06141119450330734,
+            -0.997427225112915,
+            0.997427225112915
+          ]
+        },
+        {
+          "path": "31101_feedback_case3_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.0019368993816897273,
+            0.0019368993816897273,
+            0.18907368183135986,
+            -0.18907368183135986,
+            -0.9819605350494385,
+            0.9819605350494385
+          ]
+        },
+        {
+          "path": "31101_feedback_case3_step0160.png",
+          "step": 160,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.05381886288523674,
+            -0.05381886288523674,
+            0.12124400585889816,
+            -0.12124400585889816,
+            -0.9911624193191528,
+            0.9911624193191528
+          ]
+        },
+        {
+          "path": "31101_feedback_case3_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 5,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.06793303042650223,
+            -0.06793303042650223,
+            0.10089337825775146,
+            -0.10089337825775146,
+            -0.99257493019104,
+            0.99257493019104
+          ]
+        },
+        {
+          "path": "31101_feedback_case3_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.05832374095916748,
+            -0.05832374095916748,
+            -0.030165676027536392,
+            0.030165676027536392,
+            -0.9978415966033936,
+            0.9978415966033936
+          ]
+        }
+      ],
+      "video": {
+        "path": "31101_feedback_case3_continuous.mp4",
+        "frames": 119,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 31101,
+      "mode": "feedback",
+      "case": 4,
+      "target_color_index": 3,
+      "target_symbol": "bars",
+      "instruction": "Turn the object until the sticker with two parallel bars is on the top face.",
+      "layout": [
+        3,
+        4,
+        0,
+        5,
+        2,
+        1
+      ],
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 0,
+      "min_orientation_error_rad": null,
+      "final_goal": null,
+      "parsed_goal_symbol": null,
+      "language_correct": false,
+      "grounding_correct": false,
+      "calls": 1,
+      "recovery_used": false,
+      "action_states": {},
+      "trace": [
+        {
+          "step": 0,
+          "operation": "parse_language",
+          "reason": "initial_language_parsing",
+          "instruction": "Turn the object until the sticker with two parallel bars is on the top face.",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "binding": "unresolved_instruction",
+          "goal_symbol": "bars",
+          "goal_direction": "unknown",
+          "raw": "{\"goal_symbol\":\"bars\",\"goal_direction\":\"top\"}",
+          "parsed": {
+            "goal_symbol": "bars",
+            "goal_direction": "top"
+          },
+          "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the object until the sticker with two parallel bars is on the top face.\"",
+          "observations": [],
+          "elapsed_s": 0.2362635669996962,
+          "image_sha256": null,
+          "input_text_sha256": "252e441b69c85ddfc10f115cec59cd9e1aae27d46bd1904751642a4c8b77d335"
+        }
+      ],
+      "feedback_trace": [],
+      "transitions": [
+        {
+          "step": 0,
+          "from": {
+            "color": null,
+            "state": "initial",
+            "reason": "not_observed"
+          },
+          "to": {
+            "color": null,
+            "state": "abstain",
+            "reason": "unresolved_language_goal"
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "31101_feedback_case4_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": null,
+            "state": "abstain",
+            "reason": "unresolved_language_goal"
+          },
+          "scorer_face_normal_z": [
+            0.06431381404399872,
+            -0.06431381404399872,
+            0.8878878951072693,
+            -0.8878878951072693,
+            -0.45554351806640625,
+            0.45554351806640625
+          ]
+        }
+      ],
+      "video": {
+        "path": "31101_feedback_case4_continuous.mp4",
+        "frames": 1,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    },
+    {
+      "seed": 31101,
+      "mode": "feedback",
+      "case": 5,
+      "target_color_index": 2,
+      "target_symbol": "star",
+      "instruction": "Please bring the sticker with five pointed tips onto the upper face of the cube.",
+      "layout": [
+        3,
+        5,
+        0,
+        2,
+        4,
+        1
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 21,
+      "min_orientation_error_rad": 0.15255701541900635,
+      "final_goal": 2,
+      "parsed_goal_symbol": "star",
+      "language_correct": true,
+      "grounding_correct": true,
+      "calls": 2,
+      "recovery_used": false,
+      "action_states": {
+        "execute": 21
+      },
+      "trace": [
+        {
+          "step": 0,
+          "operation": "parse_language",
+          "reason": "initial_language_parsing",
+          "instruction": "Please bring the sticker with five pointed tips onto the upper face of the cube.",
+          "previous_goal": null,
+          "accepted_goal": null,
+          "binding": "retain_goal_without_unique_new_evidence",
+          "goal_symbol": "star",
+          "goal_direction": "up",
+          "raw": "{\"goal_symbol\":\"star\",\"goal_direction\":\"up\"}",
+          "parsed": {
+            "goal_symbol": "star",
+            "goal_direction": "up"
+          },
+          "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Please bring the sticker with five pointed tips onto the upper face of the cube.\"",
+          "observations": [],
+          "elapsed_s": 0.23731321699597174,
+          "image_sha256": null,
+          "input_text_sha256": "14730d085b295a3c44343203dcd258f2ed158a0099a2e5c84f53e45a4bc033d5"
+        },
+        {
+          "step": 0,
+          "operation": "visual_grounding",
+          "reason": "initial_visual_grounding",
+          "instruction": "Please bring the sticker with five pointed tips onto the upper face of the cube.",
+          "previous_goal": null,
+          "accepted_goal": 2,
+          "binding": "bind_visible_semantic_target",
+          "feedback": {
+            "previous_skill": null,
+            "previous_state": "initial",
+            "change_since_vlm": null,
+            "image_change": null,
+            "proprio_change": null,
+            "visually_quiet_ticks": 0
+          },
+          "color": "unknown",
+          "visible": false,
+          "raw": "```json\n[\n    {\n        \"color\": \"blue\",\n        \"symbol\": \"star\"\n    },\n    {\n        \"color\": \"green\",\n        \"symbol\": \"unknown\"\n    },\n    {\n        \"color\": \"red\",\n        \"symbol\": \"unknown\"\n    }\n]\n```",
+          "elapsed_s": 1.0629601480031852,
+          "image_sha256": "6beb5bc5becdb541cfd94fc11dcfb8763a3a8ff948f46ff72323ae396c94ccb3",
+          "crop_box": [
+            198,
+            204,
+            324,
+            327
+          ],
+          "parsed": {
+            "stickers": [
+              {
+                "color": "blue",
+                "symbol": "star"
+              },
+              {
+                "color": "green",
+                "symbol": "unknown"
+              },
+              {
+                "color": "red",
+                "symbol": "unknown"
+              }
+            ]
+          },
+          "goal_symbol": "star",
+          "goal_direction": "up",
+          "prompt": "Inspect the two images (one view and its enlarged crop).\nThe object is a robot-held cube. SMALL colored square stickers contain black geometric symbols outlined in white. Ignore large face backgrounds and printed letters.\nSymbols: star=five pointed tips; circle=round outline; triangle=three corners; cross=plus sign; diamond=four-corner rhombus; bars=two separate parallel rectangles.\nList at most THREE clearly visible small stickers. Do not infer hidden marks. Use unknown for an unclear symbol or color. No particular target is guaranteed visible.\nDo not reinterpret the requested goal based on what happens to be visible. Your output only describes visible evidence.\nJSON only, no explanation: {\"stickers\":[{\"color\":\"red|green|blue|yellow|magenta|cyan|unknown\",\"symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\"}]}\nUser instruction: \"Please bring the sticker with five pointed tips onto the upper face of the cube.\"\nGoal previously parsed from that instruction: star, facing up.\nMeasured execution feedback (not semantic truth): {\"change_since_vlm\": null, \"image_change\": null, \"previous_skill\": null, \"previous_state\": \"initial\", \"proprio_change\": null, \"visually_quiet_ticks\": 0}",
+          "observations": [
+            {
+              "color": "blue",
+              "symbol": "star"
+            }
+          ]
+        }
+      ],
+      "feedback_trace": [
+        {
+          "step": 0,
+          "previous_skill": null,
+          "previous_state": "initial",
+          "change_since_vlm": null,
+          "image_change": null,
+          "proprio_change": null,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 10,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.04510793089866638,
+          "image_change": 0.04510793089866638,
+          "proprio_change": 0.5068132281303406,
+          "visually_quiet_ticks": 0
+        },
+        {
+          "step": 20,
+          "previous_skill": 2,
+          "previous_state": "execute",
+          "change_since_vlm": 0.05312851071357727,
+          "image_change": 0.03247420862317085,
+          "proprio_change": 0.32032936811447144,
+          "visually_quiet_ticks": 0
+        }
+      ],
+      "transitions": [
+        {
+          "step": 0,
+          "from": {
+            "color": null,
+            "state": "initial",
+            "reason": "not_observed"
+          },
+          "to": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "path": "31101_feedback_case5_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 2,
+            "state": "execute",
+            "reason": "execute_grounded_language_goal"
+          },
+          "scorer_face_normal_z": [
+            -0.6894019246101379,
+            0.6894019246101379,
+            0.6519652009010315,
+            -0.6519652009010315,
+            -0.3157002925872803,
+            0.3157002925872803
+          ]
+        }
+      ],
+      "video": {
+        "path": "31101_feedback_case5_continuous.mp4",
+        "frames": 11,
+        "fps": 15,
+        "time_base": "simulation time, excludes synchronous VLM waiting",
+        "terminal_frame": "last available pre-action frame; simulator may reset at terminal step"
+      }
+    }
+  ]
+}

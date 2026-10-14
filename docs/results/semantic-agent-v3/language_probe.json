@@ -1,0 +1,337 @@
+{
+  "kind": "real_vlm_text_only_diagnostic",
+  "calls": 15,
+  "correct": 13,
+  "rows": [
+    {
+      "instruction": "Turn the cube so the star sticker faces upward.",
+      "expected_symbol": "star",
+      "expected_direction": "up",
+      "group": "canonical",
+      "result": {
+        "goal_symbol": "star",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"star\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "star",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the cube so the star sticker faces upward.\"",
+        "observations": [],
+        "elapsed_s": 0.4362134229959338,
+        "image_sha256": null,
+        "input_text_sha256": "a2f30b2805ce6742c9451a249a86105221d299fd390e81b6f99fd7c8d468263f"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Turn the cube so the circle sticker faces upward.",
+      "expected_symbol": "circle",
+      "expected_direction": "up",
+      "group": "canonical",
+      "result": {
+        "goal_symbol": "circle",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"circle\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "circle",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the cube so the circle sticker faces upward.\"",
+        "observations": [],
+        "elapsed_s": 0.23648355800105492,
+        "image_sha256": null,
+        "input_text_sha256": "31721fef776128a960f6acc4e2ba898e0b24eb5e1aeffee8a2df1e362278af42"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Turn the cube so the triangle sticker faces upward.",
+      "expected_symbol": "triangle",
+      "expected_direction": "up",
+      "group": "canonical",
+      "result": {
+        "goal_symbol": "triangle",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"triangle\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "triangle",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the cube so the triangle sticker faces upward.\"",
+        "observations": [],
+        "elapsed_s": 0.2356489839949063,
+        "image_sha256": null,
+        "input_text_sha256": "8da9fc793b9ca4ca2668fbc43276168106f6198fe603e0c4acb5e9320712ad0e"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Turn the cube so the cross sticker faces upward.",
+      "expected_symbol": "cross",
+      "expected_direction": "up",
+      "group": "canonical",
+      "result": {
+        "goal_symbol": "cross",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"cross\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "cross",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the cube so the cross sticker faces upward.\"",
+        "observations": [],
+        "elapsed_s": 0.2340623769996455,
+        "image_sha256": null,
+        "input_text_sha256": "671f311d376face7d621e8e49466d4301220d74c4ccdeec5d48961c3c6f424de"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Turn the cube so the diamond sticker faces upward.",
+      "expected_symbol": "diamond",
+      "expected_direction": "up",
+      "group": "canonical",
+      "result": {
+        "goal_symbol": "diamond",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"diamond\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "diamond",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the cube so the diamond sticker faces upward.\"",
+        "observations": [],
+        "elapsed_s": 0.23666247900109738,
+        "image_sha256": null,
+        "input_text_sha256": "a6e50660ee74f7dcee4228dd60092de113c9272a884936c534ad06d228e1dabc"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Turn the cube so the bars sticker faces upward.",
+      "expected_symbol": "bars",
+      "expected_direction": "up",
+      "group": "canonical",
+      "result": {
+        "goal_symbol": "bars",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"bars\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "bars",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the cube so the bars sticker faces upward.\"",
+        "observations": [],
+        "elapsed_s": 0.2343202999982168,
+        "image_sha256": null,
+        "input_text_sha256": "5e8c45111de25ba252318b84bd71705e31260003d922bb098d0e286df495248f"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Please bring the sticker with five pointed tips onto the upper face of the cube.",
+      "expected_symbol": "star",
+      "expected_direction": "up",
+      "group": "paraphrase",
+      "result": {
+        "goal_symbol": "star",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"star\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "star",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Please bring the sticker with five pointed tips onto the upper face of the cube.\"",
+        "observations": [],
+        "elapsed_s": 0.23487593600293621,
+        "image_sha256": null,
+        "input_text_sha256": "14730d085b295a3c44343203dcd258f2ed158a0099a2e5c84f53e45a4bc033d5"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Reorient the cube until its round-symbol sticker faces upward.",
+      "expected_symbol": "circle",
+      "expected_direction": "up",
+      "group": "paraphrase",
+      "result": {
+        "goal_symbol": "circle",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"circle\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "circle",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Reorient the cube until its round-symbol sticker faces upward.\"",
+        "observations": [],
+        "elapsed_s": 0.23464941899874248,
+        "image_sha256": null,
+        "input_text_sha256": "63ac0c59c040b93691a468fc9161f615247596de37cfdee6fa20327c6e923a8f"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+      "expected_symbol": "triangle",
+      "expected_direction": "up",
+      "group": "paraphrase",
+      "result": {
+        "goal_symbol": "triangle",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"triangle\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "triangle",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Make the sticker marked with a three-cornered shape face the ceiling.\"",
+        "observations": [],
+        "elapsed_s": 0.23396184900047956,
+        "image_sha256": null,
+        "input_text_sha256": "5fcd68b396de93fe0c3679b34e52ec602a52e81a7c35fa2b816e8042e7534324"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Rotate the cube to put the plus-sign sticker on top.",
+      "expected_symbol": "cross",
+      "expected_direction": "up",
+      "group": "paraphrase",
+      "result": {
+        "goal_symbol": "cross",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"cross\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "cross",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Rotate the cube to put the plus-sign sticker on top.\"",
+        "observations": [],
+        "elapsed_s": 0.23277373999735573,
+        "image_sha256": null,
+        "input_text_sha256": "66c224062dec492dae831498327e58a59d77fcc37988a59159e78f2e15a3b49c"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "I want the sticker carrying a rhombus to face upward.",
+      "expected_symbol": "diamond",
+      "expected_direction": "up",
+      "group": "paraphrase",
+      "result": {
+        "goal_symbol": "diamond",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"diamond\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "diamond",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"I want the sticker carrying a rhombus to face upward.\"",
+        "observations": [],
+        "elapsed_s": 0.2330104209977435,
+        "image_sha256": null,
+        "input_text_sha256": "3bb1a090a03c94982e3388d66c341fd38f7c58e7eed9643652a20d91236cdebb"
+      },
+      "accepted": true,
+      "correct": true
+    },
+    {
+      "instruction": "Turn the object until the sticker with two parallel bars is on the top face.",
+      "expected_symbol": "bars",
+      "expected_direction": "up",
+      "group": "paraphrase",
+      "result": {
+        "goal_symbol": "bars",
+        "goal_direction": "unknown",
+        "raw": "{\"goal_symbol\":\"bars\",\"goal_direction\":\"top\"}",
+        "parsed": {
+          "goal_symbol": "bars",
+          "goal_direction": "top"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the object until the sticker with two parallel bars is on the top face.\"",
+        "observations": [],
+        "elapsed_s": 0.2332284090007306,
+        "image_sha256": null,
+        "input_text_sha256": "252e441b69c85ddfc10f115cec59cd9e1aae27d46bd1904751642a4c8b77d335"
+      },
+      "accepted": false,
+      "correct": false
+    },
+    {
+      "instruction": "Turn the star sticker toward the left.",
+      "expected_symbol": null,
+      "expected_direction": null,
+      "group": "unsupported_or_ambiguous",
+      "result": {
+        "goal_symbol": "star",
+        "goal_direction": "unknown",
+        "raw": "{\"goal_symbol\":\"star\",\"goal_direction\":\"left\"}",
+        "parsed": {
+          "goal_symbol": "star",
+          "goal_direction": "left"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn the star sticker toward the left.\"",
+        "observations": [],
+        "elapsed_s": 0.23578931499650935,
+        "image_sha256": null,
+        "input_text_sha256": "c6ebf1cb1693431f0207404bf664d3f50025d817a81014a332a711ebd5b684b9"
+      },
+      "accepted": false,
+      "correct": true
+    },
+    {
+      "instruction": "Turn either the star or the circle upward.",
+      "expected_symbol": null,
+      "expected_direction": null,
+      "group": "unsupported_or_ambiguous",
+      "result": {
+        "goal_symbol": "unknown",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"star|circle\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "star|circle",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Turn either the star or the circle upward.\"",
+        "observations": [],
+        "elapsed_s": 0.26149137200263795,
+        "image_sha256": null,
+        "input_text_sha256": "87c9eb8ad71e8ec10efbf7a240c8aea68122b600ad792d6abd3f07b0cb1e2188"
+      },
+      "accepted": false,
+      "correct": true
+    },
+    {
+      "instruction": "Make the sticker without a star face upward.",
+      "expected_symbol": null,
+      "expected_direction": null,
+      "group": "unsupported_or_ambiguous",
+      "result": {
+        "goal_symbol": "star",
+        "goal_direction": "up",
+        "raw": "{\"goal_symbol\":\"star\",\"goal_direction\":\"up\"}",
+        "parsed": {
+          "goal_symbol": "star",
+          "goal_direction": "up"
+        },
+        "prompt": "Convert the user's requested goal into JSON. Read only what the user requests.\nSupported objects of reference: star (five-pointed symbol), circle (round symbol), triangle (three corners), cross (plus sign), diamond (rhombus), bars (two parallel bars).\nSupported destination: facing up, on top, or facing the ceiling, all represented as up.\nReturn unknown for ambiguous, negated, or unsupported goals. Do not assume a default symbol or direction.\nJSON only: {\"goal_symbol\":\"star|circle|triangle|cross|diamond|bars|unknown\",\"goal_direction\":\"up|unknown\"}\nUser instruction: \"Make the sticker without a star face upward.\"",
+        "observations": [],
+        "elapsed_s": 0.2331130359962117,
+        "image_sha256": null,
+        "input_text_sha256": "581e75e26cd663deeaf9d04bf5f232fef4cc8a19bff925899541d7bc6a9fd08a"
+      },
+      "accepted": true,
+      "correct": false
+    }
+  ]
+}

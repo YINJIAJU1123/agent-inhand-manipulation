@@ -1,0 +1,902 @@
+{
+  "metadata": {
+    "benchmark": "language_symbol_agent_v3",
+    "checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+    "adapter_sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+    "seeds": [
+      31102
+    ],
+    "modes": [
+      "oracle"
+    ],
+    "grounding": "instruction_conditioned_inventory",
+    "instruction_offset": 0,
+    "template_set": "paraphrase",
+    "no_symbols": false,
+    "feedback_reobservation_enabled": false,
+    "camera_resolution": 512,
+    "student_resolution": 256,
+    "vision_stride": 2,
+    "agent_stride": 10,
+    "call_budget": 6,
+    "max_steps": 600,
+    "env_max_episode_length": 600,
+    "success": "accepted correct visual goal AND executing it AND orientation error <= 0.16 rad without drop; evaluator stops scored slot, not VLM-certified stopping",
+    "video_capture": null,
+    "agent_inputs": [
+      "RGB",
+      "actual full instruction",
+      "measured proprioception",
+      "elapsed control steps"
+    ],
+    "oracle_has_target_label": true,
+    "source_sha256": {
+      "evaluate_semantic_agent_v3.py": "ce7c276b095e20c6681ac3dfb87b26afb4f4f7e6439ef9995387848048a7e3ce",
+      "semantic_agent_v3.py": "a3d8f6ab1adb3f3f255d5af2fa819b14f73ec2ebdaef5b236cd8112c09f291f6",
+      "semantic_protocol_v3.py": "056b927f3409e08b0bfc1db9bbfc09f05a07c9be9bd224fafb7ca3c1e1f68efd",
+      "visual_agent.py": "0013055a232417a2109cff2745a7e1eeaf02f3369e3e74ecd87fb3d5f1fcf9a3",
+      "student_features.py": "584e064b4fb06c47f90e41ba3bb59617e8ea34f4066318b5e93c715ab813d3fb",
+      "symbol_scene.py": "c2085123b958fb882908bc68c66b3d2a981455c8f64cc850e249530fc9431cd5",
+      "vlm_server.py": "f4191fe394f7ca72e9240763230bb0a145030eac06c651d843eafcf8d6802b14"
+    }
+  },
+  "elapsed_s": 79.86806560099649,
+  "episodes": [
+    {
+      "seed": 31102,
+      "mode": "oracle",
+      "case": 0,
+      "target_color_index": 5,
+      "target_symbol": "star",
+      "instruction": "Please bring the sticker with five pointed tips onto the upper face of the cube.",
+      "layout": [
+        1,
+        4,
+        2,
+        5,
+        3,
+        0
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 65,
+      "min_orientation_error_rad": 0.15173174440860748,
+      "final_goal": 5,
+      "parsed_goal_symbol": "star",
+      "language_correct": true,
+      "grounding_correct": true,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 65
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "31102_oracle_case0_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 5,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.5321040749549866,
+            -0.5321040749549866,
+            -0.22078944742679596,
+            0.22078944742679596,
+            0.8173844814300537,
+            -0.8173844814300537
+          ]
+        },
+        {
+          "path": "31102_oracle_case0_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 5,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.45591434836387634,
+            -0.45591434836387634,
+            0.41758638620376587,
+            -0.41758638620376587,
+            -0.7859795093536377,
+            0.7859795093536377
+          ]
+        },
+        {
+          "path": "31102_oracle_case0_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 5,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.003894336521625519,
+            -0.003894336521625519,
+            0.294849693775177,
+            -0.294849693775177,
+            -0.9555356502532959,
+            0.9555356502532959
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 31102,
+      "mode": "oracle",
+      "case": 1,
+      "target_color_index": 4,
+      "target_symbol": "circle",
+      "instruction": "Reorient the cube until its round-symbol sticker faces upward.",
+      "layout": [
+        2,
+        0,
+        5,
+        4,
+        1,
+        3
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 55,
+      "min_orientation_error_rad": 0.15089452266693115,
+      "final_goal": 4,
+      "parsed_goal_symbol": "circle",
+      "language_correct": true,
+      "grounding_correct": true,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 55
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "31102_oracle_case1_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.41762617230415344,
+            -0.41762617230415344,
+            0.17559035122394562,
+            -0.17559035122394562,
+            0.8914911150932312,
+            -0.8914911150932312
+          ]
+        },
+        {
+          "path": "31102_oracle_case1_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.03006531298160553,
+            -0.03006531298160553,
+            0.3397734761238098,
+            -0.3397734761238098,
+            0.9400266408920288,
+            -0.9400266408920288
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 31102,
+      "mode": "oracle",
+      "case": 2,
+      "target_color_index": 2,
+      "target_symbol": "triangle",
+      "instruction": "Make the sticker marked with a three-cornered shape face the ceiling.",
+      "layout": [
+        0,
+        4,
+        2,
+        5,
+        3,
+        1
+      ],
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": true,
+      "steps": 217,
+      "min_orientation_error_rad": 0.9010288119316101,
+      "final_goal": 2,
+      "parsed_goal_symbol": "triangle",
+      "language_correct": true,
+      "grounding_correct": true,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 217
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "31102_oracle_case2_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.11807747185230255,
+            0.11807747185230255,
+            -0.2777990996837616,
+            0.2777990996837616,
+            0.9533547759056091,
+            -0.9533547759056091
+          ]
+        },
+        {
+          "path": "31102_oracle_case2_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.3947092294692993,
+            0.3947092294692993,
+            0.4442681074142456,
+            -0.4442681074142456,
+            0.8042576909065247,
+            -0.8042576909065247
+          ]
+        },
+        {
+          "path": "31102_oracle_case2_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.9679142236709595,
+            0.9679142236709595,
+            0.19618000090122223,
+            -0.19618000090122223,
+            0.15701955556869507,
+            -0.15701955556869507
+          ]
+        },
+        {
+          "path": "31102_oracle_case2_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.9856475591659546,
+            0.9856475591659546,
+            0.16881422698497772,
+            -0.16881422698497772,
+            -0.00042951107025146484,
+            0.00042951107025146484
+          ]
+        },
+        {
+          "path": "31102_oracle_case2_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.9526491761207581,
+            0.9526491761207581,
+            0.28733664751052856,
+            -0.28733664751052856,
+            -0.09948360919952393,
+            0.09948360919952393
+          ]
+        },
+        {
+          "path": "31102_oracle_case2_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.963206946849823,
+            0.963206946849823,
+            0.26875948905944824,
+            -0.26875948905944824,
+            -0.0005061626434326172,
+            0.0005061626434326172
+          ]
+        },
+        {
+          "path": "31102_oracle_case2_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.9930119514465332,
+            0.9930119514465332,
+            0.04371574521064758,
+            -0.04371574521064758,
+            -0.10961854457855225,
+            0.10961854457855225
+          ]
+        },
+        {
+          "path": "31102_oracle_case2_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 2,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.7525421380996704,
+            -0.7525421380996704,
+            0.11893951147794724,
+            -0.11893951147794724,
+            -0.6477137804031372,
+            0.6477137804031372
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 31102,
+      "mode": "oracle",
+      "case": 3,
+      "target_color_index": 3,
+      "target_symbol": "cross",
+      "instruction": "Rotate the cube to put the plus-sign sticker on top.",
+      "layout": [
+        2,
+        4,
+        1,
+        3,
+        5,
+        0
+      ],
+      "success": false,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 599,
+      "min_orientation_error_rad": 1.2519466876983643,
+      "final_goal": 3,
+      "parsed_goal_symbol": "cross",
+      "language_correct": true,
+      "grounding_correct": true,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 599
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "31102_oracle_case3_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.5835977792739868,
+            -0.5835977792739868,
+            0.5808343887329102,
+            -0.5808343887329102,
+            -0.5674899816513062,
+            0.5674899816513062
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9698997735977173,
+            -0.9698997735977173,
+            -0.19640958309173584,
+            0.19640958309173584,
+            0.1439363956451416,
+            -0.1439363956451416
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9761344194412231,
+            -0.9761344194412231,
+            -0.18538320064544678,
+            0.18538320064544678,
+            0.11311298608779907,
+            -0.11311298608779907
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0090.png",
+          "step": 90,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9741436243057251,
+            -0.9741436243057251,
+            -0.22087359428405762,
+            0.22087359428405762,
+            -0.04752814769744873,
+            0.04752814769744873
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0120.png",
+          "step": 120,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9963016510009766,
+            -0.9963016510009766,
+            2.256035804748535e-05,
+            -2.256035804748535e-05,
+            -0.08592236042022705,
+            0.08592236042022705
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0150.png",
+          "step": 150,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9977201819419861,
+            -0.9977201819419861,
+            -0.030247658491134644,
+            0.030247658491134644,
+            0.060327768325805664,
+            -0.060327768325805664
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0180.png",
+          "step": 180,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9995187520980835,
+            -0.9995187520980835,
+            0.029704362154006958,
+            -0.029704362154006958,
+            0.008931517601013184,
+            -0.008931517601013184
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0210.png",
+          "step": 210,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9993369579315186,
+            -0.9993369579315186,
+            -0.020191282033920288,
+            0.020191282033920288,
+            -0.030295610427856445,
+            0.030295610427856445
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0240.png",
+          "step": 240,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9820769429206848,
+            -0.9820769429206848,
+            -0.02293264865875244,
+            0.02293264865875244,
+            0.18708014488220215,
+            -0.18708014488220215
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0270.png",
+          "step": 270,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9734047651290894,
+            -0.9734047651290894,
+            -0.05743458867073059,
+            0.05743458867073059,
+            0.22177505493164062,
+            -0.22177505493164062
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0300.png",
+          "step": 300,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9998955726623535,
+            -0.9998955726623535,
+            -0.008923470973968506,
+            0.008923470973968506,
+            0.01136249303817749,
+            -0.01136249303817749
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0330.png",
+          "step": 330,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9954199194908142,
+            -0.9954199194908142,
+            -0.03354090452194214,
+            0.03354090452194214,
+            -0.08952212333679199,
+            0.08952212333679199
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0360.png",
+          "step": 360,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9979517459869385,
+            -0.9979517459869385,
+            -0.048643648624420166,
+            0.048643648624420166,
+            -0.04154384136199951,
+            0.04154384136199951
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0390.png",
+          "step": 390,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9997167587280273,
+            -0.9997167587280273,
+            -0.023794978857040405,
+            0.023794978857040405,
+            -0.0004520416259765625,
+            0.0004520416259765625
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0420.png",
+          "step": 420,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9947001934051514,
+            -0.9947001934051514,
+            -0.017686426639556885,
+            0.017686426639556885,
+            -0.10128533840179443,
+            0.10128533840179443
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0450.png",
+          "step": 450,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9732832312583923,
+            -0.9732832312583923,
+            -0.21119233965873718,
+            0.21119233965873718,
+            0.09009647369384766,
+            -0.09009647369384766
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0480.png",
+          "step": 480,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.995572566986084,
+            -0.995572566986084,
+            -0.00767827033996582,
+            0.00767827033996582,
+            -0.09367978572845459,
+            0.09367978572845459
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0510.png",
+          "step": 510,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9855042695999146,
+            -0.9855042695999146,
+            -0.16964974999427795,
+            0.16964974999427795,
+            -0.00010561943054199219,
+            0.00010561943054199219
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0540.png",
+          "step": 540,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9914636611938477,
+            -0.9914636611938477,
+            -0.12672074139118195,
+            0.12672074139118195,
+            -0.030686497688293457,
+            0.030686497688293457
+          ]
+        },
+        {
+          "path": "31102_oracle_case3_step0570.png",
+          "step": 570,
+          "decision": {
+            "color": 3,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.9524558186531067,
+            -0.9524558186531067,
+            -0.2937910556793213,
+            0.2937910556793213,
+            0.08071106672286987,
+            -0.08071106672286987
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 31102,
+      "mode": "oracle",
+      "case": 4,
+      "target_color_index": 5,
+      "target_symbol": "diamond",
+      "instruction": "I want the sticker carrying a rhombus to face upward.",
+      "layout": [
+        3,
+        0,
+        2,
+        5,
+        1,
+        4
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 60,
+      "min_orientation_error_rad": 0.14414703845977783,
+      "final_goal": 5,
+      "parsed_goal_symbol": "diamond",
+      "language_correct": true,
+      "grounding_correct": true,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 60
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "31102_oracle_case4_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 5,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.47530651092529297,
+            0.47530651092529297,
+            0.1768096536397934,
+            -0.1768096536397934,
+            0.8618712425231934,
+            -0.8618712425231934
+          ]
+        },
+        {
+          "path": "31102_oracle_case4_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 5,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.5729585289955139,
+            0.5729585289955139,
+            -0.3517584800720215,
+            0.3517584800720215,
+            -0.7402597665786743,
+            0.7402597665786743
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 31102,
+      "mode": "oracle",
+      "case": 5,
+      "target_color_index": 4,
+      "target_symbol": "bars",
+      "instruction": "Turn the object until the sticker with two parallel bars is on the top face.",
+      "layout": [
+        2,
+        0,
+        3,
+        4,
+        5,
+        1
+      ],
+      "success": true,
+      "incidental_reach_without_grounding": false,
+      "drop": false,
+      "steps": 86,
+      "min_orientation_error_rad": 0.12461201846599579,
+      "final_goal": 4,
+      "parsed_goal_symbol": "bars",
+      "language_correct": true,
+      "grounding_correct": true,
+      "calls": 0,
+      "recovery_used": false,
+      "action_states": {
+        "oracle": 86
+      },
+      "trace": [],
+      "feedback_trace": [],
+      "transitions": [],
+      "snapshots": [
+        {
+          "path": "31102_oracle_case5_step0000.png",
+          "step": 0,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.08513131737709045,
+            -0.08513131737709045,
+            -0.9428213834762573,
+            0.9428213834762573,
+            0.3222429156303406,
+            -0.3222429156303406
+          ]
+        },
+        {
+          "path": "31102_oracle_case5_step0030.png",
+          "step": 30,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            0.037337757647037506,
+            -0.037337757647037506,
+            -0.933835506439209,
+            0.933835506439209,
+            -0.35574865341186523,
+            0.35574865341186523
+          ]
+        },
+        {
+          "path": "31102_oracle_case5_step0060.png",
+          "step": 60,
+          "decision": {
+            "color": 4,
+            "state": "oracle",
+            "reason": "privileged_control_reference"
+          },
+          "scorer_face_normal_z": [
+            -0.1920681893825531,
+            0.1920681893825531,
+            -0.9051101803779602,
+            0.9051101803779602,
+            0.3793222904205322,
+            -0.3793222904205322
+          ]
+        }
+      ]
+    }
+  ]
+}

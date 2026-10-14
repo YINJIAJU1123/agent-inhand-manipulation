@@ -20,7 +20,19 @@ The added agent mechanisms have not outperformed the periodic baseline; visual
 verification remains unreliable. These are new-task results, not the language
 baseline above. See the [method and reproduction guide](docs/agentic_symbol_method_20261014.md).
 
-A [900-episode frozen evaluation and continuous recording protocol](docs/agentic_symbol_large_eval_20261014.md) is now available, with resumable execution and paired seed-level uncertainty estimates.
+The [900-episode frozen evaluation](docs/agentic_symbol_large_eval_20261014.md)
+is complete: periodic inspection succeeds in 88/300 (29.33%), once-only in
+14/300 (4.67%), and oracle in 249/300 (83.00%). The VLM inventories visible
+symbols and code selects the fixed star target; these results do not establish
+multi-instruction language grounding.
+
+The separate [semantic agent v3](docs/agentic_semantic_v3_20261014.md) introduces
+actual VLM language parsing for six symbol targets, visual grounding, active
+inspection, and execution feedback. The first 54-episode validation gives
+4/18 successes for feedback, 4/18 for periodic observation, and 15/18 for
+oracle. Feedback uses 66 versus 86 VLM calls but has not improved success;
+visual symbol-to-sticker binding remains the main observed bottleneck.
+These results are separate from the frozen star benchmark.
 
 Earlier project status is recorded in [progress_20260926.md](docs/progress_20260926.md).
 Camera setup and environment reproduction are documented in
