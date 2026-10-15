@@ -57,3 +57,18 @@ v5 oracle initial state exactly; maximum proprioception difference is 1.19e-7.
 This verifies starting-state correspondence, not cross-hardware trajectory equivalence.
 The shared installation still emits nonfatal cache/config permission warnings.
 All three offline transport tests pass. Full robot results remain pending.
+
+## First completed batch (2026-10-15 06:14 UTC)
+
+Seed 35001 / canonical completed all six episodes: 3/6 reached the primary
+success criterion, 6/6 ended with correct semantic binding, zero drops, and
+three false stop declarations. All three failures were premature stop requests.
+The batch used 23 successful model calls and 53,893 reported tokens
+(52,738 input / 1,155 output). This is one seed cluster, not a stable success estimate.
+The runner automatically advanced to the paraphrase batch.
+
+The completed report and six continuous videos are mirrored locally under
+`outputs/agentic_v4/astra_eval_20261015/seed35001_offset0_canonical_astra/`.
+Success uses the scorer's <= 0.16 rad full-orientation criterion; the VLM's
+visual completion judgment can disagree with this stricter metric. Do not
+change prompts or stop logic during this frozen batch.
