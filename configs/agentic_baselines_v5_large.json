@@ -1,0 +1,276 @@
+{
+  "benchmark": "rule_vs_latent_v5_large",
+  "scenarios": [
+    {
+      "seed": 35001,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35001,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35002,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35002,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35003,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35003,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35004,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35004,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35005,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35005,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35006,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35006,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35007,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35007,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35008,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35008,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35009,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35009,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35010,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35010,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35011,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35011,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35012,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35012,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35013,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35013,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35014,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35014,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35015,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35015,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35016,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35016,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35017,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35017,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35018,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35018,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35019,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35019,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35020,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35020,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35021,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35021,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35022,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35022,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35023,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35023,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35024,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35024,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    },
+    {
+      "seed": 35025,
+      "instruction_offset": 0,
+      "template_set": "canonical"
+    },
+    {
+      "seed": 35025,
+      "instruction_offset": 0,
+      "template_set": "paraphrase"
+    }
+  ],
+  "modes": [
+    "periodic",
+    "latent",
+    "oracle"
+  ],
+  "call_budget": 6,
+  "max_steps": 600,
+  "job_timeout_seconds": 1800,
+  "record_video_seeds": [
+    35001
+  ],
+  "baselines": {
+    "periodic": "B1: frozen Qwen2.5-VL-7B symbolic parsing/inventory plus original periodic evidence router; shared v4 RGB crop",
+    "latent": "B2: frozen Qwen3-VL-4B QLoRA latent_v2, directly executed continuous goal; periodic supervisor",
+    "oracle": "Correct target provided directly to the frozen student"
+  },
+  "independent_initial_states": 150,
+  "episodes_per_mode": 300,
+  "total_episodes": 900,
+  "reporting": "Pair by seed/case/template. Cluster bootstrap by seed (all six cases and both language forms together). Report all failures, by symbol/template, grounding, drops, calls, latency, and simultaneous counterfactual-language consistency. No tuning on this test.",
+  "limits": "System comparison: backbone, training, output interface and supervisor differ; not a pure causal effect of finetuning. B1 includes one language parse within six total calls. Two templates share an initial physical state; 300 episodes are not 300 independent scenes. Scorer-based success; no autonomous stop claim."
+}

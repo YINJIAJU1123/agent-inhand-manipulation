@@ -41,6 +41,12 @@ tool supervisor. The small development test completed on 2026-10-15 gives
 is implemented; real API evaluation is pending credentials. This version is
 not yet a stable multi-symbol agent or a demonstrated improvement over v3.
 
+A [900-episode paired comparison](docs/agentic_baselines_v5_large_20261015.md)
+was launched on 2026-10-15: the symbolic/rule baseline, learned latent baseline,
+and oracle each receive 300 episodes across 25 new seeds and two instruction
+forms. Results are pending; this is a system comparison, not an isolated
+finetuning ablation.
+
 Earlier project status is recorded in [progress_20260926.md](docs/progress_20260926.md).
 Camera setup and environment reproduction are documented in
 [camera validation](docs/camera_placement.md) and [reproduction instructions](docs/reproducibility.md).

@@ -1,0 +1,320 @@
+{
+  "protocol": {
+    "benchmark": "rule_vs_latent_v5_large",
+    "scenarios": [
+      {
+        "seed": 35001,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35001,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35002,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35002,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35003,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35003,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35004,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35004,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35005,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35005,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35006,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35006,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35007,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35007,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35008,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35008,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35009,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35009,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35010,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35010,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35011,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35011,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35012,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35012,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35013,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35013,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35014,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35014,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35015,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35015,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35016,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35016,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35017,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35017,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35018,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35018,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35019,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35019,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35020,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35020,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35021,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35021,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35022,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35022,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35023,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35023,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35024,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35024,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      },
+      {
+        "seed": 35025,
+        "instruction_offset": 0,
+        "template_set": "canonical"
+      },
+      {
+        "seed": 35025,
+        "instruction_offset": 0,
+        "template_set": "paraphrase"
+      }
+    ],
+    "modes": [
+      "periodic",
+      "latent",
+      "oracle"
+    ],
+    "call_budget": 6,
+    "max_steps": 600,
+    "job_timeout_seconds": 1800,
+    "record_video_seeds": [
+      35001
+    ],
+    "baselines": {
+      "periodic": "B1: frozen Qwen2.5-VL-7B symbolic parsing/inventory plus original periodic evidence router; shared v4 RGB crop",
+      "latent": "B2: frozen Qwen3-VL-4B QLoRA latent_v2, directly executed continuous goal; periodic supervisor",
+      "oracle": "Correct target provided directly to the frozen student"
+    },
+    "independent_initial_states": 150,
+    "episodes_per_mode": 300,
+    "total_episodes": 900,
+    "reporting": "Pair by seed/case/template. Cluster bootstrap by seed (all six cases and both language forms together). Report all failures, by symbol/template, grounding, drops, calls, latency, and simultaneous counterfactual-language consistency. No tuning on this test.",
+    "limits": "System comparison: backbone, training, output interface and supervisor differ; not a pure causal effect of finetuning. B1 includes one language parse within six total calls. Two templates share an initial physical state; 300 episodes are not 300 independent scenes. Scorer-based success; no autonomous stop claim."
+  },
+  "source_sha256": {
+    "run_baselines_v5.py": "fdb2623db4c391b3127ba4a69ab74fd2efb7efb6163b9e5567047b430422f66f",
+    "analyze_baselines_v5.py": "373166e54b71ba2d6cf02ebacc8a372009620e5aaa2e6a3342a85539f8f405a9",
+    "evaluate_baselines_v5.py": "71e2ddc8de87c3194867bf11c9d905fdd2706995b12853923cfcfa695e1ec448",
+    "rule_client_v5.py": "448999bec091fbe6d80f22b608aaab08923fb7867e2813e42bed852db1c951f5",
+    "vlm_server.py": "f4191fe394f7ca72e9240763230bb0a145030eac06c651d843eafcf8d6802b14",
+    "semantic_agent_v3.py": "a3d8f6ab1adb3f3f255d5af2fa819b14f73ec2ebdaef5b236cd8112c09f291f6",
+    "semantic_protocol_v3.py": "056b927f3409e08b0bfc1db9bbfc09f05a07c9be9bd224fafb7ca3c1e1f68efd",
+    "visual_agent.py": "0013055a232417a2109cff2745a7e1eeaf02f3369e3e74ecd87fb3d5f1fcf9a3",
+    "student_features.py": "584e064b4fb06c47f90e41ba3bb59617e8ea34f4066318b5e93c715ab813d3fb",
+    "symbol_scene.py": "c2085123b958fb882908bc68c66b3d2a981455c8f64cc850e249530fc9431cd5",
+    "rollout_video.py": "c6580a78c5986b73dbb148f2596a672d7b53ba8bfa0c346afff073e8749fa054",
+    "agent_observation_v4.py": "7b0e66cf087abd071b4871594d50a1256209f748ae47300749713bf70e63e77b",
+    "latent_goal_v4.py": "ef531d639f817b24b1125e6407b1ba24ec15d59bbb448bc5bc5fbbf486ffa69c",
+    "latent_supervisor_v4.py": "e781cab8158ddc6d8f2d5c305d6c885f76d701ea352ed85e6cb00cb5b2e8e156",
+    "latent_data_v4.py": "ba1c8e08cfe89896a1b3b3445bb1145040508a8f99ab984f2de5d2b6774fc19a",
+    "astra_agent_v4.py": "483d9aa245665b74cc80d1a63a75eacae29736982f0a14ebdb558c679d99e115"
+  },
+  "weights": {
+    "/home/yin/DexManipulation/VLMmanipulation/outputs/visual_student_v3/checkpoints/dagger_target135_r10_face5_sigliptext_evidence_seed5_student.pt": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+    "/home/yin/DexManipulation/VLMmanipulation/outputs/visual_student_v3/checkpoints/siglip2_text_classifier_v2.pt": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+    "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/checkpoints/latent_v2/goal_head.pt": "131cb9ba5c7091f81d432fc1f4d4c1c191067db28fa19876c2c84b96907d117a",
+    "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/checkpoints/latent_v2/lora/adapter_model.safetensors": "227fc4f2bc3481a27d4e17884b74f05c3f5aaaa6b03fce1368d31b3d64813d35"
+  },
+  "rule_model": "/home/yin/Grasping/Grasppose/run/models/Qwen2.5-VL-7B-Instruct",
+  "rule_model_config_sha256": "77d9ec7321cc572e3579e2c84799c9cadaded63c49ce93b101733349fc330c43",
+  "rule_model_weights": {
+    "model-00001-of-00005.safetensors": "e97b877e47fde53a6c6e77aafb36e58e91ee9d95c4a3eeac6f1b5c0e6a1c986e",
+    "model-00002-of-00005.safetensors": "a9a300a43b4724eee2abe7c18ceb26768d0ab011eb0cad19d9bfd2476a24d024",
+    "model-00003-of-00005.safetensors": "111223d173e00bbee81cba1216fad28668df3476706b7fd26f4d5b50f8b3a507",
+    "model-00004-of-00005.safetensors": "ef47f634fa57d46ee134edcc09f34085a47da1e16c12a2abe0d67118be6d72ed",
+    "model-00005-of-00005.safetensors": "0c859795ad3a627a9b95bcb762e059d5b768a4a36fdd4affeff269d93fdecc67"
+  },
+  "latent_checkpoint": "/home/yin/DexManipulation/VLMmanipulation/outputs/agentic_v4/checkpoints/latent_v2",
+  "symbol_assets": {
+    "bars.usda": "368d3f05eb1865ed9fa7ee0e204e237d6a1a79b6acc0e381c32c85b91721b3a6",
+    "circle.usda": "9f1f1b8947187f449dc816b53ed3517a60c348a235bcf91a65b5078bfdc220b3",
+    "cross.usda": "6b83b653412336f6c31039a1a3b587ce32d5c5e035153c5af2643dbc972dd714",
+    "diamond.usda": "f22c4d3431d80a9715843b53a7efdd40b3bd8c750ef476dcc457d6375feb93ba",
+    "star.usda": "eb034739aaeef9a7e965c289601d99a359c400f22c670f56729e828f14a2b719",
+    "triangle.usda": "21de9544881aa0d2c01f9188aba8441b0c4df0ca1764f96cc470f474204e9be5"
+  }
+}
