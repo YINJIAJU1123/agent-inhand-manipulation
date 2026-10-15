@@ -72,3 +72,56 @@ The completed report and six continuous videos are mirrored locally under
 Success uses the scorer's <= 0.16 rad full-orientation criterion; the VLM's
 visual completion judgment can disagree with this stricter metric. Do not
 change prompts or stop logic during this frozen batch.
+
+## Completed benchmark and video review
+
+The original run completed 60/60 episodes: 31 successes, 12 drops,
+47 correct final bindings, and 12 false stop declarations. It made 223
+completed model calls using 541,822 tokens. Its 12 captured videos cover
+seed 35001 with both canonical and paraphrase instructions.
+
+`record_astra_v6.py` separately records canonical seeds 35002 and 35003
+on the now-free local RTX 3090. These are fresh model calls and physical
+rollouts, not playback of the original trajectories. Their outcomes can
+differ and must not be merged into the original benchmark. The run has
+12 episodes, two simultaneous HTTP requests, six calls per episode, and
+shared limits of 72 requests / 400,000 reported tokens.
+
+`scripts/media/annotate_astra_videos.py` makes captioned copies: original
+RGB at left, actual tool/arguments/evidence and call history at right,
+independent scorer result on an added end card. Raw recordings are unchanged.
+Outputs are in `outputs/agentic_v4/astra_video_review_20261015/`, with
+`original/` and `new_recordings/` containing per-case videos, `index.json`,
+and `all_cases.mp4`. No failures are excluded.
+
+### What is called, and when?
+
+| Supervisor | Inference schedule | Output to control stack | Observed mean calls |
+|---|---|---|---:|
+| Rule VLM (v5 periodic) | One language parse, then visual grounding every 90 steps; six total calls include parsing | Symbol/color evidence; deterministic router chooses a canonical goal vector | 4.32 / episode |
+| Learned latent VLM | Predict every 90 steps, up to six times | Accepted continuous goal vector consumed directly by the frozen student | 3.71 / episode |
+| Astra | Initial call, then after its chosen 10–90-step action (checks every 10 steps); verify lasts 20 steps; at most six calls | A validated tool, color, duration and evidence; selected canonical goal vector drives the student | 3.72 / episode |
+
+Steps run at 30 Hz of simulated control time. After the call budget is
+exhausted, the last decision continues until evaluator termination or
+the 600-step episode horizon. Stop and abstain end the relevant slot.
+Astra calls get the instruction, full RGB and RGB-derived crop, within-episode
+image/tool history, elapsed steps, prior skill/state, and measured RGB/joint
+change summaries. They never get ground-truth pose, layout or scored success.
+The low-level student gets RGB-D history, proprioception history and the goal
+vector, and produces continuous joint-control actions.
+
+Example from the original seed 35001 star episode:
+`inspect_face(green,70)` at step 0 → `reorient_target(star,magenta,90)`
+at step 70 → `verify_target(star,magenta)` at step 160.
+The evaluator then marks the goal reached.
+
+All model calls are synchronous with simulation. Video time omits API waiting;
+these videos do not demonstrate wall-clock real-time execution. The verifier
+and stop request are agent decisions, while primary success still uses the
+independent evaluator's full-orientation threshold.
+
+The supplementary recording run completed 12/12 episodes: 7 reached success,
+4 dropped, and 1 otherwise did not reach the goal; no false stops. All 24
+recordings (12 original and 12 new) receive trace-derived captions. These
+selected demonstration batches are not an unbiased replacement success estimate.
