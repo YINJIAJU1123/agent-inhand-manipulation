@@ -38,7 +38,8 @@ The [two-track v4 prototype](docs/agentic_two_track_v4_20261014.md) now adds
 Qwen3-VL-4B QLoRA with a directly executed continuous goal latent and an Astra
 tool supervisor. The small development test completed on 2026-10-15 gives
 4/12 latent successes versus 12/12 paired oracle successes. Astra's interface
-is implemented; real API evaluation is pending credentials. This version is
+was initially awaiting credentials; authorized real image/tool calls now work
+through the [v6 subscription evaluation](docs/astra_subscription_eval_v6_20261015.md). This version is
 not yet a stable multi-symbol agent or a demonstrated improvement over v3.
 
 A [900-episode paired comparison](docs/agentic_baselines_v5_large_20261015.md)
@@ -46,6 +47,13 @@ was launched on 2026-10-15: the symbolic/rule baseline, learned latent baseline,
 and oracle each receive 300 episodes across 25 new seeds and two instruction
 forms. Results are pending; this is a system comparison, not an isolated
 finetuning ablation.
+
+The [Astra v6 evaluation](docs/astra_subscription_eval_v6_20261015.md) adds
+60 closed-loop episodes on a remote RTX 5090 using app-specific ChatGPT OAuth,
+two concurrent model requests, and six calls per episode. The finite runner
+saves request usage, videos, and report files under
+`outputs/agentic_v4/astra_eval_20261015`; real robot rollout and image/tool
+requests have started. Full results remain pending.
 
 Earlier project status is recorded in [progress_20260926.md](docs/progress_20260926.md).
 Camera setup and environment reproduction are documented in
