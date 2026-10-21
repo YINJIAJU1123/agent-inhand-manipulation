@@ -4,7 +4,53 @@ Research fork of [BrainCoTech/RevoLab](https://github.com/BrainCoTech/RevoLab)
 for goal-conditioned Revo3 reorientation and visual-language control.
 Upstream assets and license notices are retained.
 
-Current status (2026-10-14): a frozen RGB-D student is driven by a trained
+## Research status — 2026-10-21
+
+The latest [training and evaluation record](docs/training_evaluation_status_20261019.md)
+separates complete semantic-agent tasks from known-goal controller diagnostics.
+In the most recent 192-episode live Astra comparison, continued execution achieved
+27/48 successes (56.25%), fixed slowing 25/48 (52.08%), the V3 waiting controller
+25/48 (52.08%), and the newer temporal controller 22/48 (45.83%). Physics advanced
+while model requests were pending. These are development results on two repeated
+seeds. The newer controller has not demonstrated an overall success advantage.
+
+The [completion evidence study](docs/semantic_completion_ablation_20261020.md)
+adds goal-conditioned completion learning, first-stop diagnostics and a dense
+96-by-96 RGB-D branch while keeping the visual student frozen. The latest
+collection contains 14,062 training frames from 192 trajectories and 3,717
+validation frames from 48 trajectories. Both matched training runs completed.
+On the same 24 recorded audit trajectories, compact features gave 12 correct
+first-stop proposals, 4 incorrect proposals and 8 cases without a proposal.
+Dense RGB-D gave 18 correct, 3 incorrect and 3 without a proposal. Its 18/21
+proposal precision (85.7%) remains below the predefined 90% admission criterion.
+This is conditional completion evidence, not a new full-agent success rate.
+No completion candidate has replaced the baseline.
+
+The proposals did not change the recorded student's actions. Of the 18 correct
+dense proposals, 9 trajectories were still inside the pose tolerance one second
+later under continued execution. This is a pose-retention diagnostic, not a
+drop rate or a measured effect of a hold controller. Learned completion-to-hold
+coordination remains future work.
+
+Code entry points:
+
+- `scripts/semantic_completion_v3/collect_run.py`: bounded dense RGB-D collection.
+- `scripts/semantic_completion_v3/train_run.py`: frozen-feature caching and matched compact/dense training.
+- `scripts/semantic_completion_v2/run_comparison.py`: shared-trajectory diagnostics for the earlier V2 completion heads.
+- `scripts/astra_repeated_eval_v1/`: repeated live Astra evaluation and analysis.
+- `scripts/recovery_controller_v3/` and `scripts/recovery_factorial/`: waiting/recovery experiments.
+
+This source snapshot includes experiment protocols and tests. Local datasets,
+trained weights, raw reports and videos remain under the ignored `outputs/`
+directory. Running the experiments requires those assets and a configured Isaac
+Lab environment. Historical runners include machine-specific paths, including
+the Python executable in `scripts/semantic_completion_v1/common.py`; configure
+them for the target machine before launching. The 0.16-radian full-quaternion
+completion criterion and the frozen policy contracts are unchanged.
+
+## Earlier research milestones
+
+Language baseline (2026-10-14): a frozen RGB-D student is driven by a trained
 six-color goal classifier on frozen SigLIP2 text features. On two evaluation
 seeds, held-out English instruction templates achieve 600/768 closed-loop
 successes (78.13%). See the [text-grounding v2 report](docs/visual_student_language_v2_report_20261014.md)
@@ -52,8 +98,53 @@ The [Astra v6 evaluation](docs/astra_subscription_eval_v6_20261015.md) adds
 60 closed-loop episodes on a remote RTX 5090 using app-specific ChatGPT OAuth,
 two concurrent model requests, and six calls per episode. The finite runner
 saves request usage, videos, and report files under
-`outputs/agentic_v4/astra_eval_20261015`; real robot rollout and image/tool
-requests have started. Full results remain pending.
+`outputs/agentic_v4/astra_eval_20261015`; simulated hand rollouts and image/tool
+requests completed with 31/60 successes. Those rollouts paused physics during inference.
+
+The [lightweight waiting controller v1](docs/latency_controller_v1_20261015.md)
+has now been trained with continuous physics during simulated verification delays.
+On 46 shared-request-state cases it recovers successfully in 34 cases (73.9%),
+versus 32 for continued student execution and 31 for fixed slowing/holding.
+This is a small pilot, mostly learning slowdown; it is not yet a live asynchronous
+Astra controller or evidence of a statistically established improvement.
+
+The [live asynchronous v7 evaluation](docs/async_agent_eval_v7_20261016.md)
+compares Astra and the fine-tuned continuous-latent VLM, each with continued
+execution, fixed slowing, or the learned waiting controller. The registered
+large protocol contains 720 episodes with physics advancing during requests;
+read `outputs/async_v7/` run reports for completion and results.
+The initial remote batch stopped after HTTPS transport errors. The current
+local RTX 3090 run is `outputs/async_v7/local_20261016`, managed by
+`run_local_async_v7.py` with independent backend failure handling.
+
+The [goal-conditioned waiting and recovery pilot v2](docs/recovery_controller_v2_20261018.md)
+trains continuous residual actions through both the reasoning wait and a two-second
+rejoin, with a task-completion objective and a matched waiting-survival ablation.
+The finite local pilot includes two evaluation seeds, strong fixed smooth controls,
+432 diagnostic evaluation trials, and explicit zero-delay variability checks.
+Both 32-update training runs and all 432 evaluation trials completed. On the
+46 eligible positive-delay cases per method, completion learning achieved
+30/46 (65.2%), equal to survival learning and below fixed slow at 34/46
+(73.9%). Large zero-delay repeat variation persists; learned superiority
+has not been demonstrated. See the linked completion review for details.
+
+The [V3 variance diagnosis and optimization](docs/recovery_controller_v3_20261018.md)
+completed all 32 training updates and 432 evaluation trials. Recorded-action
+playback reproduced all 300 physical steps exactly, while new RGB-D observations
+caused closed-loop actions to diverge. V3 separates policy/value/outcome learning,
+limits policy KL with rollback, and initializes at fixed slow with immediate
+student recovery. V3 achieved 65/92 (70.7%) eligible positive-delay successes,
+versus fixed slow at 62/92 (67.4%). The small advantage reverses on the second
+seed and repeat, and 20-second waits remain weak. Reliable superiority is not
+yet established. Twenty-four videos were saved; live Astra/VLM calls remain
+outside this diagnostic.
+
+The [RQ2 input-dependency experiment and hardware preparation plan](docs/recovery_rq2_and_transfer_20261018.md)
+defines four paper questions and starts a finite five-condition comparison on two
+new evaluation seeds. It probes V3's direct visual/goal dependence while keeping
+the frozen student inputs correct, with same-state action sensitivity probes and
+528 planned evaluation trials. Results are pending. The hardware plan explicitly
+accounts for the current RGB-D frontend, contact dynamics and sensor calibration.
 
 Earlier project status is recorded in [progress_20260926.md](docs/progress_20260926.md).
 Camera setup and environment reproduction are documented in
@@ -349,3 +440,11 @@ This repository is released under the MIT License. See [LICENSE](LICENSE).
 
 Some files retain upstream Isaac Lab copyright and SPDX headers and remain
 subject to their original notices. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+### Paired-goal recovery pilot (2026-10-18)
+
+See [the training and validation protocol](docs/recovery_controller_v4_20261018.md) for correct-goal pairing, train-only failure sampling and the two-seed evaluation.
+
+### Recovery training factor ablation (2026-10-19)
+
+See [the controlled four-arm protocol](docs/recovery_factorial_20261019.md) for separate tests of correct-goal pairing and failure weighting, followed by two-seed validation.

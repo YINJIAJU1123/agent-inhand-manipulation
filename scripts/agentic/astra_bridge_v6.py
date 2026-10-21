@@ -17,6 +17,7 @@ import requests
 from PIL import Image
 from astra_subscription_v6 import AstraSubscriptionClient, preflight
 from visual_agent import encode_png
+from transport_retry_v7 import ask_with_retry
 
 
 class BridgeClient:
@@ -46,6 +47,8 @@ def bridge_health():
 def main():
     p=argparse.ArgumentParser();p.add_argument('--port',type=int,default=18761);p.add_argument('--key-file',required=True)
     p.add_argument('--audit-dir',required=True);p.add_argument('--workers',type=int,default=2)
+    p.add_argument('--max-calls',type=int,default=360);p.add_argument('--max-tokens',type=int,default=3000000);p.add_argument('--max-sessions',type=int,default=60)
+    p.add_argument('--transport-attempts',type=int,choices=[1,2],default=1)
     a=p.parse_args();preflight();key=Path(a.key_file).read_text().strip()
     clients={};locks={};registry=threading.Lock();slots=threading.Semaphore(a.workers)
     class Handler(BaseHTTPRequestHandler):
@@ -66,13 +69,13 @@ def main():
                 if not isinstance(session,str) or len(session)!=32:raise ValueError('invalid_session')
                 with registry:
                     if session not in clients:
-                        if len(clients)>=60:raise ValueError('session_cap_reached')
-                        clients[session]=AstraSubscriptionClient(audit_dir=a.audit_dir)
+                        if len(clients)>=a.max_sessions:raise ValueError('session_cap_reached')
+                        clients[session]=AstraSubscriptionClient(audit_dir=a.audit_dir,max_calls=a.max_calls,max_tokens=a.max_tokens)
                         locks[session]=threading.Lock()
                 im=Image.open(io.BytesIO(base64.b64decode(d['image'],validate=True)))
                 if im.size!=(512,512):raise ValueError('invalid_frame_size')
                 with locks[session],slots:
-                    result=clients[session].ask(d['instruction'],np.asarray(im.convert('RGB')),d['feedback'],d.get('previous_response_id'),d.get('previous_call_id'))
+                    result=ask_with_retry(clients[session],d['instruction'],np.asarray(im.convert('RGB')),d['feedback'],d.get('previous_response_id'),d.get('previous_call_id'),attempts=a.transport_attempts)
                 self.send(200,result)
             except Exception as e:
                 reason=str(e) if type(e) in (RuntimeError,ValueError) else type(e).__name__
