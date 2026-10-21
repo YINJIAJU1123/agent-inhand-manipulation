@@ -54,6 +54,8 @@ def main():
         raise ValueError('Model source differs from trained architecture')
     if training.get('base_model_source_sha256') and sha(ROOT / 'scripts/astra_symbol_regions_v1/model.py') != training['base_model_source_sha256']:
         raise ValueError('Inherited model source differs from training')
+    if training.get('inherited_invariant_source_sha256') and sha(ROOT / 'scripts/astra_symbol_invariant_v1/model.py') != training['inherited_invariant_source_sha256']:
+        raise ValueError('Inherited glyph model source differs from training')
     result = json.loads((args.checkpoint.parent / 'result.json').read_text())
     if sha(args.checkpoint) != result['checkpoint_sha256']:
         raise ValueError('Checkpoint checksum mismatch')

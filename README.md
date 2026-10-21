@@ -23,7 +23,11 @@ A separate eight-state observation experiment completed 24 matched branches.
 Holding retained the selected observation pose for 70.6% of six seconds, versus
 34.9% for continued execution. This also measures local pose retention only.
 The first cloud action-value candidate failed its held-out checks and was not
-deployed. Local control-data collection continues. Two native RGB symbol readers
+deployed. Local action-value training has also completed. Its all-state audit
+passed, but the runtime-eligible subset did not improve over fixed holding
+(61.4% versus 62.7% pose occupancy), so it remains undeployed. Full-trajectory RGB
+collection passed exact-physics replay validation and is running on two cloud
+GPUs, followed by matched data-only and crop-color-verification training. Two native RGB symbol readers
 completed training but failed recorded-request checks: accepted-binding precision
 was 52.8% and 67.8% on 107 development video frames. Neither is deployed.
 A separate two-seed continuous control probe found 6/12, 5/12 and 3/12 drops
