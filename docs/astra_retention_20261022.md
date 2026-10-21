@@ -1,6 +1,6 @@
 # Astra 完成保持与成功率优化，2026-10-22
 
-## 最新核对：07:15 CST
+## 最新核对：07:20 CST
 
 持续视觉反馈的完整本地分支验证通过，两个新 seed 的云端对照已经提交，任务 `dlc19998nfs4l2k1` 已由 DLC API 确认为 Running。使用一张 RevoArm-4090，配置限时 65 分钟，驱动自身限时 60 分钟。真实 Astra 仍为 7/18，本轮没有外部模型调用。
 
@@ -22,7 +22,7 @@
 
 最终配置为 `infra/astra_feedback_hold_20261022/paired-r4.yaml`。两个固定新 seeds 117101/117102，每 seed 记录一条共同前缀并比较 none/hold/feedback 三组；不按前缀失败重抽初态。主要检查执行期达标占比，同时要求相对两个对照都不增加掉落且不减少末态达标。任务只包含预定公开颜色指令，没有语言绑定与自主停止，不可转述为 Astra 成功率。
 
-NAS 输出为 `astra_feedback_hold_20261022/paired_r4`，本地任务记录为 `outputs/astra_feedback_hold_20261022/paired_r4/job.json`。先前两个 Failed 的任务与原因仍保留。目前只确认云端 Running，尚无完整新 seed 结果。
+NAS 输出为 `astra_feedback_hold_20261022/paired_r4`，本地任务记录为 `outputs/astra_feedback_hold_20261022/paired_r4/job.json`。先前两个 Failed 的任务与原因仍保留。当前已完成首个 seed 的记录，进入 `117101_none` 分支，子进程实际推进。尚无完整新 seed 对照结果。冻结驱动的进度标签存在变量名遮蔽，completed 列表会显示 feedback_window.py；阶段执行、当前子进程、文件路径和评分不受影响。已修复仓库内未来运行用的变量名，当前冻结任务继续，按 current、完成条目数及最终每个 seed 的报告核对，不重启。详情为 `outputs/astra_feedback_hold_20261022/paired_r4/monitoring_note.json`。
 
 ## 历史核对：07:09 CST
 
@@ -635,3 +635,4 @@ DLC `dlc1svx3pn3jidqf` 的实际状态已确认为 Succeeded。12 个名义初�
 对现有六个训练和验证分片统计，按原可读性标签共有 2,534 个可读符号，其中 114 个对应裁剪为空，248 个裁剪的较短边不足原图 24 像素。这是输入和监督的一致性诊断，不是新模型准确率，也不能把原自动可读性标签当作人工真值。原始统计在同目录 `coverage.json`。
 
 新增 `scripts/astra_symbol_regions_v1` 保留原始 512×512 RGB，并用训练期投影和可读性生成符号区域标签。准备了一个 471,363 参数的小模型，从 RGB 学习六种贴片的位置，再从预测区域读取符号。模型部署 forward 只接收 RGB；投影框仅进入训练监督和辅助分类损失。真实 RGB 的前向与梯度有限性检查通过，尚未训练，也没有上线。单卡标注烟测 `dlc1puct1nvpoohl` 已提交，当前在等空闲卡，最多运行 30 分钟；先检查标注图再扩大采集。所有新增任务均没有 Astra 调用。
+
