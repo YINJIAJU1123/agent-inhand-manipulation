@@ -4,11 +4,31 @@ Research fork of [BrainCoTech/RevoLab](https://github.com/BrainCoTech/RevoLab)
 for goal-conditioned Revo3 reorientation and visual-language control.
 Upstream assets and license notices are retained.
 
-## Research status — 2026-10-21
+## Research status — 2026-10-22
 
-The latest [training and evaluation record](docs/training_evaluation_status_20261019.md)
+The [current Astra retention study](docs/astra_retention_20261022.md) tracks
+completion, observation stability, and learned action selection. The latest
+matched live-agent diagnostic completed **7/18 tasks (38.9%)** with corrected
+collision-clearance initialization, versus 5/18 with the original initialization.
+Success requires correct semantic binding, full orientation error at most
+0.16 radians, no drop, and a correct autonomous stop. Physics continues during
+Astra inference. These are development cases, not evidence of 80% success.
+
+Twelve recorded sensor-triggered states completed three six-second physical
+interventions each. Mean time inside the selected-color pose tolerance was
+87.1% for holding, 48.8% for continued student execution, and 35.8% for slowing.
+All intervention states matched exactly. These local pose-retention measurements
+include two incorrect semantic bindings and are not full-agent success rates.
+Independent local and cloud data pipelines now train and audit action values;
+new learned retention and symbol-region candidates have not been validated in
+live Astra tasks. See the [results overview](docs/experiment_results_overview_20261021.md)
+for earlier protocols and their separate denominators.
+
+### Earlier asynchronous comparison and completion learning
+
+The earlier [training and evaluation record](docs/training_evaluation_status_20261019.md)
 separates complete semantic-agent tasks from known-goal controller diagnostics.
-In the most recent 192-episode live Astra comparison, continued execution achieved
+In the earlier 192-episode live Astra comparison, continued execution achieved
 27/48 successes (56.25%), fixed slowing 25/48 (52.08%), the V3 waiting controller
 25/48 (52.08%), and the newer temporal controller 22/48 (45.83%). Physics advanced
 while model requests were pending. These are development results on two repeated
@@ -29,10 +49,15 @@ No completion candidate has replaced the baseline.
 The proposals did not change the recorded student's actions. Of the 18 correct
 dense proposals, 9 trajectories were still inside the pose tolerance one second
 later under continued execution. This is a pose-retention diagnostic, not a
-drop rate or a measured effect of a hold controller. Learned completion-to-hold
-coordination remains future work.
+drop rate or a measured effect of a hold controller. The current retention study above measures interventions and prepares learned
+coordination; an online success improvement remains unverified.
 
 Code entry points:
+
+- `scripts/astra_retention_v1/run_learning_pipeline.py`: independent counterfactual data and action-value training.
+- `scripts/astra_retention_online_v1/`: request-scoped integration and local physics probes.
+- `scripts/astra_retention_audit_v1/`: audit of states that meet the actual runtime activation condition.
+- `infra/astra_retention_cloud_20261022/`: bounded cloud collection and training.
 
 - `scripts/semantic_completion_v3/collect_run.py`: bounded dense RGB-D collection.
 - `scripts/semantic_completion_v3/train_run.py`: frozen-feature caching and matched compact/dense training.
