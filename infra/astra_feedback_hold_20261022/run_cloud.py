@@ -75,8 +75,13 @@ def run_stage(seed, mode):
     if child.returncode or not (dest/'report.json').exists():
         raise RuntimeError((out/'logs'/(name+'.log')).read_text()[-8000:])
     report=json.loads((dest/'report.json').read_text())
-    if report['status']!='completed' or report['feedback_release']!=(mode=='feedback'):
+    intervention=json.loads((dest.parent/(dest.name+'_intervention.json')).read_text())
+    if report['status']!='completed' or intervention['feedback_release']!=(mode=='feedback'):
         raise RuntimeError('Wrong intervention or incomplete result')
+    for name,key in [('evaluate.py','feedback_wrapper_sha256'),('feedback_window.py','feedback_window_sha256')]:
+        if intervention[key]!=hashlib.sha256((ROOT/'scripts/astra_feedback_hold_v1'/name).read_bytes()).hexdigest():
+            raise RuntimeError('Intervention implementation hash mismatch')
+    report.update(intervention)
     if mode!='record':audit_branch(source,dest)
     progress(completed=state['completed']+[name],child_pid=None)
     return report

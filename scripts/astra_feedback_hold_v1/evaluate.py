@@ -17,9 +17,14 @@ if release:
     spec.loader.exec_module(module)
     import window
     window.RetentionWindow = module.FeedbackHoldWindow
-result = runpy.run_path(str(ROOT/'scripts/astra_control_prefix_v1/evaluate.py'), run_name='__main__')
-path = result['out']/'report.json'
-report = json.loads(path.read_text())
-report.update(feedback_release=release, feedback_wrapper_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-    feedback_window_sha256=hashlib.sha256(Path(__file__).with_name('feedback_window.py').read_bytes()).hexdigest())
-path.write_text(json.dumps(report, indent=2)+'\n')
+# Isaac shutdown may terminate the process before run_path returns. Save the
+# intervention identity before launching while leaving the output directory new.
+destination = Path(sys.argv[sys.argv.index('--output')+1])
+destination.parent.mkdir(parents=True, exist_ok=True)
+sidecar = destination.parent/(destination.name+'_intervention.json')
+if sidecar.exists():
+    raise RuntimeError('Intervention identity already exists; refuse overwrite')
+sidecar.write_text(json.dumps(dict(feedback_release=release,
+    feedback_wrapper_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+    feedback_window_sha256=hashlib.sha256(Path(__file__).with_name('feedback_window.py').read_bytes()).hexdigest()), indent=2)+'\n')
+runpy.run_path(str(ROOT/'scripts/astra_control_prefix_v1/evaluate.py'), run_name='__main__')
