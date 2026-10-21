@@ -19,9 +19,14 @@ interventions each. Mean time inside the selected-color pose tolerance was
 87.1% for holding, 48.8% for continued student execution, and 35.8% for slowing.
 All intervention states matched exactly. These local pose-retention measurements
 include two incorrect semantic bindings and are not full-agent success rates.
-Independent local and cloud data pipelines now train and audit action values;
-new learned retention and symbol-region candidates have not been validated in
-live Astra tasks. See the [results overview](docs/experiment_results_overview_20261021.md)
+A separate eight-state observation experiment completed 24 matched branches.
+Holding retained the selected observation pose for 70.6% of six seconds, versus
+34.9% for continued execution. This also measures local pose retention only.
+The first cloud action-value candidate failed its held-out checks and was not
+deployed. Local control-data collection continues, and a native RGB sticker
+localization and symbol-reading pipeline is collecting data on one cloud GPU.
+Neither learned candidate has been validated in live Astra tasks.
+See the [results overview](docs/experiment_results_overview_20261021.md)
 for earlier protocols and their separate denominators.
 
 ### Earlier asynchronous comparison and completion learning
