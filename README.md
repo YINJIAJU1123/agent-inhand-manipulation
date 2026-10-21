@@ -23,9 +23,13 @@ A separate eight-state observation experiment completed 24 matched branches.
 Holding retained the selected observation pose for 70.6% of six seconds, versus
 34.9% for continued execution. This also measures local pose retention only.
 The first cloud action-value candidate failed its held-out checks and was not
-deployed. Local control-data collection continues, and a native RGB sticker
-localization and symbol-reading pipeline is collecting data on one cloud GPU.
-Neither learned candidate has been validated in live Astra tasks.
+deployed. Local control-data collection continues. Two native RGB symbol readers
+completed training but failed recorded-request checks: accepted-binding precision
+was 52.8% and 67.8% on 107 development video frames. Neither is deployed.
+A separate two-seed continuous control probe found 6/12, 5/12 and 3/12 drops
+for no hold, execution-only hold and observation-plus-execution hold. Pre-treatment
+trajectory differences prevent a causal gain claim from that small probe.
+These diagnostics have not established a live Astra success improvement.
 See the [results overview](docs/experiment_results_overview_20261021.md)
 for earlier protocols and their separate denominators.
 
