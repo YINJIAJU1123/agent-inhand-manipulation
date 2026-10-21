@@ -1,0 +1,1236 @@
+{
+  "as_of": "2026-10-21",
+  "groups": [
+    {
+      "id": "teacher_gate",
+      "title": "1. Teacher 稳定性门槛",
+      "scope": "特权状态 teacher，已知正确目标；3 个 seed、6 个目标面。0.16 rad，连续保持窗口 0.5 秒，回合最长 10 秒。",
+      "rows": [
+        {
+          "name": "曾经到达",
+          "successes": 272,
+          "denominator": 288,
+          "rate": 0.9444444444444444
+        },
+        {
+          "name": "满足连续保持窗口",
+          "successes": 272,
+          "denominator": 288,
+          "rate": 0.9444444444444444
+        },
+        {
+          "name": "回合末仍保持",
+          "successes": 261,
+          "denominator": 288,
+          "rate": 0.90625
+        },
+        {
+          "name": "掉落（越低越好）",
+          "successes": 14,
+          "denominator": 288,
+          "rate": 0.04861111111111111
+        }
+      ],
+      "source": "outputs/teacher_gate_20260930/teacher_gate_hold_fixedyaw.json",
+      "source_sha256": "78bf76602df559fd19f8359292ba900584d0a574061dc6399b677c2f589e7339",
+      "note": "四项是在同一批回合上计算的不同指标，不能当成四批独立实验。另一次 teacher 数据采集为 382/390 成功（97.95%），这是采集质量；长时域对照报告为 98.96%/96 回合，均不等于保持到末尾的 90.63%。"
+    },
+    {
+      "id": "student_main",
+      "title": "2. RGB-D student 与颜色语言基线",
+      "scope": "冻结 student，给定或从颜色文本识别目标；到达 0.16 rad 且未掉落，未要求长期保持。",
+      "rows": [
+        {
+          "name": "DAgger R9，标准目标",
+          "successes": 271,
+          "denominator": 384,
+          "rate": 0.7057291666666666
+        },
+        {
+          "name": "DAgger R10，seed 123",
+          "successes": 310,
+          "denominator": 384,
+          "rate": 0.8072916666666666
+        },
+        {
+          "name": "DAgger R10，seed 456",
+          "successes": 305,
+          "denominator": 384,
+          "rate": 0.7942708333333334
+        },
+        {
+          "name": "DAgger R10，合计",
+          "successes": 615,
+          "denominator": 768,
+          "rate": 0.80078125
+        }
+      ],
+      "source": "docs/visual_student_dagger_round10_report_20261013.md",
+      "source_sha256": "e0fa70e25d539ae874ae8cad7f8583a492f4405cabe4d1b27fbcd7c262ca867a",
+      "note": "R9 来源另见 visual_student_dagger_round9_report_20261013.md。R10 是当前冻结底层 student 的主要基线。合计行包含上面的两个 seed，不能再累加。原始 R10 报告曾归档到 NAS，本表采用已提交的带校验值研究报告。"
+    },
+    {
+      "id": "language",
+      "title": "3. 真正从文本向量识别颜色的语言基线",
+      "scope": "完整英文文本 → 冻结 SigLIP2 → 学得的六类颜色分类器 → canonical goal embedding → RGB-D student。",
+      "rows": [
+        {
+          "name": "标准表达",
+          "successes": 296,
+          "denominator": 384,
+          "rate": 0.7708333333333334
+        },
+        {
+          "name": "未见表达，seed 123",
+          "successes": 309,
+          "denominator": 384,
+          "rate": 0.8046875
+        },
+        {
+          "name": "未见表达，seed 456",
+          "successes": 291,
+          "denominator": 384,
+          "rate": 0.7578125
+        },
+        {
+          "name": "未见表达，合计",
+          "successes": 600,
+          "denominator": 768,
+          "rate": 0.78125
+        },
+        {
+          "name": "错颜色指令，按原目标评分",
+          "successes": 10,
+          "denominator": 192,
+          "rate": 0.052083333333333336
+        }
+      ],
+      "source": "docs/visual_student_language_v2_report_20261014.md",
+      "source_sha256": "90c7d04225118f5dbb12b6768873ed398a371b9f1d6b79c14cf6473cb570e99f",
+      "note": "文本分类留出测试 72/72；机器人未见表达成功率 78.13%。错误指令的 5.21% 是原目标命中率，不是新指令成功率。旧 v1 的 609/768=79.30% 使用规则颜色路由，已撤回“学得语言泛化”的解释。"
+    },
+    {
+      "id": "student_history",
+      "title": "4. 早期视觉 student 里程碑",
+      "scope": "早期 DAgger 迭代，预算和 checkpoint 不同，仅作为发展记录。",
+      "rows": [
+        {
+          "name": "DAgger R1 plain，小样本",
+          "successes": 7,
+          "denominator": 24,
+          "rate": 0.2916666666666667
+        },
+        {
+          "name": "DAgger R2 plain，小样本",
+          "successes": 14,
+          "denominator": 24,
+          "rate": 0.5833333333333334
+        },
+        {
+          "name": "DAgger R2 plain，扩大验证",
+          "successes": 36,
+          "denominator": 96,
+          "rate": 0.375
+        },
+        {
+          "name": "DAgger R3 plain",
+          "successes": 50,
+          "denominator": 96,
+          "rate": 0.5208333333333334
+        },
+        {
+          "name": "DAgger R4 evidence",
+          "successes": 73,
+          "denominator": 96,
+          "rate": 0.7604166666666666
+        },
+        {
+          "name": "补采统一 evidence 候选",
+          "successes": 79,
+          "denominator": 96,
+          "rate": 0.8229166666666666
+        }
+      ],
+      "source": "docs/visual_student_aligned_run_report_20260930.md",
+      "source_sha256": "fc6d5666f13f4543f76a2c53ea55a1e8b9be9c15090e9f4b4d3e16e7c4f32289",
+      "note": "R7 三个训练 seed 平均 84.38%，各 96 回合；R8 长时域三个训练 seed 平均 82.99%，各 192 回合，最佳 85.94%。这些是早期 checkpoint 与训练 seed 汇总，不与当前 R10 的两评测 seed 混合。"
+    },
+    {
+      "id": "fixed_star",
+      "title": "5. 早期固定星形符号任务",
+      "scope": "固定 star 目标，VLM 看图清点符号，程序选择星形；推理时暂停物理。50 个 seed，每策略 300 回合。",
+      "rows": [
+        {
+          "name": "周期再观察",
+          "successes": 88,
+          "denominator": 300,
+          "rate": 0.29333333333333333
+        },
+        {
+          "name": "仅开始观察一次",
+          "successes": 14,
+          "denominator": 300,
+          "rate": 0.04666666666666667
+        },
+        {
+          "name": "Oracle 正确目标",
+          "successes": 249,
+          "denominator": 300,
+          "rate": 0.83
+        }
+      ],
+      "source": "outputs/agentic_v1/large_eval_v2/analysis.json",
+      "source_sha256": "9cdb07b440d1d36c8b092daa6dfd136a30bf454cefd688a4c78650b4d6d4e852",
+      "note": "29.33% 不是后续六种符号自然语言任务的结果。once 组大部分初始弃权，不能把全部差值单独归因于事件触发或记忆。"
+    },
+    {
+      "id": "semantic_pilot",
+      "title": "6. 六符号语言 agent 早期 pilot",
+      "scope": "规则 VLM 的文本解析、视觉绑定、观察与执行反馈；同步推理。",
+      "rows": [
+        {
+          "name": "执行反馈",
+          "successes": 4,
+          "denominator": 18,
+          "rate": 0.2222222222222222
+        },
+        {
+          "name": "周期观察",
+          "successes": 4,
+          "denominator": 18,
+          "rate": 0.2222222222222222
+        },
+        {
+          "name": "Oracle",
+          "successes": 15,
+          "denominator": 18,
+          "rate": 0.8333333333333334
+        }
+      ],
+      "source": "docs/results/semantic-agent-v3/analysis.json",
+      "source_sha256": "f7366e9ee0ae99c4bb97a6af59b60694070e8c706fbca21714598a1b09092046",
+      "note": "反馈减少调用，但本轮没有成功率提高。小 VLM 连续 latent 最初 12 例 pilot 为 4/12，Oracle 12/12，后来由下方大评测替代作为主要结论。"
+    },
+    {
+      "id": "rule_latent_900",
+      "title": "7. 规则 VLM vs 微调 latent：900 回合大评测",
+      "scope": "六种符号指令、随机符号布局、25 个 seed、两种措辞；每方法 300 回合。同步推理，物理等待模型。",
+      "rows": [
+        {
+          "name": "规则 VLM",
+          "successes": 49,
+          "denominator": 300,
+          "rate": 0.16333333333333333,
+          "wait_drops": null,
+          "recovery_drops": null,
+          "total_drops": 103,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "微调 VLM 连续 latent",
+          "successes": 119,
+          "denominator": 300,
+          "rate": 0.39666666666666667,
+          "wait_drops": null,
+          "recovery_drops": null,
+          "total_drops": 123,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "Oracle 正确目标",
+          "successes": 254,
+          "denominator": 300,
+          "rate": 0.8466666666666667,
+          "wait_drops": null,
+          "recovery_drops": null,
+          "total_drops": 42,
+          "false_stops": null,
+          "nominal": null
+        }
+      ],
+      "source": "outputs/agentic_v4/large_eval_20261015/analysis.json",
+      "source_sha256": "69fa3a5e50fbee9fa13a7a9806e2109289e64192be40d5c84d14179bd601b380",
+      "note": "状态已 complete（150/150 批）。微调 119/300，高于规则 49/300；两者同时改变 backbone、训练、输出接口和调度，属于系统比较，不能只归因于 latent 表示。旧 README/旧文档的 pending 描述已过时，以本汇总为准。"
+    },
+    {
+      "id": "astra_sync_60",
+      "title": "8. 加入 Astra 的同案例同步比较",
+      "scope": "从上述基准取 5 个 seed、两种措辞，每方法 60 回合；推理期间暂停物理。",
+      "rows": [
+        {
+          "name": "Astra",
+          "successes": 31,
+          "denominator": 60,
+          "rate": 0.5166666666666667,
+          "wait_drops": null,
+          "recovery_drops": null,
+          "total_drops": 12,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "规则 VLM",
+          "successes": 5,
+          "denominator": 60,
+          "rate": 0.08333333333333333,
+          "wait_drops": null,
+          "recovery_drops": null,
+          "total_drops": 25,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "微调 VLM 连续 latent",
+          "successes": 23,
+          "denominator": 60,
+          "rate": 0.38333333333333336,
+          "wait_drops": null,
+          "recovery_drops": null,
+          "total_drops": 23,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "Oracle 正确目标",
+          "successes": 55,
+          "denominator": 60,
+          "rate": 0.9166666666666666,
+          "wait_drops": null,
+          "recovery_drops": null,
+          "total_drops": 5,
+          "false_stops": null,
+          "nominal": null
+        }
+      ],
+      "source": "outputs/agentic_v4/astra_eval_20261015/matched_subset_comparison.json",
+      "source_sha256": "ce9f0a856b461cd5566e0d17f20a70355bb62e77553c4b704d907e05ed30c1a6",
+      "note": "这 60 例是规则/latent/Oracle 的 300 例子集，不能重复累加。此处确实观察到 Astra > 微调 VLM > 规则 VLM。初态已核对，Astra 用 5090、其他用 3090，硬件/轨迹混杂仍存在。另录的 12 个展示案例为 7/12，不能并入此基准提高成绩。"
+    },
+    {
+      "id": "async720",
+      "title": "9. 冻结的真实异步完整任务基线：720 回合",
+      "scope": "真实 Astra/微调 VLM 推理；思考期间物理继续。10 个 seed，每组 120 回合。",
+      "rows": [
+        {
+          "name": "Astra + 持续执行",
+          "successes": 60,
+          "denominator": 120,
+          "rate": 0.5,
+          "wait_drops": 36,
+          "recovery_drops": null,
+          "total_drops": 56,
+          "false_stops": 1,
+          "nominal": null
+        },
+        {
+          "name": "Astra + 旧等待控制器 v1",
+          "successes": 61,
+          "denominator": 120,
+          "rate": 0.5083333333333333,
+          "wait_drops": 35,
+          "recovery_drops": null,
+          "total_drops": 51,
+          "false_stops": 5,
+          "nominal": null
+        },
+        {
+          "name": "Astra + 固定减速",
+          "successes": 68,
+          "denominator": 120,
+          "rate": 0.5666666666666667,
+          "wait_drops": 20,
+          "recovery_drops": null,
+          "total_drops": 40,
+          "false_stops": 8,
+          "nominal": null
+        },
+        {
+          "name": "微调 VLM + 持续执行",
+          "successes": 59,
+          "denominator": 120,
+          "rate": 0.49166666666666664,
+          "wait_drops": 9,
+          "recovery_drops": null,
+          "total_drops": 47,
+          "false_stops": 0,
+          "nominal": null
+        },
+        {
+          "name": "微调 VLM + 旧等待控制器 v1",
+          "successes": 43,
+          "denominator": 120,
+          "rate": 0.35833333333333334,
+          "wait_drops": 13,
+          "recovery_drops": null,
+          "total_drops": 64,
+          "false_stops": 0,
+          "nominal": null
+        },
+        {
+          "name": "微调 VLM + 固定减速",
+          "successes": 47,
+          "denominator": 120,
+          "rate": 0.39166666666666666,
+          "wait_drops": 13,
+          "recovery_drops": null,
+          "total_drops": 59,
+          "false_stops": 0,
+          "nominal": null
+        }
+      ],
+      "source": "outputs/async_v7/local_20261016/summary.json",
+      "source_sha256": "b0a11f9691bd066a46d4a78f419c7ee4a5f10207000be6eb3f52b219a6fb3c1c",
+      "note": "完整任务要求交付的语义绑定正确、执行/验证正确目标、姿态误差不超过 0.16 rad 且未掉落。评测器达到条件即终止，agent 的错误 stop 可提前结束。没有独立的自主正确停止要求。Astra 输出工具调用并映射 canonical embedding；微调 VLM 直接输出连续 latent。"
+    },
+    {
+      "id": "astra_pilot96",
+      "title": "10. 新时序控制器真实 Astra pilot：96 回合",
+      "scope": "全部使用 Astra，每方法 24 回合。",
+      "rows": [
+        {
+          "name": "持续执行",
+          "successes": 12,
+          "denominator": 24,
+          "rate": 0.5,
+          "wait_drops": 9,
+          "recovery_drops": null,
+          "total_drops": 9,
+          "false_stops": 2,
+          "nominal": null
+        },
+        {
+          "name": "固定减速",
+          "successes": 11,
+          "denominator": 24,
+          "rate": 0.4583333333333333,
+          "wait_drops": 6,
+          "recovery_drops": null,
+          "total_drops": 10,
+          "false_stops": 1,
+          "nominal": null
+        },
+        {
+          "name": "V3 等待/恢复控制器",
+          "successes": 14,
+          "denominator": 24,
+          "rate": 0.5833333333333334,
+          "wait_drops": 7,
+          "recovery_drops": null,
+          "total_drops": 9,
+          "false_stops": 1,
+          "nominal": null
+        },
+        {
+          "name": "新时序表征控制器",
+          "successes": 13,
+          "denominator": 24,
+          "rate": 0.5416666666666666,
+          "wait_drops": 6,
+          "recovery_drops": null,
+          "total_drops": 8,
+          "false_stops": 2,
+          "nominal": null
+        }
+      ],
+      "source": "outputs/astra_learning_v1/live_20261019_runtime2/summary.json",
+      "source_sha256": "555cc9aad88b108adb99dde08d82d11c46de3603b16a5491e612fef0f91be507",
+      "note": "开发运行跨传输协议和修复版本。V3 58.33%、新时序控制器 54.17% 是小样本结果；后续另做下方统一协议复测，不把两轮合并选最优。"
+    },
+    {
+      "id": "astra_repeat192",
+      "title": "11. 最近一次完整 Astra 对照：192 回合",
+      "scope": "全部使用 Astra；同两个开发 seed、六目标、两措辞，完整重复两轮。每方法 48 回合。",
+      "rows": [
+        {
+          "name": "持续执行",
+          "successes": 27,
+          "denominator": 48,
+          "rate": 0.5625,
+          "wait_drops": 14,
+          "recovery_drops": null,
+          "total_drops": 18,
+          "false_stops": 2,
+          "nominal": null
+        },
+        {
+          "name": "固定减速",
+          "successes": 25,
+          "denominator": 48,
+          "rate": 0.5208333333333334,
+          "wait_drops": 11,
+          "recovery_drops": null,
+          "total_drops": 17,
+          "false_stops": 3,
+          "nominal": null
+        },
+        {
+          "name": "V3 等待/恢复控制器",
+          "successes": 25,
+          "denominator": 48,
+          "rate": 0.5208333333333334,
+          "wait_drops": 11,
+          "recovery_drops": null,
+          "total_drops": 18,
+          "false_stops": 3,
+          "nominal": null
+        },
+        {
+          "name": "新时序表征控制器",
+          "successes": 22,
+          "denominator": 48,
+          "rate": 0.4583333333333333,
+          "wait_drops": 12,
+          "recovery_drops": null,
+          "total_drops": 19,
+          "false_stops": 4,
+          "nominal": null
+        }
+      ],
+      "source": "outputs/astra_repeated_eval_v1/repeat2_20261019/summary.json",
+      "source_sha256": "f33837d5137b9d4ac18fdc70bb1470918934d145c287710e09b2cd63bd2288cc",
+      "note": "所有已完成回合保留在分母，包括持续执行组 1 例活动期间 API 错误。四组都含 8 次冷启动掉落。新时序控制器未显示整体成功优势；等待中掉落减少不等于总掉落或最终成功改善。重复仍不代表 48 个独立物理初态。"
+    },
+    {
+      "id": "handoff48",
+      "title": "12. Astra 回复接管与额外延迟诊断：48 回合",
+      "scope": "已采用固定减速等待，比较接管动作和额外 6 秒延迟。每格 12 回合。",
+      "rows": [
+        {
+          "name": "直接接管，无额外延迟",
+          "successes": 4,
+          "denominator": 12,
+          "rate": 0.3333333333333333,
+          "wait_drops": 2,
+          "recovery_drops": null,
+          "total_drops": 6,
+          "false_stops": 1,
+          "nominal": null
+        },
+        {
+          "name": "直接接管，额外 6 秒",
+          "successes": 5,
+          "denominator": 12,
+          "rate": 0.4166666666666667,
+          "wait_drops": 3,
+          "recovery_drops": null,
+          "total_drops": 4,
+          "false_stops": 2,
+          "nominal": null
+        },
+        {
+          "name": "新控制器接管，无额外延迟",
+          "successes": 3,
+          "denominator": 12,
+          "rate": 0.25,
+          "wait_drops": 4,
+          "recovery_drops": null,
+          "total_drops": 6,
+          "false_stops": 2,
+          "nominal": null
+        },
+        {
+          "name": "新控制器接管，额外 6 秒",
+          "successes": 3,
+          "denominator": 12,
+          "rate": 0.25,
+          "wait_drops": 3,
+          "recovery_drops": null,
+          "total_drops": 6,
+          "false_stops": 2,
+          "nominal": null
+        }
+      ],
+      "source": "outputs/astra_coordination_v1/diagnostic_20261019_runtime2_finish1/summary.json",
+      "source_sha256": "535993f9ee4de96be3369a847d36d9fbd5a38f76443cdb6280a480ee075cea3b",
+      "note": "样本小且协议不同，不与主评测合并。新控制器接管没有显示收益。延迟增加也未呈单调恶化，不能据此声称解决了过时回复问题。"
+    },
+    {
+      "id": "waiting_v1",
+      "title": "13. 等待控制器 v1 初试",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "持续执行",
+          "successes": 32,
+          "denominator": 46,
+          "rate": 0.6956521739130435,
+          "wait_drops": 6,
+          "recovery_drops": 1,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "固定减速",
+          "successes": 31,
+          "denominator": 46,
+          "rate": 0.6739130434782609,
+          "wait_drops": 1,
+          "recovery_drops": 5,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "保持关节目标",
+          "successes": 31,
+          "denominator": 46,
+          "rate": 0.6739130434782609,
+          "wait_drops": 0,
+          "recovery_drops": 7,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "学习的等待模式选择",
+          "successes": 34,
+          "denominator": 46,
+          "rate": 0.7391304347826086,
+          "wait_drops": 1,
+          "recovery_drops": 5,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        }
+      ],
+      "source": "outputs/latency_controller_v1/paired_summary_20261015.json",
+      "source_sha256": "a3b7f46f08275786d026aacfdbceb30fcef01d5f1473d57bbec97e4428728c40",
+      "note": "每组 nominal 48、eligible 46。学习模式主要选择减速；34/46=73.91% 是恢复完成率。"
+    },
+    {
+      "id": "waiting_expanded",
+      "title": "14. 原渲染、两 seed 扩大等待诊断",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "持续执行",
+          "successes": 70,
+          "denominator": 110,
+          "rate": 0.6363636363636364,
+          "wait_drops": 10,
+          "recovery_drops": 8,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 120
+        },
+        {
+          "name": "固定减速",
+          "successes": 71,
+          "denominator": 110,
+          "rate": 0.6454545454545455,
+          "wait_drops": 4,
+          "recovery_drops": 13,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 120
+        },
+        {
+          "name": "保持关节目标",
+          "successes": 68,
+          "denominator": 110,
+          "rate": 0.6181818181818182,
+          "wait_drops": 0,
+          "recovery_drops": 26,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 120
+        },
+        {
+          "name": "学习的等待模式选择",
+          "successes": 71,
+          "denominator": 110,
+          "rate": 0.6454545454545455,
+          "wait_drops": 2,
+          "recovery_drops": 18,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 120
+        }
+      ],
+      "source": "outputs/latency_counterfactual/original_v4_two_seed_20261017/completion_review.json",
+      "source_sha256": "e1cd7bf54c088f934a40251168c5b522ce4e0ff71d8d56fa25a8d438f10d0c64",
+      "note": "每组 nominal 120、eligible 110，复用 22 个有效请求状态。学习控制和减速都是 71/110；固定保持等待掉落为 0，但恢复掉落 26 次。"
+    },
+    {
+      "id": "waiting_repeat",
+      "title": "15. 同状态再次重复等待诊断",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "持续执行",
+          "successes": 57,
+          "denominator": 88,
+          "rate": 0.6477272727272727,
+          "wait_drops": 15,
+          "recovery_drops": 2,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        },
+        {
+          "name": "固定减速",
+          "successes": 58,
+          "denominator": 88,
+          "rate": 0.6590909090909091,
+          "wait_drops": 3,
+          "recovery_drops": 11,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        },
+        {
+          "name": "保持关节目标",
+          "successes": 54,
+          "denominator": 88,
+          "rate": 0.6136363636363636,
+          "wait_drops": 0,
+          "recovery_drops": 20,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        },
+        {
+          "name": "学习的等待模式选择",
+          "successes": 60,
+          "denominator": 88,
+          "rate": 0.6818181818181818,
+          "wait_drops": 2,
+          "recovery_drops": 11,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        }
+      ],
+      "source": "outputs/latency_counterfactual/repeated_waits_v5_20261018/completion_review.json",
+      "source_sha256": "8fe01117a00b190b56a4cfb518162a882072be0d0ba4d27e139445d2aee5e8aa",
+      "note": "每组 nominal 96、eligible 88，仍复用同 22 个有效请求状态。等待掉落分别 15、3、0、2；低等待掉落信号重复出现，学习方式相对强减速基线的优势仍小。"
+    },
+    {
+      "id": "recovery_v2",
+      "title": "16. 联合等待与恢复 V2",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "持续执行",
+          "successes": 28,
+          "denominator": 46,
+          "rate": 0.6086956521739131,
+          "wait_drops": 11,
+          "recovery_drops": 0,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "固定减速",
+          "successes": 34,
+          "denominator": 46,
+          "rate": 0.7391304347826086,
+          "wait_drops": 2,
+          "recovery_drops": 6,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "保持",
+          "successes": 27,
+          "denominator": 46,
+          "rate": 0.5869565217391305,
+          "wait_drops": 4,
+          "recovery_drops": 10,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "减速＋平滑接管",
+          "successes": 26,
+          "denominator": 46,
+          "rate": 0.5652173913043478,
+          "wait_drops": 2,
+          "recovery_drops": 9,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "保持＋平滑接管",
+          "successes": 32,
+          "denominator": 46,
+          "rate": 0.6956521739130435,
+          "wait_drops": 4,
+          "recovery_drops": 5,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "学习完成目标",
+          "successes": 30,
+          "denominator": 46,
+          "rate": 0.6521739130434783,
+          "wait_drops": 4,
+          "recovery_drops": 6,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        },
+        {
+          "name": "只学习等待存活",
+          "successes": 30,
+          "denominator": 46,
+          "rate": 0.6521739130434783,
+          "wait_drops": 2,
+          "recovery_drops": 2,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 48
+        }
+      ],
+      "source": "outputs/recovery_controller_v2/pilot_20261018/completion_review.json",
+      "source_sha256": "d919c7ec30a5c8c4468f439bfd2c3b028e1db7206b4587e4206ffb51039f85cf",
+      "note": "每组 eligible 46。完成训练和存活训练均 30/46，低于固定减速 34/46。没有学得控制的成功优势。"
+    },
+    {
+      "id": "recovery_v3",
+      "title": "17. 等待与恢复 V3",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "固定减速",
+          "successes": 62,
+          "denominator": 92,
+          "rate": 0.6739130434782609,
+          "wait_drops": 3,
+          "recovery_drops": 9,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "保持＋平滑接管",
+          "successes": 50,
+          "denominator": 92,
+          "rate": 0.5434782608695652,
+          "wait_drops": 8,
+          "recovery_drops": 11,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "V2 完成控制",
+          "successes": 61,
+          "denominator": 92,
+          "rate": 0.6630434782608695,
+          "wait_drops": 6,
+          "recovery_drops": 9,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "V3 完成控制",
+          "successes": 65,
+          "denominator": 92,
+          "rate": 0.7065217391304348,
+          "wait_drops": 4,
+          "recovery_drops": 10,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": null
+        }
+      ],
+      "source": "outputs/recovery_controller_v3/pilot_20261018/completion_review.json",
+      "source_sha256": "5d41f101e247c83992928c0e47118ff5e77228619c02a1ef34052854363d2da6",
+      "note": "每组 eligible 92，复用 23 个有效请求状态。V3 比减速多 3 次成功，但第二个 seed 和第二次重复的优势反转，尚未证明稳定优越性。"
+    },
+    {
+      "id": "rq2",
+      "title": "18. V3 视觉/目标输入干预",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "固定减速",
+          "successes": 50,
+          "denominator": 80,
+          "rate": 0.625,
+          "wait_drops": 1,
+          "recovery_drops": 8,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        },
+        {
+          "name": "完整 V3 输入",
+          "successes": 61,
+          "denominator": 80,
+          "rate": 0.7625,
+          "wait_drops": 2,
+          "recovery_drops": 8,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        },
+        {
+          "name": "冻结控制器视觉历史",
+          "successes": 48,
+          "denominator": 80,
+          "rate": 0.6,
+          "wait_drops": 5,
+          "recovery_drops": 11,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        },
+        {
+          "name": "偏移控制器目标",
+          "successes": 57,
+          "denominator": 80,
+          "rate": 0.7125,
+          "wait_drops": 3,
+          "recovery_drops": 8,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        },
+        {
+          "name": "同时干预",
+          "successes": 55,
+          "denominator": 80,
+          "rate": 0.6875,
+          "wait_drops": 2,
+          "recovery_drops": 9,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 96
+        }
+      ],
+      "source": "outputs/recovery_controller_v3/rq2_inputs_20261018/completion_review.json",
+      "source_sha256": "ccd3de77eebf08af54e91b6c1d8596c6dcd09ecf64f0efb58963117ff1a06f41",
+      "note": "每组 nominal 96、eligible 80，20 个有效请求状态。student 始终收到正确视觉和目标，干预只作用于控制器直接输入。视觉有用的信号较明显，语义依赖仍未清楚，且这不是重新训练的模态消融。"
+    },
+    {
+      "id": "paired_v4",
+      "title": "19. 首次正确目标配对＋失败状态训练 V4",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "固定减速",
+          "successes": 113,
+          "denominator": 168,
+          "rate": 0.6726190476190477,
+          "wait_drops": 4,
+          "recovery_drops": 17,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        },
+        {
+          "name": "冻结 V3",
+          "successes": 126,
+          "denominator": 168,
+          "rate": 0.75,
+          "wait_drops": 8,
+          "recovery_drops": 12,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        },
+        {
+          "name": "配对＋失败训练 V4",
+          "successes": 117,
+          "denominator": 168,
+          "rate": 0.6964285714285714,
+          "wait_drops": 7,
+          "recovery_drops": 13,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        }
+      ],
+      "source": "outputs/recovery_controller_v4/paired_20261018/completion_review.json",
+      "source_sha256": "9cf5c21f79349c9305c76fed4557e0f50ea24217f31902fa267fbe64b2955121",
+      "note": "每组 nominal 192、eligible 168，21 个有效请求状态。V4 比 V3 退步，随后拆分两种因素验证。"
+    },
+    {
+      "id": "factorial",
+      "title": "20. 拆分配对目标与失败加权的训练消融",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "固定减速",
+          "successes": 125,
+          "denominator": 192,
+          "rate": 0.6510416666666666,
+          "wait_drops": 5,
+          "recovery_drops": 23,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        },
+        {
+          "name": "冻结 V3",
+          "successes": 138,
+          "denominator": 192,
+          "rate": 0.71875,
+          "wait_drops": 9,
+          "recovery_drops": 8,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        },
+        {
+          "name": "旧 V4",
+          "successes": 135,
+          "denominator": 192,
+          "rate": 0.703125,
+          "wait_drops": 8,
+          "recovery_drops": 17,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        },
+        {
+          "name": "普通继续训练",
+          "successes": 140,
+          "denominator": 192,
+          "rate": 0.7291666666666666,
+          "wait_drops": 5,
+          "recovery_drops": 23,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        },
+        {
+          "name": "只加正确目标配对",
+          "successes": 128,
+          "denominator": 192,
+          "rate": 0.6666666666666666,
+          "wait_drops": 6,
+          "recovery_drops": 17,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        },
+        {
+          "name": "只加失败状态权重",
+          "successes": 129,
+          "denominator": 192,
+          "rate": 0.671875,
+          "wait_drops": 4,
+          "recovery_drops": 24,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        },
+        {
+          "name": "两者同时加入",
+          "successes": 124,
+          "denominator": 192,
+          "rate": 0.6458333333333334,
+          "wait_drops": 7,
+          "recovery_drops": 23,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": 192
+        }
+      ],
+      "source": "outputs/recovery_factorial/ablation_20261019/completion_review.json",
+      "source_sha256": "47374420d1c9bf740d6fa70ea26efe2b8e4ef747cb2b70d967f5705389a18319",
+      "note": "每方法 192 个 eligible 试验，24 个有效请求状态。两个因素在这轮都降低成功率；普通继续训练只比 V3 多 2 次成功，恢复掉落从 8 增至 23，未升级为默认策略。"
+    },
+    {
+      "id": "crossover",
+      "title": "21. 等待/恢复阶段交叉对照",
+      "scope": "已知正确目标＋人为设定延迟，无实时 Astra/VLM 推理。要求回复后姿态误差 ≤0.16 rad 连续 6 个控制步（约 0.2 秒），无先前掉落。分母为到达等待起点的 eligible 案例，初始失败另记。",
+      "rows": [
+        {
+          "name": "V3 等待 / V3 恢复",
+          "successes": 144,
+          "denominator": 192,
+          "rate": 0.75,
+          "wait_drops": 6,
+          "recovery_drops": 15,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "V3 等待 / 新恢复",
+          "successes": 131,
+          "denominator": 192,
+          "rate": 0.6822916666666666,
+          "wait_drops": 3,
+          "recovery_drops": 18,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "新等待 / V3 恢复",
+          "successes": 139,
+          "denominator": 192,
+          "rate": 0.7239583333333334,
+          "wait_drops": 3,
+          "recovery_drops": 14,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": null
+        },
+        {
+          "name": "新等待 / 新恢复",
+          "successes": 141,
+          "denominator": 192,
+          "rate": 0.734375,
+          "wait_drops": 4,
+          "recovery_drops": 15,
+          "total_drops": null,
+          "false_stops": null,
+          "nominal": null
+        }
+      ],
+      "source": "outputs/recovery_phase_crossover/phase_20261019/summary.json",
+      "source_sha256": "e2f14c3e86c00e171192dfe7ab6860c17db01316c8f9c7b52badf929796b539d",
+      "note": "每格 192。“新”是普通继续训练模型，不是上方的时序表征控制器。V3/V3 75% 属于已知目标恢复实验，不是 Astra 的完整语言任务成功率。"
+    },
+    {
+      "id": "completion_v2",
+      "title": "22. 完成判别 V2：48 条共享实时轨迹",
+      "scope": "已知正确目标；模型给出假设的首次停止建议，student 继续执行。下表百分比是建议准确率。",
+      "rows": [
+        {
+          "name": "原单帧 completion",
+          "successes": 26,
+          "denominator": 38,
+          "rate": 0.6842105263157895,
+          "incorrect": 12,
+          "no_proposal": 10,
+          "trajectories": 48
+        },
+        {
+          "name": "仅重新校准阈值",
+          "successes": 17,
+          "denominator": 19,
+          "rate": 0.8947368421052632,
+          "incorrect": 2,
+          "no_proposal": 29,
+          "trajectories": 48
+        },
+        {
+          "name": "普通继续训练",
+          "successes": 21,
+          "denominator": 29,
+          "rate": 0.7241379310344828,
+          "incorrect": 8,
+          "no_proposal": 19,
+          "trajectories": 48
+        },
+        {
+          "name": "首次停止损失训练",
+          "successes": 21,
+          "denominator": 31,
+          "rate": 0.6774193548387096,
+          "incorrect": 10,
+          "no_proposal": 17,
+          "trajectories": 48
+        }
+      ],
+      "source": "outputs/semantic_completion_v2/optimization_review_20261021.json",
+      "source_sha256": "415653e3a403d700393e1310d2e76d7ffaa009543ebef197092b43033958f32d",
+      "note": "原先 audit 单帧 70/72=97.22% 不能代表轨迹停止可靠性；12 条 pilot 曾出现 9/9 正确，扩大到 48 条后未保持。所有候选撤回。此处多个模型观测同一批 48 条轨迹，不能累加为独立场景。"
+    },
+    {
+      "id": "completion_v3",
+      "title": "23. 最新完成判别 V3：同 24 条记录轨迹",
+      "scope": "已知正确目标，48 条验证轨迹中的 24 条校准、24 条审计。下面仅为审计结果，百分比是首次停止建议准确率。",
+      "rows": [
+        {
+          "name": "紧凑特征对照",
+          "successes": 12,
+          "denominator": 16,
+          "rate": 0.75,
+          "incorrect": 4,
+          "no_proposal": 8,
+          "trajectories": 24
+        },
+        {
+          "name": "新增 96×96 RGB-D",
+          "successes": 18,
+          "denominator": 21,
+          "rate": 0.8571428571428571,
+          "incorrect": 3,
+          "no_proposal": 3,
+          "trajectories": 24
+        }
+      ],
+      "source": "outputs/semantic_completion_v3/training_20261021/review.json",
+      "source_sha256": "45535f53ee83ead67531244d3433bb9d934c19c516ae41505d72d6354f642a51",
+      "note": "两组训练各 60 轮、均选择 epoch 5。Dense 18/21=85.71%，未达预设 90% 门槛，未替换基线。18 个判断正确时刻之后，原 student 继续执行，1 秒后 9/18 仍在目标范围；这不是掉落率，也不是保持策略效果。"
+    }
+  ],
+  "scope": "Main completed project evaluations. No pooling across protocols, overlapping subsets, model predictions or repeated physical states. Historical pilot outcomes and invalidated results are explicitly identified.",
+  "completion_data": {
+    "train": {
+      "shards": 8,
+      "trajectories": 192,
+      "frames": 14062,
+      "ready_counts": [
+        279,
+        407,
+        772,
+        324,
+        1416,
+        602
+      ],
+      "near_counts": [
+        527,
+        890,
+        928,
+        1685,
+        869,
+        954
+      ],
+      "drop_endings": 53
+    },
+    "val": {
+      "shards": 2,
+      "trajectories": 48,
+      "frames": 3717,
+      "ready_counts": [
+        85,
+        126,
+        177,
+        104,
+        544,
+        73
+      ],
+      "near_counts": [
+        149,
+        465,
+        301,
+        450,
+        133,
+        186
+      ],
+      "drop_endings": 10
+    },
+    "completed_cst": "2026-10-21T15:54:37.912648+08:00",
+    "sensor_audit": {
+      "shards_passed": 10,
+      "roi_found": 17778,
+      "total_frames": 17779,
+      "max_pose_label_delta": 2.384185791015625e-07
+    },
+    "updated": 1792571106.6441798,
+    "status": "collection_completed_and_audited",
+    "training_started": false
+  },
+  "latest_complete_agent": "astra_repeat192",
+  "latest_completion": "completion_v3",
+  "new_completion_full_agent_episodes": 0
+}
