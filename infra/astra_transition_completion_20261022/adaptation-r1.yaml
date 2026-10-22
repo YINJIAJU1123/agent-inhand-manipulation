@@ -1,0 +1,29 @@
+api_version: bctrl/v1
+kind: DLCJob
+metadata:
+  name: astra-transition-completion-r1-20261022
+  project: AgenticRotation
+spec:
+  workspace_id: "241942"
+  resource_id: quota1izwp3enak4
+  image: dsw-registry-vpc.cn-wulanchabu.cr.aliyuncs.com/pai-training-algorithm/isaaclab:2.3.2-isaacsim5.1.0-py311-ubuntu24.04
+  job_type: PyTorchJob
+  priority: 5
+  max_running_time_minutes: 65
+  resources: {nodes: 1, gpu: 1, cpu: 14, memory_gb: 96, shared_memory_gb: 32}
+  code:
+    project_path: code_r1
+    use_gitignore: false
+    gitignore_include: [outputs/**]
+    exclude: [__pycache__, '*.pyc']
+    oss_bucket: oss-pai-wulanchabu-stark
+    oss_prefix: bctrl/AgenticRotation/astra-transition-completion-r1-20261022
+  runtime:
+    workdir: /workspace/code
+    entrypoint: bash entrypoint.sh
+    env:
+      PYTHONUNBUFFERED: "1"
+      TRANSITION_COMPLETION_OUTPUT: /mnt/data_nas/jiaju/agent-inhand-manipulation/astra_transition_completion_20261022/adaptation_r1
+  storage:
+    mounts:
+      - {name: retention-nas, type: nas, source: "nas://29377a494cb-afl20.cn-wulanchabu.nas.aliyuncs.com/", target: /mnt/data_nas, read_only: false}

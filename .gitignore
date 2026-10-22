@@ -33,3 +33,7 @@ checkpoints/*
 !checkpoints/hora/
 !checkpoints/hora/revo3_right_ball_stage1_best.pth
 !checkpoints/hora/revo3_right_cylinder_stage1_best.pth
+
+# Reproducible cloud staging contains generated copies and model/data artifacts.
+infra/astra_transition_completion_20261022/code_r*/
+infra/astra_feedback_hold_20261022/code_export_paced*/
