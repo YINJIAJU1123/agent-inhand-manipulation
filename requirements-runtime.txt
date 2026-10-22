@@ -1,0 +1,7 @@
+# Install inside an Isaac Lab environment; its torch/Isaac packages are retained.
+numpy>=1.26,<2
+Pillow>=10
+requests>=2.32
+transformers==4.57.6
+imageio>=2.34
+imageio-ffmpeg>=0.5

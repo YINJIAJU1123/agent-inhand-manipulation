@@ -26,17 +26,19 @@ outputs/
 *.log
 .codex
 
-upload-oss.sh
+# Frozen runtime assets listed in configs/runtime_assets.json.
 checkpoints/*
-!checkpoints/dynamic_handover/
-!checkpoints/dynamic_handover/revotron_handover.pth
-!checkpoints/hora/
-!checkpoints/hora/revo3_right_ball_stage1_best.pth
-!checkpoints/hora/revo3_right_cylinder_stage1_best.pth
-
-# Reproducible cloud staging contains generated copies and model/data artifacts.
-infra/astra_transition_completion_20261022/code_r*/
-infra/astra_feedback_hold_20261022/code_export_paced*/
-
-infra/astra_transition_completion_20261022/code_status_probe/
-infra/astra_transition_completion_20261022/code_export_r*/
+!checkpoints/student/
+!checkpoints/runtime/
+checkpoints/student/*
+!checkpoints/student/viserdex_rgbd_student.pt
+!checkpoints/student/siglip2_text_adapter.pt
+!checkpoints/student/siglip2_text_cache.pt
+checkpoints/runtime/*
+!checkpoints/runtime/waiting_controller.pt
+!checkpoints/runtime/pose_verifier.pt
+!checkpoints/runtime/semantic_reader.pt
+.env
+.env.*
+credentials*.json
+*token*.json

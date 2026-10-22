@@ -13,12 +13,11 @@ p=argparse.ArgumentParser()
 p.add_argument('--output',required=True)
 p.add_argument('--seed',type=int,required=True)
 p.add_argument('--mode',choices=['astra','latent'],required=True)
-p.add_argument('--waiting',choices=['continue','slow','learned'],required=True)
+p.add_argument('--waiting',choices=['continue','slow'],required=True)
 p.add_argument('--template-set',choices=['canonical','paraphrase'],default='canonical')
 p.add_argument('--max-steps',type=int,default=3600)
 p.add_argument('--budget',type=int,default=6)
 p.add_argument('--latent-url',default='http://127.0.0.1:18772')
-p.add_argument('--controller',default=str(ROOT/'outputs/latency_controller_v1/checkpoints/controller_v1_final.pt'))
 p.add_argument('--record-video',action='store_true')
 AppLauncher.add_app_launcher_args(p)
 a=p.parse_args();a.enable_cameras=True
@@ -51,8 +50,8 @@ if (dest/'manifest.json').exists():raise RuntimeError('Fresh output required')
 pool=ThreadPoolExecutor(max_workers=6);recorders=[];wrappers=[]
 try:
     device=a.device;n=6
-    student_path=ROOT/'outputs/visual_student_v3/checkpoints/dagger_target135_r10_face5_sigliptext_evidence_seed5_student.pt'
-    adapter_path=ROOT/'outputs/visual_student_v3/checkpoints/siglip2_text_classifier_v2.pt'
+    student_path=ROOT/'checkpoints/student/viserdex_rgbd_student.pt'
+    adapter_path=ROOT/'checkpoints/student/siglip2_text_adapter.pt'
     ck=torch.load(student_path,map_location=device,weights_only=False)
     freeze=json.loads((ROOT/'configs/visual_student_freeze.json').read_text())
     assert ck['freeze_id']==freeze['freeze_id'] and float(ck['action_scale'])==1.
@@ -60,10 +59,6 @@ try:
     policy.load_state_dict(ck['model']);policy.requires_grad_(False)
     text=torch.load(adapter_path,map_location=device,weights_only=False)['canonical_embeddings'].float()
     controller=None
-    if a.waiting=='learned':
-        pack=torch.load(a.controller,map_location=device,weights_only=False)
-        assert pack['manifest']['student_sha256']==sha(student_path) and pack['manifest']['adapter_sha256']==sha(adapter_path)
-        controller=Supervisor(pack['obs_dim']).to(device).eval();controller.load_state_dict(pack['model']);controller.requires_grad_(False)
     cfg=parse_env_cfg('BrainCo-Direct-Revo3-VisualSemanticReorient-Cube-v0',device=device,num_envs=n)
     cfg.tiled_camera.width=512;cfg.tiled_camera.height=512
     cfg.seed=a.seed;cfg.max_consecutive_success=0;cfg.freeze_goal_for_episode=True;cfg.record_eval_metrics=True;cfg.goal_yaw=0.
@@ -92,7 +87,7 @@ try:
         agents=[LatentAgent(predictor,c['instruction'],budget=a.budget) for c in cases]
     wrappers=[AsyncAgent(agent,pool,a.mode) for agent in agents]
     metadata=dict(benchmark='live_async_v7',seed=a.seed,mode=a.mode,waiting=a.waiting,template_set=a.template_set,max_steps=a.max_steps,call_budget=a.budget,
-        student_sha256=sha(student_path),adapter_sha256=sha(adapter_path),controller_sha256=sha(a.controller) if controller else None,
+        student_sha256=sha(student_path),adapter_sha256=sha(adapter_path),controller_sha256=None,
         latent_checkpoint_sha256=predictor.checkpoint_sha256 if predictor else None,latent_adapter_sha256=predictor.adapter_sha256 if predictor else None,
         timing='actual inference runs concurrently; deliver after both Future completion and ceil(measured wall latency*30) physics steps; no realtime throughput claim',
         cold_start='latch normalized commanded joint targets until first delivered skill; no privileged goal',

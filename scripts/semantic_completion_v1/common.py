@@ -5,15 +5,17 @@ No pose, layout or evaluator result is accepted by these preprocessing functions
 from pathlib import Path
 import hashlib
 import json
+import os
+import sys
 import numpy as np
 import torch
 import torch.nn.functional as F
 
 ROOT = Path(__file__).resolve().parents[2]
-STUDENT = ROOT / "outputs/visual_student_v3/checkpoints/dagger_target135_r10_face5_sigliptext_evidence_seed5_student.pt"
-ADAPTER = ROOT / "outputs/visual_student_v3/checkpoints/siglip2_text_classifier_v2.pt"
-CONTROLLER = ROOT / "outputs/recovery_controller_v3/pilot_20261018/train/controller_final.pt"
-PYTHON = "/home/yin/Grasping/Grasppose/env_isaaclab/bin/python"
+STUDENT = ROOT / "checkpoints/student/viserdex_rgbd_student.pt"
+ADAPTER = ROOT / "checkpoints/student/siglip2_text_adapter.pt"
+CONTROLLER = ROOT / "checkpoints/runtime/waiting_controller.pt"
+PYTHON = os.environ.get("ISAACLAB_PYTHON", sys.executable)
 COLORS = ("red", "green", "blue", "yellow", "magenta", "cyan")
 SYMBOLS = ("star", "circle", "triangle", "cross", "diamond", "bars")
 ARMS = ("baseline", "verify", "observe", "joint")

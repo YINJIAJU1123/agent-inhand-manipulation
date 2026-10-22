@@ -3,7 +3,7 @@
   "frozen_at": "2026-09-26",
   "teacher": {
     "task": "BrainCo-Direct-Revo3-SemanticReorient-Cube-v0",
-    "checkpoint": "/home/jiaju/src/RevoLab/logs/rsl_rl/brainco_hand/2026-09-21_10-35-09_revo3_teacher_hold02_s21/model_1999.pt",
+    "checkpoint": "model_1999.pt",
     "sha256": "193129f874f81bca34a42e309c77612eb11ea29d7e2b4a60a5e8870536f9f707",
     "selection_protocol": "state_teacher_metrics_v2",
     "selection_metrics": {
@@ -12,7 +12,8 @@
       "usable_teacher_rate": 0.7630208333333334,
       "drop_rate": 0.046875
     },
-    "status": "frozen_candidate; requires independent training-seed replication for final paper claim"
+    "status": "frozen_candidate; requires independent training-seed replication for final paper claim",
+    "checkpoint_note": "Historical teacher provenance only; teacher weights are not needed for student inference and are not distributed in this runtime snapshot."
   },
   "action_contract": {
     "action_dim": 21,

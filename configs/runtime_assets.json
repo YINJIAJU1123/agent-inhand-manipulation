@@ -1,0 +1,42 @@
+{
+  "snapshot": "2026-10-22",
+  "scope": "Currently used local student and Astra runtime; no newly trained candidate is substituted.",
+  "assets": {
+    "student": {
+      "path": "checkpoints/student/viserdex_rgbd_student.pt",
+      "sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+      "bytes": 4060601,
+      "original_filename": "dagger_target135_r10_face5_sigliptext_evidence_seed5_student.pt"
+    },
+    "language_adapter": {
+      "path": "checkpoints/student/siglip2_text_adapter.pt",
+      "sha256": "7af1c9ad77e04f3b96a4b4bd9559b79898b6bcb2a30ca12b026f0eb8efe81d76",
+      "bytes": 40268,
+      "original_filename": "siglip2_text_classifier_v2.pt"
+    },
+    "waiting_controller": {
+      "path": "checkpoints/runtime/waiting_controller.pt",
+      "sha256": "cccc5515e67ffc3960f6d98db57760493b2a6aaecea96ec0fd44e2a734e72042",
+      "bytes": 7535205,
+      "original_filename": "controller_final.pt"
+    },
+    "pose_verifier": {
+      "path": "checkpoints/runtime/pose_verifier.pt",
+      "sha256": "7d57ba94e361a6811861fd0c6e5f4e9015c8e814ef365c5197bf5b86792e59f4",
+      "bytes": 2644321,
+      "original_filename": "head.pt"
+    },
+    "semantic_reader": {
+      "path": "checkpoints/runtime/semantic_reader.pt",
+      "sha256": "ff61173f56b3ba0c26481e1b9037f8e1a1307241077488415cae74dbd82a1f87",
+      "bytes": 2764597,
+      "original_filename": "head.pt"
+    },
+    "text_cache": {
+      "path": "checkpoints/student/siglip2_text_cache.pt",
+      "sha256": "579ca62922aac9e5084f13b33bf3e2cd846bc19a5aa53ed11568ef71cf252856",
+      "bytes": 574411,
+      "original_filename": "siglip2_text_cache_v2.pt"
+    }
+  }
+}

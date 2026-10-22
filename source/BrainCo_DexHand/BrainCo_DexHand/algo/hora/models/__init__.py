@@ -1,1 +1,0 @@
-"""HORA model definitions."""

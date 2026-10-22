@@ -4,7 +4,7 @@ import importlib.util
 from pathlib import Path
 import torch
 ROOT=Path(__file__).resolve().parents[2]
-CHECKPOINT=ROOT/'outputs/astra_symbol_trajectory_20261022/learning_dispatch/verified_shadow/model/head.pt'
+CHECKPOINT=ROOT/'checkpoints/runtime/semantic_reader.pt'
 CHECKPOINT_SHA256='ff61173f56b3ba0c26481e1b9037f8e1a1307241077488415cae74dbd82a1f87'
 COLORS=('red','green','blue','yellow','magenta','cyan')
 SYMBOLS=('star','circle','triangle','cross','diamond','bars')

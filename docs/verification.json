@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-22",
+  "asset_checksums": "6/6 matched original runtime files",
+  "cpu_forward": "student, V3 controller load, dense verifier and semantic reader passed",
+  "unit_tests": {
+    "passed": 15,
+    "subtests_passed": 2
+  },
+  "syntax_python_files": 111,
+  "missing_literal_script_dependencies": 0,
+  "astra_offline_smoke": {
+    "exit_code": 0,
+    "cases": 6,
+    "max_steps": 60,
+    "real_api_requests": 0,
+    "purpose": "Dependency and asynchronous plumbing verification, not a success-rate measurement"
+  },
+  "student_smoke": {
+    "exit_code": 0,
+    "episodes": 2,
+    "max_steps": 30,
+    "purpose": "Loading and live-camera inference verification, not a success-rate measurement"
+  },
+  "vlm_live_inference": "Not rerun; requires separate Qwen backbone and LoRA checkpoint."
+}
