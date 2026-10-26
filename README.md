@@ -1,8 +1,8 @@
 # Agentic In-hand Reorientation
 
 Language-guided Revo3 in-hand reorientation in Isaac Lab. This snapshot contains
-our VisERDex-style RGB-D local policy, its current weights, and the VLM/Astra
-supervisors. It is a research implementation built on BrainCo RevoLab, not the
+our VisERDex-style RGB-D reference policy, its VLM/Astra supervisors, and the
+fixed action-adapted student used in the current paper. It is a research implementation built on BrainCo RevoLab, not the
 official VisERDex release.
 
 ## Start here
@@ -10,10 +10,12 @@ official VisERDex release.
 | Component | Entry point |
 | --- | --- |
 | RGB-D student and text goals | `scripts/run_student.py` |
-| Current Astra agent | `scripts/run_astra.py` |
+| Reference Astra runtime (22 October snapshot) | `scripts/run_astra.py` |
 | Fine-tuned VLM latent baseline | `scripts/run_vlm.py` |
 | VLM inference service | `scripts/agentic/latent_service_v7.py` |
 | Astra request bridge | `scripts/agentic/astra_bridge_v6.py` |
+| Paper action-only component | `scripts/agentic/adapted_actor.py` |
+| Check the adapted action interface | `scripts/check_adapted_actor.py` |
 | Check all published weights | `scripts/check_runtime.py` |
 
 The local policy reads RGB-D features, an eight-frame observation history,
@@ -25,6 +27,11 @@ Astra outputs structured inspection, execution, verification and stop commands.
 Its selected color is mapped to the student's frozen goal embedding. The
 fine-tuned small VLM instead predicts a continuous goal embedding. Neither
 supervisor receives the simulator's hidden target or object pose.
+
+The default simulation wrappers retain the 22 October reference runtime. The
+26 October paper action component is supplied separately and does not replace
+those defaults. See [paper integration](docs/paper_action_adaptation.md) for its
+control boundary and reproduction scope.
 
 ## Setup
 
@@ -56,7 +63,7 @@ For new free-form text, use the text encoder and classifier in
 `scripts/vision/text_grounding.py`. The exact-text cache deliberately rejects
 unknown strings.
 
-### Astra
+### Reference Astra runtime
 
 First check the complete simulation path with scripted responses:
 
@@ -87,20 +94,23 @@ The large Qwen backbone and VLM adapter are not bundled with this student releas
 
 ## Weights and results
 
-The current student is published directly in
-[`checkpoints/student/viserdex_rgbd_student.pt`](checkpoints/student/viserdex_rgbd_student.pt).
-Its original filename is
-`dagger_target135_r10_face5_sigliptext_evidence_seed5_student.pt`.
-All six runtime assets, including the text cache, have exact SHA256 values in
-[`configs/runtime_assets.json`](configs/runtime_assets.json).
-See the [model card](docs/model_card.md) for the input contract and provenance.
+Two student files have distinct roles:
 
-Latest completed autonomous-stop Astra development results are **4/12** for
-both the semantic-memory configuration and the fixed-green-startup continuation.
-These small, reused development samples do not establish an 80% success rate.
-The older evaluator-terminated scores use a different protocol. The retained
-VLM baseline still uses that older protocol, so its score must not be directly
-ranked against `run_astra.py`. See [status](docs/status.md).
+- [`viserdex_rgbd_student.pt`](checkpoints/student/viserdex_rgbd_student.pt) is the frozen reference, also retained for feedback and stopping.
+- [`adapted_action_student.pt`](checkpoints/student/adapted_action_student.pt) is the paper's mixed-data actor, SHA256 beginning `b02d8083`. Only its action output is consumed.
+
+All seven inference assets have exact SHA256 values in
+[`configs/runtime_assets.json`](configs/runtime_assets.json).
+See the [model card](docs/model_card.md) and [action adaptation](docs/paper_action_adaptation.md).
+
+The complete paper development study gives Astra reference/adapted **21/36 and
+28/36** completions. On prospective new resets, the raw counts are **27/36 and
+28/36**, while both are **27/35** in the predeclared matched analysis. The
+adaptation gain did not replicate in that second comparison. These results use
+the later research evaluator, not this snapshot's default simulation wrappers.
+The [paper repository](https://github.com/YINJIAJU1123/CVPR-AgenticRotation)
+contains the full cohorts, uncertainty and failure analysis. The historical
+4/12 results remain identified in [status](docs/status.md).
 
 ## Layout
 

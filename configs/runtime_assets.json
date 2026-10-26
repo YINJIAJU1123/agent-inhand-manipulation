@@ -1,6 +1,6 @@
 {
-  "snapshot": "2026-10-22",
-  "scope": "Currently used local student and Astra runtime; no newly trained candidate is substituted.",
+  "snapshot": "2026-10-26",
+  "scope": "Reference runtime snapshot plus the paper adapted action component. Default simulation wrappers remain the 2026-10-22 reference runtime and do not reproduce the later paper cohorts.",
   "assets": {
     "student": {
       "path": "checkpoints/student/viserdex_rgbd_student.pt",
@@ -37,6 +37,13 @@
       "sha256": "579ca62922aac9e5084f13b33bf3e2cd846bc19a5aa53ed11568ef71cf252856",
       "bytes": 574411,
       "original_filename": "siglip2_text_cache_v2.pt"
+    },
+    "adapted_action_student": {
+      "path": "checkpoints/student/adapted_action_student.pt",
+      "sha256": "b02d80830dcd4aebeec14c7d30e8645a47dc168a6ce059165d4744f683359862",
+      "bytes": 4053499,
+      "original_filename": "mixed.pt",
+      "role": "Paper action proposal only. Keep original reference for feedback and stopping."
     }
   }
 }

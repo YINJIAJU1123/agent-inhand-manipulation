@@ -1,0 +1,3406 @@
+{
+  "paper_commit": "cd7c7b643ba0424f2fcfe47b0e29575223e6bdd0",
+  "scope": "Separate complete cohorts. Default reference runtime wrappers do not reproduce these later studies. Component-study weights differ from the published fixed actor.",
+  "studies": {
+    "development": {
+      "source": "data/live_summary.json",
+      "source_sha256": "4e01618c076663460649509571a4557e538e0bf782fd1e4f04a79076a619e683",
+      "raw": {
+        "astra_original": {
+          "n": 36,
+          "success": 21,
+          "success_rate": 0.5833333333333334,
+          "drop": 8,
+          "false_stop": 5,
+          "service_anomaly": 1
+        },
+        "astra_candidate": {
+          "n": 36,
+          "success": 28,
+          "success_rate": 0.7777777777777778,
+          "drop": 4,
+          "false_stop": 3,
+          "service_anomaly": 1
+        },
+        "latent_original": {
+          "n": 36,
+          "success": 12,
+          "success_rate": 0.3333333333333333,
+          "drop": 17,
+          "false_stop": 3,
+          "service_anomaly": 0
+        },
+        "latent_candidate": {
+          "n": 36,
+          "success": 19,
+          "success_rate": 0.5277777777777778,
+          "drop": 8,
+          "false_stop": 2,
+          "service_anomaly": 0
+        }
+      },
+      "panels": {
+        "primary": {
+          "arms": [
+            "astra_original",
+            "astra_candidate",
+            "latent_candidate"
+          ],
+          "matched_n": 34,
+          "excluded_keys": [
+            [
+              2,
+              147201,
+              5
+            ],
+            [
+              3,
+              147201,
+              1
+            ]
+          ],
+          "matched": {
+            "astra_original": {
+              "n": 34,
+              "success": 20,
+              "success_rate": 0.5882352941176471,
+              "drop": 8,
+              "false_stop": 5,
+              "service_anomaly": 0
+            },
+            "astra_candidate": {
+              "n": 34,
+              "success": 28,
+              "success_rate": 0.8235294117647058,
+              "drop": 3,
+              "false_stop": 3,
+              "service_anomaly": 0
+            },
+            "latent_candidate": {
+              "n": 34,
+              "success": 18,
+              "success_rate": 0.5294117647058824,
+              "drop": 8,
+              "false_stop": 2,
+              "service_anomaly": 0
+            }
+          }
+        },
+        "secondary_vlm_control": {
+          "arms": [
+            "astra_original",
+            "latent_original",
+            "latent_candidate"
+          ],
+          "matched_n": 35,
+          "excluded_keys": [
+            [
+              2,
+              147201,
+              5
+            ]
+          ],
+          "matched": {
+            "astra_original": {
+              "n": 35,
+              "success": 21,
+              "success_rate": 0.6,
+              "drop": 8,
+              "false_stop": 5,
+              "service_anomaly": 0
+            },
+            "latent_original": {
+              "n": 35,
+              "success": 12,
+              "success_rate": 0.34285714285714286,
+              "drop": 16,
+              "false_stop": 3,
+              "service_anomaly": 0
+            },
+            "latent_candidate": {
+              "n": 35,
+              "success": 19,
+              "success_rate": 0.5428571428571428,
+              "drop": 8,
+              "false_stop": 2,
+              "service_anomaly": 0
+            }
+          }
+        }
+      },
+      "comparisons": {
+        "astra_candidate_vs_astra_original": {
+          "n": 34,
+          "wins": 11,
+          "losses": 3,
+          "ties": 20,
+          "success_difference": 0.23529411764705882,
+          "win_keys": [
+            [
+              1,
+              147201,
+              2
+            ],
+            [
+              1,
+              147201,
+              4
+            ],
+            [
+              1,
+              147202,
+              0
+            ],
+            [
+              1,
+              147202,
+              4
+            ],
+            [
+              2,
+              147201,
+              0
+            ],
+            [
+              3,
+              147201,
+              2
+            ],
+            [
+              3,
+              147201,
+              3
+            ],
+            [
+              3,
+              147201,
+              5
+            ],
+            [
+              3,
+              147202,
+              0
+            ],
+            [
+              3,
+              147202,
+              4
+            ],
+            [
+              3,
+              147202,
+              5
+            ]
+          ],
+          "loss_keys": [
+            [
+              1,
+              147202,
+              1
+            ],
+            [
+              2,
+              147202,
+              4
+            ],
+            [
+              3,
+              147202,
+              3
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 147201,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 1,
+              "trials": 2,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 5,
+              "trials": 2,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "147201": {
+              "n": 16,
+              "wins": 6,
+              "losses": 0
+            },
+            "147202": {
+              "n": 18,
+              "wins": 5,
+              "losses": 3
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            0.06060606060606061,
+            0.4
+          ],
+          "caution": "Predeclared cluster resampling; two seeds, twelve scenes. No broad generalization claim.",
+          "raw_success_difference": 0.19444444444444442,
+          "predeclared_positive_evidence": true
+        },
+        "astra_candidate_vs_latent_candidate": {
+          "n": 34,
+          "wins": 12,
+          "losses": 2,
+          "ties": 20,
+          "success_difference": 0.29411764705882354,
+          "win_keys": [
+            [
+              1,
+              147202,
+              4
+            ],
+            [
+              1,
+              147202,
+              5
+            ],
+            [
+              2,
+              147201,
+              2
+            ],
+            [
+              2,
+              147201,
+              4
+            ],
+            [
+              2,
+              147202,
+              2
+            ],
+            [
+              3,
+              147201,
+              0
+            ],
+            [
+              3,
+              147201,
+              2
+            ],
+            [
+              3,
+              147201,
+              5
+            ],
+            [
+              3,
+              147202,
+              1
+            ],
+            [
+              3,
+              147202,
+              2
+            ],
+            [
+              3,
+              147202,
+              4
+            ],
+            [
+              3,
+              147202,
+              5
+            ]
+          ],
+          "loss_keys": [
+            [
+              1,
+              147201,
+              0
+            ],
+            [
+              3,
+              147202,
+              3
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 147201,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 1,
+              "trials": 2,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 5,
+              "trials": 2,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "147201": {
+              "n": 16,
+              "wins": 5,
+              "losses": 1
+            },
+            "147202": {
+              "n": 18,
+              "wins": 7,
+              "losses": 1
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            0.09090909090909091,
+            0.4722222222222222
+          ],
+          "caution": "Predeclared cluster resampling; two seeds, twelve scenes. No broad generalization claim.",
+          "raw_success_difference": 0.25,
+          "predeclared_positive_evidence": true
+        },
+        "latent_candidate_vs_latent_original": {
+          "n": 35,
+          "wins": 10,
+          "losses": 3,
+          "ties": 22,
+          "success_difference": 0.2,
+          "win_keys": [
+            [
+              1,
+              147201,
+              3
+            ],
+            [
+              1,
+              147202,
+              0
+            ],
+            [
+              1,
+              147202,
+              3
+            ],
+            [
+              2,
+              147202,
+              1
+            ],
+            [
+              2,
+              147202,
+              3
+            ],
+            [
+              2,
+              147202,
+              5
+            ],
+            [
+              3,
+              147201,
+              1
+            ],
+            [
+              3,
+              147201,
+              4
+            ],
+            [
+              3,
+              147202,
+              0
+            ],
+            [
+              3,
+              147202,
+              3
+            ]
+          ],
+          "loss_keys": [
+            [
+              1,
+              147202,
+              5
+            ],
+            [
+              2,
+              147201,
+              2
+            ],
+            [
+              2,
+              147202,
+              0
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 147201,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147201,
+              "case": 5,
+              "trials": 2,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 3,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 147202,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "147201": {
+              "n": 17,
+              "wins": 3,
+              "losses": 1
+            },
+            "147202": {
+              "n": 18,
+              "wins": 7,
+              "losses": 2
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            0.029411764705882353,
+            0.3888888888888889
+          ],
+          "caution": "Predeclared cluster resampling; two seeds, twelve scenes. No broad generalization claim.",
+          "raw_success_difference": 0.19444444444444448,
+          "predeclared_positive_evidence": true
+        }
+      }
+    },
+    "prospective": {
+      "source": "data/new_reset/summary.json",
+      "source_sha256": "2ae336ecc16af7cd86d53b58eb91a064e31b8ab78e2dc012c30accf5404a8ff9",
+      "raw": {
+        "astra_original": {
+          "n": 36,
+          "success": 27,
+          "success_rate": 0.75,
+          "drop": 3,
+          "false_stop": 5,
+          "service_anomaly": 1
+        },
+        "astra_candidate": {
+          "n": 36,
+          "success": 28,
+          "success_rate": 0.7777777777777778,
+          "drop": 2,
+          "false_stop": 6,
+          "service_anomaly": 0
+        },
+        "latent_original": {
+          "n": 36,
+          "success": 13,
+          "success_rate": 0.3611111111111111,
+          "drop": 16,
+          "false_stop": 3,
+          "service_anomaly": 0
+        },
+        "latent_candidate": {
+          "n": 36,
+          "success": 18,
+          "success_rate": 0.5,
+          "drop": 8,
+          "false_stop": 5,
+          "service_anomaly": 0
+        }
+      },
+      "panels": {
+        "primary": {
+          "arms": [
+            "astra_original",
+            "astra_candidate",
+            "latent_candidate"
+          ],
+          "matched_n": 35,
+          "excluded_keys": [
+            [
+              3,
+              149201,
+              0
+            ]
+          ],
+          "matched": {
+            "astra_original": {
+              "n": 35,
+              "success": 27,
+              "success_rate": 0.7714285714285715,
+              "drop": 3,
+              "false_stop": 5,
+              "service_anomaly": 0
+            },
+            "astra_candidate": {
+              "n": 35,
+              "success": 27,
+              "success_rate": 0.7714285714285715,
+              "drop": 2,
+              "false_stop": 6,
+              "service_anomaly": 0
+            },
+            "latent_candidate": {
+              "n": 35,
+              "success": 18,
+              "success_rate": 0.5142857142857142,
+              "drop": 8,
+              "false_stop": 4,
+              "service_anomaly": 0
+            }
+          }
+        },
+        "secondary_vlm_control": {
+          "arms": [
+            "astra_original",
+            "latent_original",
+            "latent_candidate"
+          ],
+          "matched_n": 35,
+          "excluded_keys": [
+            [
+              3,
+              149201,
+              0
+            ]
+          ],
+          "matched": {
+            "astra_original": {
+              "n": 35,
+              "success": 27,
+              "success_rate": 0.7714285714285715,
+              "drop": 3,
+              "false_stop": 5,
+              "service_anomaly": 0
+            },
+            "latent_original": {
+              "n": 35,
+              "success": 12,
+              "success_rate": 0.34285714285714286,
+              "drop": 16,
+              "false_stop": 3,
+              "service_anomaly": 0
+            },
+            "latent_candidate": {
+              "n": 35,
+              "success": 18,
+              "success_rate": 0.5142857142857142,
+              "drop": 8,
+              "false_stop": 4,
+              "service_anomaly": 0
+            }
+          }
+        }
+      },
+      "comparisons": {
+        "astra_candidate_vs_astra_original": {
+          "n": 35,
+          "wins": 5,
+          "losses": 5,
+          "ties": 25,
+          "success_difference": 0.0,
+          "win_keys": [
+            [
+              1,
+              149202,
+              1
+            ],
+            [
+              2,
+              149201,
+              2
+            ],
+            [
+              2,
+              149201,
+              3
+            ],
+            [
+              2,
+              149202,
+              1
+            ],
+            [
+              3,
+              149202,
+              2
+            ]
+          ],
+          "loss_keys": [
+            [
+              1,
+              149201,
+              2
+            ],
+            [
+              2,
+              149202,
+              3
+            ],
+            [
+              2,
+              149202,
+              5
+            ],
+            [
+              3,
+              149201,
+              2
+            ],
+            [
+              3,
+              149202,
+              1
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 149201,
+              "case": 0,
+              "trials": 2,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 5,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "149201": {
+              "n": 17,
+              "wins": 2,
+              "losses": 2
+            },
+            "149202": {
+              "n": 18,
+              "wins": 3,
+              "losses": 3
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            -0.1388888888888889,
+            0.1388888888888889
+          ],
+          "caution": "Predeclared cluster resampling; two seeds, twelve scenes. No broad generalization claim.",
+          "raw_success_difference": 0.02777777777777779,
+          "predeclared_positive_evidence": false
+        },
+        "astra_candidate_vs_latent_candidate": {
+          "n": 35,
+          "wins": 10,
+          "losses": 1,
+          "ties": 24,
+          "success_difference": 0.2571428571428571,
+          "win_keys": [
+            [
+              1,
+              149201,
+              5
+            ],
+            [
+              1,
+              149202,
+              2
+            ],
+            [
+              1,
+              149202,
+              3
+            ],
+            [
+              2,
+              149201,
+              2
+            ],
+            [
+              2,
+              149201,
+              5
+            ],
+            [
+              2,
+              149202,
+              1
+            ],
+            [
+              3,
+              149201,
+              5
+            ],
+            [
+              3,
+              149202,
+              2
+            ],
+            [
+              3,
+              149202,
+              4
+            ],
+            [
+              3,
+              149202,
+              5
+            ]
+          ],
+          "loss_keys": [
+            [
+              1,
+              149202,
+              0
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 149201,
+              "case": 0,
+              "trials": 2,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 3,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "149201": {
+              "n": 17,
+              "wins": 4,
+              "losses": 0
+            },
+            "149202": {
+              "n": 18,
+              "wins": 6,
+              "losses": 1
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            0.06060606060606061,
+            0.45714285714285713
+          ],
+          "caution": "Predeclared cluster resampling; two seeds, twelve scenes. No broad generalization claim.",
+          "raw_success_difference": 0.2777777777777778,
+          "predeclared_positive_evidence": true
+        },
+        "latent_candidate_vs_latent_original": {
+          "n": 35,
+          "wins": 10,
+          "losses": 4,
+          "ties": 21,
+          "success_difference": 0.17142857142857143,
+          "win_keys": [
+            [
+              1,
+              149201,
+              3
+            ],
+            [
+              1,
+              149201,
+              4
+            ],
+            [
+              1,
+              149202,
+              1
+            ],
+            [
+              1,
+              149202,
+              5
+            ],
+            [
+              2,
+              149201,
+              1
+            ],
+            [
+              2,
+              149201,
+              4
+            ],
+            [
+              2,
+              149202,
+              2
+            ],
+            [
+              3,
+              149201,
+              1
+            ],
+            [
+              3,
+              149202,
+              0
+            ],
+            [
+              3,
+              149202,
+              3
+            ]
+          ],
+          "loss_keys": [
+            [
+              2,
+              149201,
+              0
+            ],
+            [
+              3,
+              149202,
+              1
+            ],
+            [
+              3,
+              149202,
+              4
+            ],
+            [
+              3,
+              149202,
+              5
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 149201,
+              "case": 0,
+              "trials": 2,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149201,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 149202,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "149201": {
+              "n": 17,
+              "wins": 5,
+              "losses": 1
+            },
+            "149202": {
+              "n": 18,
+              "wins": 5,
+              "losses": 3
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            0.0,
+            0.34285714285714286
+          ],
+          "caution": "Predeclared cluster resampling; two seeds, twelve scenes. No broad generalization claim.",
+          "raw_success_difference": 0.1388888888888889,
+          "predeclared_positive_evidence": false
+        }
+      }
+    },
+    "live_components": {
+      "source": "data/live_components/summary.json",
+      "source_sha256": "d483c04bb0e23410fe8985ab745081463feecb9681aca7082a70b77fc47d7891",
+      "raw": {
+        "old_only": {
+          "n": 36,
+          "success": 19,
+          "success_rate": 0.5277777777777778,
+          "drop": 5,
+          "false_stop": 7,
+          "service_anomaly": 0,
+          "reached": 24,
+          "horizon": 0,
+          "abstain": 5
+        },
+        "full": {
+          "n": 36,
+          "success": 26,
+          "success_rate": 0.7222222222222222,
+          "drop": 8,
+          "false_stop": 2,
+          "service_anomaly": 0,
+          "reached": 26,
+          "horizon": 0,
+          "abstain": 0
+        },
+        "head_only": {
+          "n": 36,
+          "success": 19,
+          "success_rate": 0.5277777777777778,
+          "drop": 9,
+          "false_stop": 5,
+          "service_anomaly": 1,
+          "reached": 23,
+          "horizon": 0,
+          "abstain": 2
+        },
+        "no_anchor": {
+          "n": 36,
+          "success": 22,
+          "success_rate": 0.6111111111111112,
+          "drop": 10,
+          "false_stop": 3,
+          "service_anomaly": 0,
+          "reached": 26,
+          "horizon": 0,
+          "abstain": 1
+        }
+      },
+      "panels": {
+        "data_representation": {
+          "arms": [
+            "old_only",
+            "full",
+            "head_only"
+          ],
+          "matched_n": 35,
+          "excluded_keys": [
+            [
+              2,
+              151202,
+              5
+            ]
+          ],
+          "matched": {
+            "old_only": {
+              "n": 35,
+              "success": 18,
+              "success_rate": 0.5142857142857142,
+              "drop": 5,
+              "false_stop": 7,
+              "service_anomaly": 0,
+              "reached": 23,
+              "horizon": 0,
+              "abstain": 5
+            },
+            "full": {
+              "n": 35,
+              "success": 25,
+              "success_rate": 0.7142857142857143,
+              "drop": 8,
+              "false_stop": 2,
+              "service_anomaly": 0,
+              "reached": 25,
+              "horizon": 0,
+              "abstain": 0
+            },
+            "head_only": {
+              "n": 35,
+              "success": 19,
+              "success_rate": 0.5428571428571428,
+              "drop": 9,
+              "false_stop": 5,
+              "service_anomaly": 0,
+              "reached": 23,
+              "horizon": 0,
+              "abstain": 2
+            }
+          }
+        },
+        "anchor": {
+          "arms": [
+            "old_only",
+            "full",
+            "no_anchor"
+          ],
+          "matched_n": 36,
+          "excluded_keys": [],
+          "matched": {
+            "old_only": {
+              "n": 36,
+              "success": 19,
+              "success_rate": 0.5277777777777778,
+              "drop": 5,
+              "false_stop": 7,
+              "service_anomaly": 0,
+              "reached": 24,
+              "horizon": 0,
+              "abstain": 5
+            },
+            "full": {
+              "n": 36,
+              "success": 26,
+              "success_rate": 0.7222222222222222,
+              "drop": 8,
+              "false_stop": 2,
+              "service_anomaly": 0,
+              "reached": 26,
+              "horizon": 0,
+              "abstain": 0
+            },
+            "no_anchor": {
+              "n": 36,
+              "success": 22,
+              "success_rate": 0.6111111111111112,
+              "drop": 10,
+              "false_stop": 3,
+              "service_anomaly": 0,
+              "reached": 26,
+              "horizon": 0,
+              "abstain": 1
+            }
+          }
+        }
+      },
+      "comparisons": {
+        "full_vs_old_only": {
+          "n": 35,
+          "wins": 9,
+          "losses": 2,
+          "ties": 24,
+          "success_difference": 0.2,
+          "win_keys": [
+            [
+              1,
+              151201,
+              4
+            ],
+            [
+              1,
+              151202,
+              1
+            ],
+            [
+              1,
+              151202,
+              5
+            ],
+            [
+              2,
+              151201,
+              4
+            ],
+            [
+              2,
+              151202,
+              2
+            ],
+            [
+              2,
+              151202,
+              3
+            ],
+            [
+              3,
+              151201,
+              1
+            ],
+            [
+              3,
+              151202,
+              1
+            ],
+            [
+              3,
+              151202,
+              2
+            ]
+          ],
+          "loss_keys": [
+            [
+              2,
+              151201,
+              1
+            ],
+            [
+              3,
+              151202,
+              5
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 151201,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 5,
+              "trials": 2,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "151201": {
+              "n": 18,
+              "wins": 3,
+              "losses": 1
+            },
+            "151202": {
+              "n": 17,
+              "wins": 6,
+              "losses": 1
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            0.05714285714285714,
+            0.3611111111111111
+          ],
+          "caution": "Only two seed blocks and twelve scenes. Repeats are retained together. These intervals do not establish broad generalization.",
+          "scope": "Predeclared exploratory scene-cluster interval, two seed blocks and twelve scenes. No multiplicity-adjusted confirmatory claim."
+        },
+        "full_vs_head_only": {
+          "n": 35,
+          "wins": 11,
+          "losses": 5,
+          "ties": 19,
+          "success_difference": 0.17142857142857143,
+          "win_keys": [
+            [
+              1,
+              151201,
+              2
+            ],
+            [
+              1,
+              151201,
+              4
+            ],
+            [
+              1,
+              151202,
+              1
+            ],
+            [
+              1,
+              151202,
+              5
+            ],
+            [
+              2,
+              151201,
+              2
+            ],
+            [
+              2,
+              151201,
+              4
+            ],
+            [
+              2,
+              151202,
+              0
+            ],
+            [
+              2,
+              151202,
+              2
+            ],
+            [
+              3,
+              151201,
+              4
+            ],
+            [
+              3,
+              151201,
+              5
+            ],
+            [
+              3,
+              151202,
+              1
+            ]
+          ],
+          "loss_keys": [
+            [
+              1,
+              151201,
+              0
+            ],
+            [
+              1,
+              151201,
+              1
+            ],
+            [
+              2,
+              151202,
+              1
+            ],
+            [
+              3,
+              151202,
+              0
+            ],
+            [
+              3,
+              151202,
+              4
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 151201,
+              "case": 0,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 1,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 2,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 3,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 5,
+              "trials": 2,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "151201": {
+              "n": 18,
+              "wins": 6,
+              "losses": 2
+            },
+            "151202": {
+              "n": 17,
+              "wins": 5,
+              "losses": 3
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            -0.05555555555555555,
+            0.4001562499999864
+          ],
+          "caution": "Only two seed blocks and twelve scenes. Repeats are retained together. These intervals do not establish broad generalization.",
+          "scope": "Predeclared exploratory scene-cluster interval, two seed blocks and twelve scenes. No multiplicity-adjusted confirmatory claim."
+        },
+        "full_vs_no_anchor": {
+          "n": 36,
+          "wins": 9,
+          "losses": 5,
+          "ties": 22,
+          "success_difference": 0.1111111111111111,
+          "win_keys": [
+            [
+              1,
+              151201,
+              4
+            ],
+            [
+              1,
+              151201,
+              5
+            ],
+            [
+              1,
+              151202,
+              3
+            ],
+            [
+              1,
+              151202,
+              5
+            ],
+            [
+              2,
+              151201,
+              4
+            ],
+            [
+              2,
+              151202,
+              4
+            ],
+            [
+              3,
+              151201,
+              1
+            ],
+            [
+              3,
+              151201,
+              3
+            ],
+            [
+              3,
+              151201,
+              4
+            ]
+          ],
+          "loss_keys": [
+            [
+              1,
+              151201,
+              0
+            ],
+            [
+              1,
+              151201,
+              1
+            ],
+            [
+              2,
+              151201,
+              1
+            ],
+            [
+              3,
+              151202,
+              0
+            ],
+            [
+              3,
+              151202,
+              5
+            ]
+          ],
+          "scene_rows": [
+            {
+              "seed": 151201,
+              "case": 0,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 1,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  -1,
+                  1
+                ],
+                [
+                  -1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 3,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151201,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 0,
+              "trials": 3,
+              "success_difference": -1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 1,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 2,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 3,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 4,
+              "trials": 3,
+              "success_difference": 1,
+              "repeat_differences": [
+                [
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  3
+                ]
+              ]
+            },
+            {
+              "seed": 151202,
+              "case": 5,
+              "trials": 3,
+              "success_difference": 0,
+              "repeat_differences": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  2
+                ],
+                [
+                  -1,
+                  3
+                ]
+              ]
+            }
+          ],
+          "per_seed": {
+            "151201": {
+              "n": 18,
+              "wins": 6,
+              "losses": 3
+            },
+            "151202": {
+              "n": 18,
+              "wins": 3,
+              "losses": 2
+            }
+          },
+          "inferential_status": "complete_batch_exploratory",
+          "exploratory_scene_cluster_bootstrap95": [
+            -0.08333333333333333,
+            0.3333333333333333
+          ],
+          "caution": "Only two seed blocks and twelve scenes. Repeats are retained together. These intervals do not establish broad generalization.",
+          "scope": "Predeclared exploratory scene-cluster interval, two seed blocks and twelve scenes. No multiplicity-adjusted confirmatory claim."
+        }
+      }
+    }
+  }
+}

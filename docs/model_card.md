@@ -1,7 +1,8 @@
-# Current local policy
+# Reference and adapted local policies
 
-Snapshot: 2026-10-22. Weights are byte-identical to the student used in the latest
-Astra experiments. Repository cleanup does not select a new training candidate.
+Reference snapshot: 2026-10-22. The table below describes the frozen reference
+student. The 2026-10-26 addition publishes the fixed paper action-adapted weights
+separately. Both are needed because the original feedback and stopping path is retained.
 
 | Field | Value |
 | --- | --- |
@@ -41,3 +42,18 @@ full-task success improvement.
 The student is VisERDex-style teacher-to-visual-student control. It is not an
 upstream VisERDex checkpoint. This release covers simulation with the provided
 cube/hand assets. Real-hand performance has not been established by these tests.
+
+## Paper action adaptation, 26 October
+
+`adapted_action_student.pt` is the byte-identical fixed mixed-data actor with SHA256
+`b02d80830dcd4aebeec14c7d30e8645a47dc168a6ce059165d4744f683359862`
+and 4,053,499 bytes. It keeps the reference input/output contract. Training updates
+943,685 student parameters, including 872,496 representation and 71,189 action-head
+parameters. The 66,308 internal evidence/stop parameters remain fixed, and candidate
+evidence/stop outputs are discarded during action integration.
+
+The selected checkpoint is epoch 47 from held-out teacher-action loss, not live
+rollout success. See [training and integration](paper_action_adaptation.md). The
+original pack contains inherited reference metadata. The adaptation identity is
+in `onpolicy_distillation` and the explicit manifest, so inherited `metrics` must
+not be interpreted as the adapted model's evaluation.
