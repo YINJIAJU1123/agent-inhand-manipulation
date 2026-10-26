@@ -1,5 +1,5 @@
 {
-  "status": "static_verified",
+  "status": "static_and_scripted_simulator_verified",
   "source_sha256": {
     "scripts/astra_completion_optimization_v1/completion.py": "1a23642e7f53833f2982612d1264811ddc514d5cf4a0a5d78dbce960bb036225",
     "scripts/astra_completion_optimization_v1/supervisors.py": "b04bc2cb5c8781552d33863a2f839fc2e1d7bd2812afa27e54bbd61b30d76586",
@@ -28,6 +28,6 @@
     "source/BrainCo_DexHand/BrainCo_DexHand/tasks/direct/inhand_manipulation_env.py": "46c3533fbde58ae29c0f1b2119daf80f2351119f805a2a281b84cb46c19750eb",
     "configs/evaluation/autonomous_completion_v1.json": "0614802989e275d144f5eac2cdbae914e0c53224f183d00fbb3b5a2a670dbf98"
   },
-  "scope": "Same frozen control loop, public inputs and score. Published asset paths replace local admission paths. Removed an unused import. Simulation checks pending.",
+  "scope": "Same frozen control loop, public inputs and score. Published asset paths replace local admission paths. Unused import removed. Twelve scripted simulator cases verified, not a live performance comparison.",
   "control_loop_ast_sha256": "6f8f373fad2efd875bc14754426c87546c174a19c685c8c5b2ee5c004612bec3"
 }

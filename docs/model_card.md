@@ -57,3 +57,13 @@ rollout success. See [training and integration](paper_action_adaptation.md). The
 original pack contains inherited reference metadata. The adaptation identity is
 in `onpolicy_distillation` and the explicit manifest, so inherited `metrics` must
 not be interpreted as the adapted model's evaluation.
+
+## Companion actor for paper computation parity
+
+`paper_comparison_actor.pt` is the exact old-only comparison checkpoint with SHA256
+`9bd2cdf271c9c844574f4be3a7ed250ea305b9bbda124f0dfd043237cf0f0b96`.
+The paper evaluator computes it alongside the mixed actor in both reference and
+adapted arms, matching the original comparison's inference workload. It is not
+the later, separately fitted component-study old-only model. The candidate mode
+selects the fixed mixed actor, never this companion. All eight assets have checksums.
+The standalone action component needs only the original and mixed students.

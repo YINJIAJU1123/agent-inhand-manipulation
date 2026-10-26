@@ -3,7 +3,9 @@
 The fixed paper action weights and an independently checked proposal component
 are now included. The original full simulation wrappers remain the reference
 runtime snapshot documented below. They are not the evaluator used for the
-later paper studies. Full paper evaluator packaging remains outstanding.
+later paper studies. A separate `run_paper_eval.py` now preserves the paper
+control loop and has passed twelve scripted simulator integration cases.
+Training-data packaging and external model-service setup remain separate.
 
 | Complete cohort | Astra reference | Astra adapted | Primary matched contrast |
 | --- | ---: | ---: | --- |
@@ -20,8 +22,8 @@ cohorts or equate their system-level backend gap with superior reasoning.
 Machine-readable source identities and complete contrasts are in
 [paper_results.json](paper_results.json), derived from paper commit `cd7c7b6`.
 The [paper repository](https://github.com/YINJIAJU1123/CVPR-AgenticRotation) contains
-full provenance, shared-stop studies and remaining limitations. The active
-rendering-robustness study has no complete result in this release.
+full provenance, shared-stop studies and remaining limitations. The paper also reports a completed
+rendering-shift diagnostic, which does not supply a new live success rate.
 
 The following dated results describe the retained original wrappers:
 

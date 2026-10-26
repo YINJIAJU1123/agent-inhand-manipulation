@@ -3,8 +3,8 @@
 The dedicated `scripts/run_paper_eval.py` entry uses the paper control loop,
 shared-stop eligibility, contextual latent interface, collision-clearance reset,
 fixed-green startup and the original visual verifier. It is separate from the
-historical reference wrappers. Its simulator integration is under verification
-on this branch. Source and metric identities are in `configs/paper_runtime_sources.json`.
+historical reference wrappers. Its local simulator integration passed twelve scripted cases, six in each actor
+mode. The complete record is `docs/paper_runtime_verification.json`. Source and metric identities are in `configs/paper_runtime_sources.json`.
 
 ## Local integration
 
@@ -51,3 +51,13 @@ model-service versions, external Isaac Lab environment and source dataset for
 training. This entry does not claim to reproduce a remote model's hidden version
 or make historical outcomes deterministic. CPU/source parity and local integration
 checks are distinct from a new live performance evaluation.
+
+## Verified scope
+
+The clean evaluator control-loop AST matches the research loop. Source, metric and
+eight weight hashes pass CPU checks. Two scripted simulator jobs share exact
+initial physical states. Reference action-change counters are zero in all six
+cases. Adapted counters are118/48/58/118/58/118, and independent saved-cadence
+checks confirm activation and exact reference proposals when disabled. These
+120-step cases are excluded from performance tables. Real service delivery and
+full-horizon outcomes require a separately authorized live run.

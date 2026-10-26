@@ -1,6 +1,6 @@
 {
   "snapshot": "2026-10-26",
-  "scope": "Reference snapshot plus fixed paper actor assets and a paper evaluator under integration verification.",
+  "scope": "Reference snapshot and fixed paper actor assets, with a dedicated paper evaluator checked in twelve scripted simulator integration cases.",
   "assets": {
     "student": {
       "path": "checkpoints/student/viserdex_rgbd_student.pt",

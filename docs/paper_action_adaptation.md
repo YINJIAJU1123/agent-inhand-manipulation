@@ -53,7 +53,7 @@ python scripts/check_runtime.py
 python scripts/check_adapted_actor.py
 ```
 
-These verify seven asset hashes, load models, exercise all public-skill/active
+These verify eight asset hashes, load models, exercise all public-skill/active
 mask combinations in the selected test set, and reject malformed masks. They
 make no service calls and do not report task performance. The optional
 `--observations /path/to/data.pt` accepts a local shard containing `rgb_history`,
@@ -76,6 +76,8 @@ and computes both fitted comparison actors in every arm. Reusing this smaller
 component does not reproduce that evaluator's computation or timing by itself.
 
 Use the full paper protocol and original feedback/stop path for an end-to-end
-comparison. Full evaluator and training-data packaging remain outstanding. No
+comparison. The dedicated evaluator is now available through `scripts/run_paper_eval.py`
+with twelve scripted simulator checks. See [paper evaluation](paper_evaluation.md).
+Training-data packaging remains outstanding. No
 online success rate is certified by the component checks. Credentials, training
 samples, private service traces and unrelated checkpoints are not published here.
