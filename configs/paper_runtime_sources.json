@@ -1,0 +1,33 @@
+{
+  "status": "static_verified",
+  "source_sha256": {
+    "scripts/astra_completion_optimization_v1/completion.py": "1a23642e7f53833f2982612d1264811ddc514d5cf4a0a5d78dbce960bb036225",
+    "scripts/astra_completion_optimization_v1/supervisors.py": "b04bc2cb5c8781552d33863a2f839fc2e1d7bd2812afa27e54bbd61b30d76586",
+    "scripts/astra_shared_memory_comparison_v1/memory_supervisors.py": "abcf35188501f00cec6b91adb8e0be7b32d28a04416296087c27c6804e8a4f53",
+    "scripts/astra_shared_memory_comparison_v1/memory_context.py": "dd65f6f6abd54f211a97f3c5562999ab918b608e66438a67f7a8957dfd562e4c",
+    "scripts/teacher_onpolicy_live_v1/evaluate.py": "f5b3ae766db7dc5e917b2d4b8f34d1b29d4cc6c37f6765eff368eca6c0805668",
+    "scripts/teacher_onpolicy_eval_v1/adapter.py": "2aa5c8a3485b4817478d6ce5e5f79359e300abb436e52c4ca0856295b458eca7",
+    "scripts/teacher_onpolicy_live_v1/actor_runtime.py": "0d14220f287217a15c78657597081418d2036d9b513fdd3e84440cda0c25dc29",
+    "scripts/semantic_completion_v1/agent.py": "a21466d1341e2bb970481e91872615ab935bf747790c063ba061a8185ba4f1e8",
+    "scripts/semantic_completion_v1/scoring.py": "1421dd64759b0bca269210c2ba4fc7aba93cd84954f633e7687b48313c1e0839",
+    "scripts/astra_runtime_v2/runtime.py": "4a2372feeb6b8f9872f824fc7c108e60dd1c4d234861363fce4a78fc9321319b",
+    "scripts/astra_retention_online_v1/evidence_runtime.py": "e9fdebd3a082f1fea704b509a49b34b367dc487bc92395c43ddafa0ebcf9db89",
+    "scripts/astra_observation_control_v1/hold.py": "f9999238992cbfb7b618fce1ce23f558ef6b53acd211801289f743091f652589",
+    "scripts/async_stability_v1/placement.py": "bdf960c6a8baf7f5a3672b603a340c9420e396c5e9fe7054339c33ea40263005",
+    "scripts/agentic/astra_agent_v4.py": "483d9aa245665b74cc80d1a63a75eacae29736982f0a14ebdb558c679d99e115",
+    "scripts/agentic/astra_bridge_v6.py": "c6bcdb7235abad7db507f2c4c3d388748c886aefe57cb3af502ff07f36f9e865",
+    "scripts/agentic/async_agent_v7.py": "af32f9fac66864a931858bf76295be0459d92db669857cd8c099195905f9107f",
+    "scripts/agentic/latent_supervisor_v4.py": "e781cab8158ddc6d8f2d5c305d6c885f76d701ea352ed85e6cb00cb5b2e8e156",
+    "scripts/agentic/latent_service_v7.py": "8689323ef7b3ab6ad9096e9c083fabb68c6315e1eeecb4304c94627f14e8b6cf",
+    "scripts/agentic/semantic_agent_v3.py": "a3d8f6ab1adb3f3f255d5af2fa819b14f73ec2ebdaef5b236cd8112c09f291f6",
+    "scripts/agentic/semantic_protocol_v3.py": "056b927f3409e08b0bfc1db9bbfc09f05a07c9be9bd224fafb7ca3c1e1f68efd",
+    "scripts/agentic/latent_data_v4.py": "ba1c8e08cfe89896a1b3b3445bb1145040508a8f99ab984f2de5d2b6774fc19a",
+    "scripts/agentic/latency_controller_v1.py": "ae28720b596af7bc2b226ea480166d0eeec72f3f4c113c9646ef2189b605215b",
+    "scripts/agentic/recovery_controller_v3.py": "42c77d048705f892fd2393e9c66f849a9e4f4642fdd7b2f10927d60e480b0072",
+    "source/BrainCo_DexHand/BrainCo_DexHand/algo/agentic/visual_student.py": "7d655c925ddce83f9eb58b727176af92d889b820694be25aeb852b7d39f0e513",
+    "source/BrainCo_DexHand/BrainCo_DexHand/tasks/direct/inhand_manipulation_env.py": "46c3533fbde58ae29c0f1b2119daf80f2351119f805a2a281b84cb46c19750eb",
+    "configs/evaluation/autonomous_completion_v1.json": "0614802989e275d144f5eac2cdbae914e0c53224f183d00fbb3b5a2a670dbf98"
+  },
+  "scope": "Same frozen control loop, public inputs and score. Published asset paths replace local admission paths. Removed an unused import. Simulation checks pending.",
+  "control_loop_ast_sha256": "6f8f373fad2efd875bc14754426c87546c174a19c685c8c5b2ee5c004612bec3"
+}

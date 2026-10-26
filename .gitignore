@@ -33,6 +33,7 @@ checkpoints/*
 checkpoints/student/*
 !checkpoints/student/viserdex_rgbd_student.pt
 !checkpoints/student/adapted_action_student.pt
+!checkpoints/student/paper_comparison_actor.pt
 !checkpoints/student/siglip2_text_adapter.pt
 !checkpoints/student/siglip2_text_cache.pt
 checkpoints/runtime/*

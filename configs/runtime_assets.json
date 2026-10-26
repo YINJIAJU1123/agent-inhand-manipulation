@@ -1,6 +1,6 @@
 {
   "snapshot": "2026-10-26",
-  "scope": "Reference runtime snapshot plus the paper adapted action component. Default simulation wrappers remain the 2026-10-22 reference runtime and do not reproduce the later paper cohorts.",
+  "scope": "Reference snapshot plus fixed paper actor assets and a paper evaluator under integration verification.",
   "assets": {
     "student": {
       "path": "checkpoints/student/viserdex_rgbd_student.pt",
@@ -44,6 +44,13 @@
       "bytes": 4053499,
       "original_filename": "mixed.pt",
       "role": "Paper action proposal only. Keep original reference for feedback and stopping."
+    },
+    "paper_comparison_actor": {
+      "path": "checkpoints/student/paper_comparison_actor.pt",
+      "sha256": "9bd2cdf271c9c844574f4be3a7ed250ea305b9bbda124f0dfd043237cf0f0b96",
+      "bytes": 4056017,
+      "original_filename": "old_only.pt",
+      "role": "Computed in all original paper arms for matched inference work. Not the separately fitted later component-study model."
     }
   }
 }

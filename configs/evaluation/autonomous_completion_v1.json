@@ -1,0 +1,37 @@
+{
+  "version": "autonomous_completion_benchmark_v1",
+  "frozen": true,
+  "success": "A system emits an autonomous stop, delivered semantic goal matches requested symbol and target color, full quaternion error <=0.16 rad at that stop, and no prior drop. A reach alone never terminates. No extra hold duration is imposed after stop.",
+  "primary_denominator": "Complete matched triplets without service errors or measured request wall latency >120s in any of the three arms. Exclude the same (repeat, seed, case) from all three. Preserve raw denominator as mandatory companion. No performance-based exclusions or reruns.",
+  "secondary": [
+    "correct ever-reach",
+    "raw autonomous success",
+    "false stop",
+    "reached without completion",
+    "drop",
+    "cold drop",
+    "waiting drop",
+    "abstain",
+    "horizon",
+    "service anomalies",
+    "actual model calls"
+  ],
+  "physics": "30Hz control, 15Hz RGB-D, 3Hz frozen pose verifier. Physics continues through real inference; response delivery aligned to max(actual completion, ceil(wall latency*30)).",
+  "initialization": "collision_clearance",
+  "startup": "fixed green through original V3, without fabricating semantic binding",
+  "max_steps": 3600,
+  "call_budget": 6,
+  "goal_yaw": 0.0,
+  "action_scale": 1.0,
+  "pose_threshold": 0.7,
+  "drop_rule": "Unchanged environment semantic_metrics.dropped; source frozen below.",
+  "arms": {
+    "astra": "gpt-6-astra low reasoning, existing tool prompt, learned RGB semantic memory, own stop proposal gated by frozen pose head",
+    "rule": "Qwen3-VL-4B-Instruct 4bit, frozen periodic inventory/rule supervisor, at most six actual model calls including language parse, plus shared frozen pose head autonomous stopping",
+    "latent": "Same Qwen backbone with existing latent_v2 LoRA and continuous goal head; preserve continuous 768D goal into student; text-only requested-symbol parser for bookkeeping; shared frozen pose head autonomous stopping"
+  },
+  "stop_comparability": "Identical evaluator success predicate. Baselines differ in stop proposal policy by design. Local baseline stop is supplied by a learned pose head, not claimed to be native VLM stop prediction. Pose head does not check semantic binding; independent scorer checks it.",
+  "frozen_pose_warning": "Existing pose head has not passed its original 90% precision deployment gate. This evaluation measures the fixed experimental systems and does not certify that head.",
+  "shared": "Frozen student, action scale, original V3 waiting controller, initialization, startup, pose head, camera and horizon. Same RGB semantic frontend executes in all arms; only Astra consumes its historical memory.",
+  "change_policy": "Do not change metric, thresholds, prompts, weights, cases, horizon or budget during or after this run. Implementation failure stops the run; any corrected protocol must get a new version with all invalidated records retained."
+}
