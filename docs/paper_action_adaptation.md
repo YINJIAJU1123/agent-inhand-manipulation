@@ -78,6 +78,8 @@ component does not reproduce that evaluator's computation or timing by itself.
 Use the full paper protocol and original feedback/stop path for an end-to-end
 comparison. The dedicated evaluator is now available through `scripts/run_paper_eval.py`
 with twelve scripted simulator checks. See [paper evaluation](paper_evaluation.md).
-Training-data packaging remains outstanding. No
-online success rate is certified by the component checks. Credentials, training
-samples, private service traces and unrelated checkpoints are not published here.
+The [paper training recipe](paper_action_training.md) now includes the exact
+continuation loop and a verified local data-export path. Distribution of the
+dataset bundle remains separate. No online success rate is certified by these
+checks. Credentials, training samples, private service traces and unrelated
+checkpoints are not published here.

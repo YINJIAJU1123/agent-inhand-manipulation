@@ -16,6 +16,7 @@ official VisERDex release.
 | Astra request bridge | `scripts/agentic/astra_bridge_v6.py` |
 | Paper six-scene evaluator (reference/adapted, Astra/latent) | `scripts/run_paper_eval.py` |
 | Paper action-only component | `scripts/agentic/adapted_actor.py` |
+| Paper mixed-data action fitting | `scripts/paper_training/train_action.py` |
 | Check the adapted action interface | `scripts/check_adapted_actor.py` |
 | Check paper control-loop and actor selection | `scripts/check_paper_runtime.py` |
 | Check all published weights | `scripts/check_runtime.py` |
@@ -103,6 +104,14 @@ integration only. Twelve local cases verified both paths, equal initial states,
 reference equality while disabled and actual candidate action changes. See the
 [verification record](docs/paper_runtime_verification.json). Genuine model services
 must be configured separately. No live success rate follows from these checks.
+
+### Paper training recipe
+
+The exact mixed/old-only action fitting code and a verified data export path are
+available in [paper action training](docs/paper_action_training.md). A separate
+dataset bundle and prior fitted checkpoint are required. The release checks core
+code parity, held-out teacher loss and one CPU update per arm. It does not claim
+a repeated full fit or a new task-success result.
 
 ### Fine-tuned VLM
 

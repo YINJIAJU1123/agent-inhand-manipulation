@@ -1,0 +1,62 @@
+{
+  "status": "passed",
+  "cloud_calls": 0,
+  "gpu_used": false,
+  "full_fit_repeated": false,
+  "source_sha256": "412dd5b9a1ea53882bcdc01ad77ff05f6c3927377ba79f566ea4e0c918891459",
+  "published_trainer_sha256": "54415cfa8e942680b2a197f94560497ed6adacb1eef7f841fa6137792ebc8e63",
+  "data_loader_sha256": "f2295b8363933adc30f370a4edc7929b7c2254b419d700b374c46591fb40bbb7",
+  "exporter_sha256": "c61a8df48cb71a86eee36854d37ba74a3ed2d85bddf8abaa97db359d60a6d8d3",
+  "checker_sha256": "97ed66dbc33a9bde1853c3284142bb43064b16c3ed56fa0b10f26011c857a8e4",
+  "epoch_loop_ast_equal": true,
+  "batch_and_validation_ast_equal": true,
+  "optimizer_setup_ast_equal": true,
+  "bundle_manifest_sha256": "2b7324d0d8caf9d1ad9153e80d710d2f615289a7d4b61ae9b548e55166429475",
+  "shards": 24,
+  "split_samples": {
+    "old_train": 11634,
+    "old_validation": 1528,
+    "new_train": 16485,
+    "new_validation": 6339
+  },
+  "tensor_export_exact": true,
+  "parent_checkpoint_sha256": "b000c4bc027ea3eb1a442c1b925f66002bddc98c1375116575693cb5bf249187",
+  "reference_checkpoint_sha256": "28f62f3e1f8590cd57479a89aff5d36f054b6c49d19e544a7820d72d10f8d6f7",
+  "cpu_validation": {
+    "old_validation": {
+      "mean": 0.1935887187719345,
+      "per_seed": {
+        "144115": {
+          "teacher_huber": 0.18324992060661316,
+          "n": 807
+        },
+        "144116": {
+          "teacher_huber": 0.20392751693725586,
+          "n": 721
+        }
+      }
+    },
+    "new_validation": {
+      "mean": 0.5445057153701782,
+      "per_seed": {
+        "146107": {
+          "teacher_huber": 0.5474307537078857,
+          "n": 3534
+        },
+        "146108": {
+          "teacher_huber": 0.5415806770324707,
+          "n": 2805
+        }
+      }
+    },
+    "selection_loss": 0.36904721707105637
+  },
+  "maximum_saved_validation_difference": 0.0,
+  "trainable_parameters": {
+    "old_only": 943685,
+    "mixed": 943685
+  },
+  "one_cpu_update_per_arm": true,
+  "frozen_head_parameters_unchanged": true,
+  "scope": "Exact exported data, core-code parity, held-out teacher-loss replay and one CPU optimizer update. Not a complete training reproduction, byte-identical fitted checkpoint claim, new simulation or performance estimate."
+}

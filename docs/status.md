@@ -5,7 +5,9 @@ are now included. The original full simulation wrappers remain the reference
 runtime snapshot documented below. They are not the evaluator used for the
 later paper studies. A separate `run_paper_eval.py` now preserves the paper
 control loop and has passed twelve scripted simulator integration cases.
-Training-data packaging and external model-service setup remain separate.
+The exact paper action fitting recipe and a verified local data export are now
+available in [paper action training](paper_action_training.md). Dataset distribution
+and external model-service setup remain separate.
 
 | Complete cohort | Astra reference | Astra adapted | Primary matched contrast |
 | --- | ---: | ---: | --- |
