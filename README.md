@@ -164,4 +164,4 @@ See [LICENSE](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md).
 
 ## Paper stopping study
 
-The fixed bounded and unbounded shared-stop models and a separate three-arm entry are documented in [the stopping guide](docs/paper_stopping.md). CPU source and recorded-feature parity pass. Standalone simulator integration of this entry is pending. These weights come from the completed paper study, not the ongoing paired-view experiment.
+The fixed bounded and unbounded shared-stop models and a separate three-arm entry are documented in [the stopping guide](docs/paper_stopping.md). CPU source and recorded-feature parity pass, followed by all eighteen scripted simulator integration cases. Those checks make no cloud calls and are excluded from performance results. These fixed weights come from the earlier completed paper study. The separate paired-view experiment does not change this release.

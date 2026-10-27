@@ -1,0 +1,76 @@
+{
+  "status": "completed",
+  "protocol_sha256": "d7c66b7b528fc8a9d02c515ab63d1f5fcd1fdd14a98216b512ec14f13d8f9321",
+  "cloud_calls": 0,
+  "results": {
+    "original": {
+      "status": "passed",
+      "episodes": 6,
+      "eligible_saved_decisions": 81,
+      "probability_frames": 90,
+      "reported_actor_change_steps": [
+        288,
+        71,
+        638,
+        288,
+        718,
+        97
+      ],
+      "artifacts_sha256": {
+        "report.json": "02c5b66ee13644f39d2db59e8ee1351030d0540b3002dd8432f563d08f3adb73",
+        "actor_usage.json": "7b6072aee8c759c7228b4ffccf19df790a57db282f53b0c0bb1dda049c05e0ab",
+        "stop_head_trace.json": "ef1884b2597dea2639f89c5ed1864964b6985d7f77e929fedbc5b7117c8fa8dd",
+        "initial_applied.json": "a7295737eede602bff9f66d8307d17250068d7e1b10f6d92cbd3dfbe99bc5bba",
+        "startup_trace.json": "e5d133b84fb02c887eafb8987e57099fcda38c723a066c3f08344e644a1b119a",
+        "actions.pt": "ad662ab2dce2467f6d3c3965ed59143c13371cc4b152dc6d6d0b169b5bbbc8e8"
+      }
+    },
+    "bounded4": {
+      "status": "passed",
+      "episodes": 6,
+      "eligible_saved_decisions": 95,
+      "probability_frames": 90,
+      "reported_actor_change_steps": [
+        718,
+        288,
+        288,
+        718,
+        338,
+        288
+      ],
+      "artifacts_sha256": {
+        "report.json": "b6dad23b4378c25d91fa94d54d290ec06ac526f3bd41eae6ba35c25916986866",
+        "actor_usage.json": "3ed78034857658575f7b712b037cb1be4f29663cc515cfe67fadac7430d2d8ab",
+        "stop_head_trace.json": "9c8bcc093f437d17442e6297f90e3d68a82ce27411c8e39663643d779057e8f4",
+        "initial_applied.json": "a7295737eede602bff9f66d8307d17250068d7e1b10f6d92cbd3dfbe99bc5bba",
+        "startup_trace.json": "439d513a58b2cc568182570682c8495938289f6c5d40e9f0f594efb9afe97a5e",
+        "actions.pt": "35e4d95bb04893c83cf5ce5224b88c3af245ece0d7bd8eda44e7f4cb6a5d819d"
+      }
+    },
+    "unbounded": {
+      "status": "passed",
+      "episodes": 6,
+      "eligible_saved_decisions": 74,
+      "probability_frames": 90,
+      "reported_actor_change_steps": [
+        718,
+        288,
+        328,
+        408,
+        288,
+        388
+      ],
+      "artifacts_sha256": {
+        "report.json": "b19290d1ebefcdfd5e687bce31101e7dbbf80397a0d71d997534af3b34cba83c",
+        "actor_usage.json": "9b1e1981c905dbac0aeec5253884300bb342192823a8403f650ea25557db0759",
+        "stop_head_trace.json": "89ef6619cf58b6d699c3f177d1f01d82003658d6d674b34ab1309654f943bce7",
+        "initial_applied.json": "a7295737eede602bff9f66d8307d17250068d7e1b10f6d92cbd3dfbe99bc5bba",
+        "startup_trace.json": "4019538f1c2ad9f9e590a02b8670597f5ffd2ac73bf058f74decb999d09377f1",
+        "actions.pt": "54cb24201e7c42c4aa8cf415cb5579780da2f8ba4f98705ba2a9dc5eaf9f7a28"
+      }
+    }
+  },
+  "physical_initial_states_equal": true,
+  "publication_ready_for_review": true,
+  "scope": "Scripted integration only. These eighteen cases are excluded from every task-performance table."
+}

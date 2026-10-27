@@ -37,5 +37,14 @@
     "max_absolute_probability_difference": 0.0,
     "scope": "Previously collected training features only. No current experiment audit data or task-success scores."
   },
-  "scope": "CPU source and inference verification. Full simulator integration is a separate gate."
+  "scope": "CPU parity record plus separate eighteen-case scripted simulator integration. No new autonomous performance estimate.",
+  "simulator_integration": {
+    "status": "passed",
+    "report": "docs/paper_stop_integration.json",
+    "report_sha256": "6f7aab22d874a93197d937c2ee7b6a53f24e556abed7bac8dc7d29fc9f9775c4",
+    "protocol_sha256": "d7c66b7b528fc8a9d02c515ab63d1f5fcd1fdd14a98216b512ec14f13d8f9321",
+    "episodes": 18,
+    "cloud_calls": 0,
+    "excluded_from_performance": true
+  }
 }

@@ -2,7 +2,7 @@
 
 This entry releases both stop corrections used in the completed three-arm,
 108-episode Astra study. It keeps the fixed mixed actor and original waiting
-controller. The ongoing paired-view training experiment is separate and is not
+controller. The separate completed paired-view training experiment is separate and is not
 loaded here.
 
 ## What changes
@@ -78,7 +78,13 @@ implementation on the checked host. Four inference-class ASTs and the complete
 control loop match. Invalid cadence, nonfinite probabilities, stale proposals,
 unsynchronized evidence and unknown arms are rejected.
 
-The standalone simulator check for this new entry is pending. The existing
-12-case simulator verification of the action-only evaluator does not establish
-integration of this additional stop path. No new live evaluation has been run for
-this release. Verification is recorded in `docs/paper_stop_verification.json`.
+The standalone simulator check passed all eighteen cases, six per arm. All three
+arms start from identical physical states. The integration checks recorded
+probabilities, eligible proposals, unchanged native gates and exact equality of
+actions when adaptation is disabled. The corrected actor is exercised in every
+case. These scripted cases are excluded from performance tables and made no
+cloud calls. The first attempt failed before rollout because of a Python module
+name collision. Renamed private stopping modules resolved it without changing
+control-loop or inference-class ASTs. The failed attempt remains in the research
+record. Verification is recorded in `docs/paper_stop_verification.json` and
+`docs/paper_stop_integration.json`.

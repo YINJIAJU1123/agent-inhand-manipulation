@@ -1,5 +1,5 @@
 {
-  "status": "cpu_verified_simulator_pending",
+  "status": "cpu_and_scripted_simulator_verified",
   "research_evaluator_sha256": "3c0fba9e3be2135d9cd741ff975202643a61ceb3b00c2808eb9c2eb35f206e08",
   "control_loop_ast_sha256": "968e77b9256720c6e26d9761a3d37cb9235040ab9c262e04842d1af9a19de1e7",
   "classes": [
