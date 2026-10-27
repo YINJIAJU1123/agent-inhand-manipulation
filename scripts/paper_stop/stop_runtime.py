@@ -3,8 +3,8 @@ import hashlib
 import json
 from pathlib import Path
 import torch
-import model as heads
-import history as temporal
+import stop_correction as heads
+import stop_history as temporal
 import completion as eligibility
 
 ROOT=Path(__file__).resolve().parents[2]

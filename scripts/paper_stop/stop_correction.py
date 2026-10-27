@@ -1,6 +1,6 @@
 """Bounded and unbounded residuals, retaining the original base logit."""
 import torch
-import rich as old
+import stop_features as old
 
 class StopCorrection(old.RichStop):
     def __init__(self, bounded):

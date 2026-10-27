@@ -5,21 +5,21 @@
   "classes": [
     {
       "name": "RichStop",
-      "published": "scripts/paper_stop/rich.py",
+      "published": "scripts/paper_stop/stop_features.py",
       "research": "scripts/semantic_stop_rich_v1/model.py",
       "source_sha256": "9f98207254e06675ad98ae98e117acb0e74087ee4550fbeafc7336a00c54138e",
       "ast_sha256": "83ba58016a2fd2577ef91b193c7904162a58a65694615ddc48d7b7da8a87b96c"
     },
     {
       "name": "StopCorrection",
-      "published": "scripts/paper_stop/model.py",
+      "published": "scripts/paper_stop/stop_correction.py",
       "research": "scripts/stop_confidence_ablation_v1/confidence_model.py",
       "source_sha256": "6f8593da9d4d9a5dfd607adb88163422dcbfd3a9f26941fc9b3319fc51b1c7c8",
       "ast_sha256": "9de1504644ad5b2f3d0d09fc7c0dba484fdeb917cc793ff164935ebd4d1082fd"
     },
     {
       "name": "TemporalStopRuntime",
-      "published": "scripts/paper_stop/history.py",
+      "published": "scripts/paper_stop/stop_history.py",
       "research": "scripts/semantic_stop_rich_live_v1/runtime.py",
       "source_sha256": "1a15b68bfc41af04052e2e28b516060abe405d861f9fa8ffa37f8af72ae30e92",
       "ast_sha256": "da136e1ce2c24fc34f30d26052d280d45b8cb9241213955ba54236c4c4f332ef"
@@ -33,10 +33,10 @@
     }
   ],
   "published_sha256": {
-    "scripts/paper_stop/stop_runtime.py": "ac977607131d13a50924348692a6dfc644a3f6fa5130b886d55ddacf8a345c6a",
-    "scripts/paper_stop/history.py": "af36b3ba693844d376b0d29a63ae8f8d923d92f9dfb248f054040094e67163dd",
-    "scripts/paper_stop/model.py": "29be6a743c9495d28868ba8a8b8d3df99ca0a2b33834c3c1a97cec0317bd3b97",
-    "scripts/paper_stop/rich.py": "d9a391bbc3c119c3694d5f0c727eba6189371c9b754f74a026da9159b866bbf2",
+    "scripts/paper_stop/stop_runtime.py": "fac5a30646889f8e9fdfa7b3595a5a70b5a9fa1db892e8f92794cc4b14646edd",
+    "scripts/paper_stop/stop_history.py": "af36b3ba693844d376b0d29a63ae8f8d923d92f9dfb248f054040094e67163dd",
+    "scripts/paper_stop/stop_correction.py": "ea972c9e100e5a588210c294ea546c5b9a7b2f1b301b8b55fcb5c30629388610",
+    "scripts/paper_stop/stop_features.py": "d9a391bbc3c119c3694d5f0c727eba6189371c9b754f74a026da9159b866bbf2",
     "scripts/paper_stop/evaluate.py": "07cbc5ef3420aa05a3ea700be7ce0263c681ff9dc2d1e739e621ecc7c0106924",
     "scripts/run_paper_stop_eval.py": "a94c174fea264744242704b16fd10a6f11b1bcdd26a7e5faa5cfc00062a0d4e2",
     "scripts/check_paper_stop.py": "618a929039bce78af5e5cf09474319f4b27cfa6089801cfd2eb02cda0d916676",
