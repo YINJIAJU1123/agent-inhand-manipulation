@@ -1,0 +1,25 @@
+{
+  "version": "paper_shared_stop_release_v1",
+  "scope": "Both preselected heads from the complete 108-episode shared-stop study. No selection using live or replay outcomes.",
+  "threshold": 0.7,
+  "frame_dim": 125,
+  "history": 3,
+  "cadence_control_steps": 10,
+  "assets": {
+    "bounded4": {
+      "path": "checkpoints/runtime/stop_bounded4.pt",
+      "sha256": "1de68888cf485baaf1b49d2396581e66818ed0faabd2cd7eb3c70ce56ef7cd48",
+      "bytes": 164885,
+      "epoch": 63
+    },
+    "unbounded": {
+      "path": "checkpoints/runtime/stop_unbounded.pt",
+      "sha256": "5a931eb640287b2ee81af061805488f796cc57fd6c422764513f4cb9c7f0f16c",
+      "bytes": 164901,
+      "epoch": 28
+    }
+  },
+  "training_protocol_sha256": "981e650eaed40441533c2cb27efdc8351cea7243445c043cd869fbf1404726de",
+  "training_result_sha256": "b56dfbf180272ab05e24e0f7d1bbe06cd2fef7a630af9168d640bd2305e2e57b",
+  "independent_learning_audit_sha256": "796bb7e4516f8575e2f994161655deda8a9146b5ddf959f4d01b85998016c90a"
+}

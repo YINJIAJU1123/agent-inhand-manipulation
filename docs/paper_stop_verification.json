@@ -1,0 +1,41 @@
+{
+  "status": "passed",
+  "cloud_calls": 0,
+  "simulation_launched": false,
+  "training_launched": false,
+  "control_loop_ast_equal": true,
+  "class_ast_equal": 4,
+  "asset_admission": {
+    "arms": {
+      "bounded4": {
+        "epoch": 63,
+        "checkpoint_sha256": "1de68888cf485baaf1b49d2396581e66818ed0faabd2cd7eb3c70ce56ef7cd48"
+      },
+      "unbounded": {
+        "epoch": 28,
+        "checkpoint_sha256": "5a931eb640287b2ee81af061805488f796cc57fd6c422764513f4cb9c7f0f16c"
+      }
+    },
+    "validity_only": true,
+    "performance_selection": false,
+    "scope": "Fixed selected weights from the recorded paper study. No fitting, efficacy screen or new live validation occurs in this loader."
+  },
+  "rejected_invalid_inputs": [
+    "off_cadence",
+    "nonfinite",
+    "unsynchronized",
+    "stale_proposal",
+    "unknown_arm"
+  ],
+  "recorded_parity": {
+    "source_sha256": "024357c9987641f9767c46d8b91e6594cb3b3b3cacb1820290754d45a09b3640",
+    "source": "outputs/stop_onpolicy_collection_v1/development_20261026/data/train_153101/data.pt",
+    "rows": 2160,
+    "cases": 6,
+    "probability_values": 38880,
+    "decisions": 38880,
+    "max_absolute_probability_difference": 0.0,
+    "scope": "Previously collected training features only. No current experiment audit data or task-success scores."
+  },
+  "scope": "CPU source and inference verification. Full simulator integration is a separate gate."
+}

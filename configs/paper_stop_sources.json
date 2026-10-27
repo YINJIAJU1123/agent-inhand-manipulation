@@ -1,0 +1,75 @@
+{
+  "status": "cpu_verified_simulator_pending",
+  "research_evaluator_sha256": "3c0fba9e3be2135d9cd741ff975202643a61ceb3b00c2808eb9c2eb35f206e08",
+  "control_loop_ast_sha256": "968e77b9256720c6e26d9761a3d37cb9235040ab9c262e04842d1af9a19de1e7",
+  "classes": [
+    {
+      "name": "RichStop",
+      "published": "scripts/paper_stop/rich.py",
+      "research": "scripts/semantic_stop_rich_v1/model.py",
+      "source_sha256": "9f98207254e06675ad98ae98e117acb0e74087ee4550fbeafc7336a00c54138e",
+      "ast_sha256": "83ba58016a2fd2577ef91b193c7904162a58a65694615ddc48d7b7da8a87b96c"
+    },
+    {
+      "name": "StopCorrection",
+      "published": "scripts/paper_stop/model.py",
+      "research": "scripts/stop_confidence_ablation_v1/confidence_model.py",
+      "source_sha256": "6f8593da9d4d9a5dfd607adb88163422dcbfd3a9f26941fc9b3319fc51b1c7c8",
+      "ast_sha256": "9de1504644ad5b2f3d0d09fc7c0dba484fdeb917cc793ff164935ebd4d1082fd"
+    },
+    {
+      "name": "TemporalStopRuntime",
+      "published": "scripts/paper_stop/history.py",
+      "research": "scripts/semantic_stop_rich_live_v1/runtime.py",
+      "source_sha256": "1a15b68bfc41af04052e2e28b516060abe405d861f9fa8ffa37f8af72ae30e92",
+      "ast_sha256": "da136e1ce2c24fc34f30d26052d280d45b8cb9241213955ba54236c4c4f332ef"
+    },
+    {
+      "name": "SharedStopOnly",
+      "published": "scripts/paper_stop/stop_runtime.py",
+      "research": "scripts/stop_onpolicy_live_v1/stop_runtime.py",
+      "source_sha256": "e5f4d715004822c89c0d698eaefc739260a84ddb9d4dd8b41ee4c03e685e5727",
+      "ast_sha256": "11d9be78b6fd7fd80635d999ea9916e41ff09b4d7c01aa0fd52d394f798d45dc"
+    }
+  ],
+  "published_sha256": {
+    "scripts/paper_stop/stop_runtime.py": "ac977607131d13a50924348692a6dfc644a3f6fa5130b886d55ddacf8a345c6a",
+    "scripts/paper_stop/history.py": "af36b3ba693844d376b0d29a63ae8f8d923d92f9dfb248f054040094e67163dd",
+    "scripts/paper_stop/model.py": "29be6a743c9495d28868ba8a8b8d3df99ca0a2b33834c3c1a97cec0317bd3b97",
+    "scripts/paper_stop/rich.py": "d9a391bbc3c119c3694d5f0c727eba6189371c9b754f74a026da9159b866bbf2",
+    "scripts/paper_stop/evaluate.py": "07cbc5ef3420aa05a3ea700be7ce0263c681ff9dc2d1e739e621ecc7c0106924",
+    "scripts/run_paper_stop_eval.py": "a94c174fea264744242704b16fd10a6f11b1bcdd26a7e5faa5cfc00062a0d4e2",
+    "scripts/check_paper_stop.py": "618a929039bce78af5e5cf09474319f4b27cfa6089801cfd2eb02cda0d916676",
+    "configs/paper_stop_assets.json": "743387a52d532592fc00a95ac28696a8c17455965c64a7c4f54faa3e1cf083ae",
+    "configs/paper_runtime_sources.json": "a3a183da5629b17a3c0091d1d3130dfbd960eba59570318248af0fda6cf8fd75",
+    "configs/runtime_assets.json": "997be72e6c87a596e738e2c794551c8ae27f105e3a90087e53461313ebe2210b",
+    "scripts/semantic_completion_v1/common.py": "1e7b1cf6cf1ad7a37d2efc0c8fafa9d52b8444c1a76d205c2cb5b5dd662a731e",
+    "scripts/paper_runtime/memory_supervisors.py": "abcf35188501f00cec6b91adb8e0be7b32d28a04416296087c27c6804e8a4f53",
+    "scripts/paper_runtime/adapter.py": "88b704de61db77187b6d2eeee92249baef88d8f31b86ead7afa6bcd2ca7a017c",
+    "scripts/paper_runtime/completion.py": "1a23642e7f53833f2982612d1264811ddc514d5cf4a0a5d78dbce960bb036225",
+    "scripts/paper_runtime/supervisors.py": "b04bc2cb5c8781552d33863a2f839fc2e1d7bd2812afa27e54bbd61b30d76586",
+    "scripts/paper_runtime/memory_context.py": "dd65f6f6abd54f211a97f3c5562999ab918b608e66438a67f7a8957dfd562e4c",
+    "scripts/paper_runtime/evaluate.py": "035e473289658a9d5acf871e04470e49cecf2058afd0ccac5ff3aef5bce358d3",
+    "scripts/paper_runtime/actor_runtime.py": "63d67814a56b1a18c1e6b6745f4274c168b4b3de552c0b72e599daa51739be3f",
+    "scripts/semantic_completion_v1/agent.py": "a21466d1341e2bb970481e91872615ab935bf747790c063ba061a8185ba4f1e8",
+    "scripts/semantic_completion_v1/scoring.py": "1421dd64759b0bca269210c2ba4fc7aba93cd84954f633e7687b48313c1e0839",
+    "scripts/astra_runtime_v2/runtime.py": "4a2372feeb6b8f9872f824fc7c108e60dd1c4d234861363fce4a78fc9321319b",
+    "scripts/astra_retention_online_v1/evidence_runtime.py": "e9fdebd3a082f1fea704b509a49b34b367dc487bc92395c43ddafa0ebcf9db89",
+    "scripts/astra_observation_control_v1/hold.py": "f9999238992cbfb7b618fce1ce23f558ef6b53acd211801289f743091f652589",
+    "scripts/async_stability_v1/placement.py": "bdf960c6a8baf7f5a3672b603a340c9420e396c5e9fe7054339c33ea40263005",
+    "scripts/agentic/astra_agent_v4.py": "483d9aa245665b74cc80d1a63a75eacae29736982f0a14ebdb558c679d99e115",
+    "scripts/agentic/astra_bridge_v6.py": "c6bcdb7235abad7db507f2c4c3d388748c886aefe57cb3af502ff07f36f9e865",
+    "scripts/agentic/async_agent_v7.py": "af32f9fac66864a931858bf76295be0459d92db669857cd8c099195905f9107f",
+    "scripts/agentic/latent_supervisor_v4.py": "e781cab8158ddc6d8f2d5c305d6c885f76d701ea352ed85e6cb00cb5b2e8e156",
+    "scripts/agentic/latent_service_v7.py": "8689323ef7b3ab6ad9096e9c083fabb68c6315e1eeecb4304c94627f14e8b6cf",
+    "scripts/agentic/semantic_agent_v3.py": "a3d8f6ab1adb3f3f255d5af2fa819b14f73ec2ebdaef5b236cd8112c09f291f6",
+    "scripts/agentic/semantic_protocol_v3.py": "056b927f3409e08b0bfc1db9bbfc09f05a07c9be9bd224fafb7ca3c1e1f68efd",
+    "scripts/agentic/latent_data_v4.py": "ba1c8e08cfe89896a1b3b3445bb1145040508a8f99ab984f2de5d2b6774fc19a",
+    "scripts/agentic/latency_controller_v1.py": "ae28720b596af7bc2b226ea480166d0eeec72f3f4c113c9646ef2189b605215b",
+    "scripts/agentic/recovery_controller_v3.py": "42c77d048705f892fd2393e9c66f849a9e4f4642fdd7b2f10927d60e480b0072",
+    "source/BrainCo_DexHand/BrainCo_DexHand/algo/agentic/visual_student.py": "7d655c925ddce83f9eb58b727176af92d889b820694be25aeb852b7d39f0e513",
+    "source/BrainCo_DexHand/BrainCo_DexHand/tasks/direct/inhand_manipulation_env.py": "46c3533fbde58ae29c0f1b2119daf80f2351119f805a2a281b84cb46c19750eb",
+    "configs/evaluation/autonomous_completion_v1.json": "0614802989e275d144f5eac2cdbae914e0c53224f183d00fbb3b5a2a670dbf98"
+  },
+  "scope": "Entry paths and fixed published asset loader adapted. Full control-loop AST and all four inference classes unchanged."
+}

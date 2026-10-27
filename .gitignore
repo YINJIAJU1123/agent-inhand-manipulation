@@ -44,3 +44,6 @@ checkpoints/runtime/*
 .env.*
 credentials*.json
 *token*.json
+
+!checkpoints/runtime/stop_bounded4.pt
+!checkpoints/runtime/stop_unbounded.pt

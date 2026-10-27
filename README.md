@@ -161,3 +161,7 @@ are not tracked.
 
 Based on [BrainCo RevoLab](https://github.com/BrainCoTech/RevoLab) and Isaac Lab.
 See [LICENSE](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Paper stopping study
+
+The fixed bounded and unbounded shared-stop models and a separate three-arm entry are documented in [the stopping guide](docs/paper_stopping.md). CPU source and recorded-feature parity pass. Standalone simulator integration of this entry is pending. These weights come from the completed paper study, not the ongoing paired-view experiment.
