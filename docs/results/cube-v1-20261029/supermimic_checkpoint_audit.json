@@ -1,0 +1,129 @@
+{
+  "source_repository": "https://github.com/KeZhang19/supermimic",
+  "source_commit": "c70f96d370821ebaec25ea43e07580cd80f17722",
+  "checkpoint_sha256": "ec2890dfd885328e2c9aef11ad52390dd54eda91a80077924a89b100ae76eb37",
+  "iteration": 19234,
+  "payload_keys": [
+    "format",
+    "version",
+    "iteration",
+    "actor",
+    "config",
+    "noise_config",
+    "metadata",
+    "source_checkpoint_sha256",
+    "usage"
+  ],
+  "config": {
+    "geometry_enabled": true,
+    "compile_geometry": true,
+    "geometry_loss_weight": 0.5,
+    "grouped_physical_loss": true,
+    "control_dt": 0.05,
+    "ema_alpha": 0.988819660112501,
+    "success_bonus": 166.66666666666666,
+    "action_rate_weight": 0.0044444444444444444,
+    "actor_lr_scale": 1.0,
+    "history": 10,
+    "wm_window": 8,
+    "horizon": 8,
+    "wm_updates": 10,
+    "wm_batch": 2048,
+    "actor_batch": 4096,
+    "critic_epochs": 5,
+    "critic_minibatches": 4,
+    "microbatch": 128,
+    "wm_microbatch": 2048,
+    "actor_microbatch": 2048,
+    "critic_microbatch": 32768,
+    "amp": "bf16",
+    "buffer_steps": 1000,
+    "warmup_steps": 64,
+    "event_capacity": 4096,
+    "event_fraction": 0.25,
+    "actor_ramp_iters": 1000,
+    "wm_only_iters": 500,
+    "utd": 0.4,
+    "learning_rate": 0.0002,
+    "lr_decay_iters": 250000,
+    "gamma": 0.9850375627355538,
+    "lam": 0.9259454627568515,
+    "exploration": 0.1,
+    "wm_hidden": [
+      2048,
+      2048,
+      2048
+    ],
+    "actor_hidden": [
+      2048,
+      1024,
+      512,
+      256
+    ],
+    "critic_hidden": [
+      256,
+      128
+    ],
+    "survival_width": 0.01
+  },
+  "tensor_shapes": {
+    "obs_norm.mean": [
+      124
+    ],
+    "obs_norm.variance": [
+      124
+    ],
+    "obs_norm.count": [],
+    "net.0.weight": [
+      2048,
+      1240
+    ],
+    "net.0.bias": [
+      2048
+    ],
+    "net.2.weight": [
+      1024,
+      2048
+    ],
+    "net.2.bias": [
+      1024
+    ],
+    "net.4.weight": [
+      512,
+      1024
+    ],
+    "net.4.bias": [
+      512
+    ],
+    "net.6.weight": [
+      256,
+      512
+    ],
+    "net.6.bias": [
+      256
+    ],
+    "net.8.weight": [
+      21,
+      256
+    ],
+    "net.8.bias": [
+      21
+    ]
+  },
+  "parameters": 5301269,
+  "strict_load": true,
+  "cpu_mean_input_forward_finite": true,
+  "output_shape": [
+    2,
+    21
+  ],
+  "direct_replacement_for_pose_latent_student_v1": false,
+  "reasons": [
+    "SuperMimic Actor state_dict differs from recurrent BeliefStudent.",
+    "Input is history10 x obs124 including target and relative quaternions.",
+    "Current latent student consumes proprio109, measured pose7, latent768.",
+    "Released sphere runs at 20 Hz; frozen cube runtime enforces 30 Hz.",
+    "Release includes no sphere RGB pose-estimator checkpoint."
+  ],
+  "scope": "Hash, strict CPU loading and mean-input network forward only. No simulation, RGB perception validation or semantic success estimate."
+}

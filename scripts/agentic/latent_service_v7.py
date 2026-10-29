@@ -23,21 +23,31 @@ class RemotePredictor:
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--checkpoint',required=True);p.add_argument('--port',type=int,default=18772)
+    p.add_argument('--backend',choices=('legacy','rslcube'),default='legacy')
+    p.add_argument('--model_path',help='Local backbone path for a relocated RSLCube checkpoint; weights are not rewritten.')
     a=p.parse_args()
-    from latent_goal_v4 import LatentPredictor
-    predictor=LatentPredictor(a.checkpoint)
+    if a.backend=='rslcube':
+        import sys
+        from pathlib import Path
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'pose_latent_student_v1'))
+        from grounding import RSLCubeLatentPredictor as LatentPredictor
+    else:
+        from latent_goal_v4 import LatentPredictor
+    if a.model_path and a.backend!='rslcube':raise ValueError('Backbone relocation is only supported for RSLCube')
+    predictor=LatentPredictor(a.checkpoint,model_path=a.model_path) if a.model_path else LatentPredictor(a.checkpoint)
+    frame_size=120 if a.backend=='rslcube' else 512
     class Handler(BaseHTTPRequestHandler):
         def log_message(self,*args): pass
         def send(self,code,data):
             body=json.dumps(data).encode();self.send_response(code);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
         def do_GET(self):
-            self.send(200,dict(checkpoint_sha256=predictor.checkpoint_sha256,adapter_sha256=predictor.adapter_sha256,queue='single GPU serialized requests'))
+            self.send(200,dict(checkpoint_sha256=predictor.checkpoint_sha256,adapter_sha256=predictor.adapter_sha256,queue='single GPU serialized requests',backend=a.backend,frame_size=frame_size))
         def do_POST(self):
             try:
                 length=int(self.headers['Content-Length'])
                 if not 0<length<4000000: raise ValueError('request size')
                 data=json.loads(self.rfile.read(length));rgb=np.asarray(Image.open(io.BytesIO(base64.b64decode(data['image']))).convert('RGB'))
-                if rgb.shape!=(512,512,3):raise ValueError('image shape')
+                if rgb.shape!=(frame_size,frame_size,3):raise ValueError('image shape')
                 start=time.monotonic();result=predictor.predict(rgb,data['instruction']);result['goal_embedding']=result['goal_embedding'].tolist();result['inference_s']=time.monotonic()-start
                 self.send(200,result)
             except Exception as e:self.send(500,dict(error=type(e).__name__+': '+str(e)))

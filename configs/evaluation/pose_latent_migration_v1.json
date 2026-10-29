@@ -1,0 +1,110 @@
+{
+  "version": "pose_latent_migration_v1",
+  "status": "awaiting_common_stack_development_and_actor_selection",
+  "object": "colleague_released_RSLCube",
+  "source_commit": "93317c16e3f6ab6b35c7d36174c5b6c7fe090e80",
+  "source_student_sha256": "da23adb565d8f26c4c73e3b12d5bc1f53747dcb6d4e7cccf1cbaf169a2604016",
+  "frozen_requirements": {
+    "raw_episodes_per_condition": 40,
+    "evaluation_seeds": [
+      183101,
+      183102
+    ],
+    "episodes_per_seed": 20,
+    "success": "Autonomous stop at the correctly bound requested semantic target, full quaternion error <=0.16 rad, no previous drop. Reaching alone is not completion. No extra hold requirement.",
+    "horizon_seconds": 120,
+    "control_hz": 30,
+    "maximum_steps": 3600,
+    "call_budget": 6,
+    "service_exclusions": "Identical matched-triplet exclusion for a service error or measured model request latency >120 seconds in any arm. Always report all 40 raw trials alongside eligible results. No performance-based exclusion or replacement trials.",
+    "continuous_physics_during_inference": true,
+    "student_goal_input": "continuous 768-dimensional latent directly into student",
+    "target_quaternion_in_student_input": false,
+    "relative_goal_quaternion_in_student_input": false,
+    "scene_generalization_in_this_round": false,
+    "sphere_in_this_round": false
+  },
+  "training": {
+    "seed": 182801,
+    "stage_order": [
+      "audit_partial_weight_migration",
+      "validate_released_policy_in_pinned_newton_environment",
+      "distill_latent_interface_from_frozen_released_student",
+      "teacher_dagger_adaptation",
+      "validate_measured_pose_estimator_in_closed_loop",
+      "adapt_wait_recovery_and_completion_modules",
+      "freeze_system_and_run_formal_comparisons"
+    ],
+    "interface_stage": "Train goal projection and new latent input columns only. Freeze inherited weights and normalizers. Adam with zero weight decay.",
+    "pose_noise_stage": "Use released simulated perception noise for initial distillation. This is not evidence for RGB pose-estimator performance.",
+    "teacher_only_information": "Goal quaternion and privileged simulation state may label training data but are excluded from deployment student inputs.",
+    "validation_seeds": [
+      182901,
+      182902
+    ],
+    "formal_trials_used_for_checkpoint_selection": false
+  },
+  "formal_conditions": {
+    "low_level_diagnostics": [
+      "released_pose_goal_student",
+      "migrated_pose_latent_student"
+    ],
+    "main_comparison": [
+      "astra_full",
+      "finetuned_vlm_full",
+      "rule_vlm_full"
+    ],
+    "astra_ablation_new_conditions": [
+      "fixed_slow_no_execution_recovery",
+      "learned_waiting_only",
+      "learned_execution_only_with_fixed_slow_waiting"
+    ],
+    "astra_ablation_reused_condition": "astra_full",
+    "total_planned_raw_trials": 320,
+    "low_level_metric_scope": "Physical reach/drop/pose diagnostics, reported separately from autonomous semantic success. A low-level controller does not supply an agent stop decision.",
+    "component_design": "2x2 learned waiting x learned execution recovery. Same final measured-pose stopping path, student, perception, image inputs, prompts, horizon and call budget in all Astra arms. Upper-provider comparisons share the selected full downstream stack.",
+    "checkpoint_selection_status": "Pending full common-stack development and fixed-public-plan comparisons. No formal seed data may select checkpoints."
+  },
+  "remaining_admission_gates": [
+    "Hash and validate the cube face-to-color-to-target-orientation manifest from the actual released assets.",
+    "Run the original checkpoint with its bound environment before training the replacement.",
+    "Measure actual camera pose estimation and pose-frame calibration. Do not label simulated pose noise as CNN inference.",
+    "Freeze adapted module checkpoints, prompts, goal mapping and initialization. Port the frozen drop predicate in physical units and matching frames; never substitute generic environment termination for benchmark drop. Freeze implementation before any formal 40-trial condition.",
+    "Keep new-backend results separate from historical backend results."
+  ],
+  "runtime_capacity_revision_20261029": {
+    "nconmax": 4096,
+    "njmax": 1024,
+    "reason": "Long continuous trajectories exceeded released 1152 contact capacity. Use common increased capacity for all arms and stop on any solver capacity warning.",
+    "formal_seeds_used": false,
+    "frozen_requirements_sha256": "85da9291e02596910cf0bad1e633b8dd3e5fd6500d7f43e083588b5dbbc3e594",
+    "old_affected_results": "development diagnostics only; inadmissible"
+  },
+  "prospective_factorial_revision_20261029": {
+    "created_at": "2026-10-28T23:53:48.298806+00:00",
+    "formal_trials_started": false,
+    "previous_formal_conditions": {
+      "low_level_diagnostics": [
+        "released_pose_goal_student",
+        "migrated_pose_latent_student"
+      ],
+      "main_comparison": [
+        "astra_full",
+        "finetuned_vlm_full",
+        "rule_vlm_full"
+      ],
+      "astra_ablation_new_conditions": [
+        "no_wait_recovery_no_completion_learning",
+        "wait_recovery_only",
+        "completion_learning_only"
+      ],
+      "astra_ablation_reused_condition": "astra_full",
+      "total_planned_raw_trials": 320,
+      "low_level_metric_scope": "Physical reach/drop/pose diagnostics, reported separately from autonomous semantic success. A low-level controller does not supply an agent stop decision."
+    },
+    "reason": "Completion-learning variants have not shown a fresh first-event advantage. The next formal component study instead isolates learned waiting and learned execution recovery. Failed completion variants remain development evidence.",
+    "success_contract_sha256": "85da9291e02596910cf0bad1e633b8dd3e5fd6500d7f43e083588b5dbbc3e594",
+    "final_actor_selection_pending": true,
+    "active_development_conditions_unchanged": true
+  }
+}

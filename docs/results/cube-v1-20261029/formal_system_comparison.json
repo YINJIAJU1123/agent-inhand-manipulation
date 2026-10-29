@@ -1,0 +1,953 @@
+{
+  "format": "pose_latent_bare_vlm_addendum_summary_v1",
+  "complete": true,
+  "created_at": "2026-10-29T08:10:27.765155+00:00",
+  "scope": "Supplemental complete-system comparison requested after parent outcomes existed.",
+  "raw_trials_per_condition": 40,
+  "supplemental_declaration": {
+    "created_after_parent_trials_started": true,
+    "parent_outcomes_used_for_new_weight_selection": false,
+    "new_weights_selected": false,
+    "old_conditions_modified": false,
+    "planned_new_raw_trials": 80,
+    "retries": false,
+    "replacement_trials": false,
+    "rationale": "User clarified Astra-only learned adaptation. Add latest-weight bare VLM and rule baselines with unchanged physics, success and exclusions. Parent shared-controller outcomes remain auxiliary; no weights are selected from them."
+  },
+  "formal_release_sha256": "c74dfbbceaa00e27db4b2add0624dd1efe94d3100be6e585c65cbeb976fa1a7e",
+  "parent_release_sha256": "07922f1aa5522fd665b6fc0a70da6aa75e6d52801b387372427a18d6e3e0ef28",
+  "conditions": {
+    "finetuned_vlm_bare": {
+      "planned_raw_trials": 40,
+      "observed_trials": 40,
+      "complete": true,
+      "physics_log_valid": true,
+      "physics_checks_pending": [],
+      "physics_issues": [],
+      "success": 27,
+      "failure_subtypes": {
+        "success": 27,
+        "pose_false_stop": 2,
+        "drop_execution": 9,
+        "semantic_wrong_binding": 2
+      },
+      "failure_contexts": {
+        "pose_false_stop": 2,
+        "inspection_without_binding": 5,
+        "wrong_bound_goal": 1,
+        "correct_bound_goal": 3,
+        "semantic_wrong_binding": 2
+      },
+      "raw_success_rate": 0.675,
+      "raw_wilson_95": [
+        0.5201774618987768,
+        0.799154977682173
+      ],
+      "recorded_exclusions": 0,
+      "actual_calls": 130,
+      "per_seed": {
+        "183101": {
+          "trials": 20,
+          "success": 14
+        },
+        "183102": {
+          "trials": 20,
+          "success": 13
+        }
+      },
+      "runs": [
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_finetuned_vlm_bare/vlm_183101",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "7cb8c854dc99988924b159c4dd129f4c39009e605fd6aeb7be6970210cf40d91",
+          "manifest_sha256": "c36664c7e3c0a06a55e4ac5eb8aa3d69a5672fb6dcf16839507790b8d16289e5"
+        },
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_finetuned_vlm_bare/vlm_183102",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "f5275818bbc0f858108712b6e9c8d81b7d58af8b7140fcdcf459c77fadeb9827",
+          "manifest_sha256": "44341fd9fb6fbef6fd70b67c88c1923bc8905a23191b7ab6225064a5ea3285af"
+        }
+      ],
+      "raw_trials": 40
+    },
+    "rule_vlm_bare": {
+      "planned_raw_trials": 40,
+      "observed_trials": 40,
+      "complete": true,
+      "physics_log_valid": true,
+      "physics_checks_pending": [],
+      "physics_issues": [],
+      "success": 14,
+      "failure_subtypes": {
+        "drop_execution": 14,
+        "horizon": 2,
+        "drop_startup_wait": 1,
+        "success": 14,
+        "semantic_wrong_binding": 9
+      },
+      "failure_contexts": {
+        "inspection_without_binding": 14,
+        "horizon": 2,
+        "before_first_skill": 1,
+        "semantic_wrong_binding": 9
+      },
+      "raw_success_rate": 0.35,
+      "raw_wilson_95": [
+        0.2213452887317629,
+        0.5049411916274231
+      ],
+      "recorded_exclusions": 0,
+      "actual_calls": 153,
+      "per_seed": {
+        "183101": {
+          "trials": 20,
+          "success": 5
+        },
+        "183102": {
+          "trials": 20,
+          "success": 9
+        }
+      },
+      "runs": [
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_rule_vlm_bare/rule_183101",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "832fcf051a07e5cf00163e967542b2cb8193b722682c24580070f3ef0b09e5d2",
+          "manifest_sha256": "37e9ac67d694647383daa0b180a8d168c3ee9f345381fc99f05565d6bd68f26b"
+        },
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_rule_vlm_bare/rule_183102",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "faea3246d5b0035cb006e0ab709a0a350820df4cd50b64322157b0dd752a5fd7",
+          "manifest_sha256": "657e1ac2b922b5c0dc5184f774406f54c6c3097eec167592c0d8db702b8f2d6e"
+        }
+      ],
+      "raw_trials": 40
+    },
+    "astra_full": {
+      "planned_raw_trials": 40,
+      "observed_trials": 40,
+      "complete": true,
+      "physics_log_valid": true,
+      "physics_checks_pending": [],
+      "physics_issues": [],
+      "success": 29,
+      "failure_subtypes": {
+        "success": 29,
+        "drop_execution": 9,
+        "drop_wait": 1,
+        "service_excluded": 1
+      },
+      "failure_contexts": {
+        "inspection_without_binding": 10,
+        "service_excluded": 1
+      },
+      "raw_success_rate": 0.725,
+      "raw_wilson_95": [
+        0.5716504419378943,
+        0.8389198375233267
+      ],
+      "recorded_exclusions": 1,
+      "actual_calls": 94,
+      "per_seed": {
+        "183101": {
+          "trials": 20,
+          "success": 13
+        },
+        "183102": {
+          "trials": 20,
+          "success": 16
+        }
+      },
+      "runs": [
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_astra_full/astra_183101",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "500afb06c110db83db0eed1dbae28597e7ac328d576e48b3325ab1fa1741cd07",
+          "manifest_sha256": "6c838e6aad2136fa533416b59956e8d1d73082091de2fe5833d8d22fbe661e65"
+        },
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_astra_full/astra_183102",
+          "records": 12,
+          "fragment_valid": true,
+          "result_status": "service_blocked",
+          "episodes_sha256": "10522239e7fa9e52811b53a98cf3dd842413f6c17c0f81afddfeb2cc66f56646",
+          "manifest_sha256": "f63a85b6c4d7266fecbe368e65aa4817debcfe9358bf6b822b28118361d4f129"
+        },
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_astra_full/astra_183102_resume12",
+          "records": 8,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "a9ac6945f96ed3d5161e294cdcd939c556898963f96dec59306c4ba4f1ecec43",
+          "manifest_sha256": "9008554cc660bb51a9806496b787689ffd77eb696d319029e30941943d5af945"
+        }
+      ],
+      "raw_trials": 40
+    },
+    "finetuned_vlm_full": {
+      "planned_raw_trials": 40,
+      "observed_trials": 40,
+      "complete": true,
+      "physics_log_valid": true,
+      "physics_checks_pending": [],
+      "physics_issues": [],
+      "success": 30,
+      "failure_subtypes": {
+        "success": 30,
+        "drop_execution": 5,
+        "horizon": 3,
+        "semantic_wrong_binding": 2
+      },
+      "failure_contexts": {
+        "correct_bound_goal": 2,
+        "horizon": 3,
+        "inspection_without_binding": 3,
+        "semantic_wrong_binding": 2
+      },
+      "raw_success_rate": 0.75,
+      "raw_wilson_95": [
+        0.5980603857923197,
+        0.858128813609037
+      ],
+      "recorded_exclusions": 0,
+      "actual_calls": 149,
+      "per_seed": {
+        "183101": {
+          "trials": 20,
+          "success": 15
+        },
+        "183102": {
+          "trials": 20,
+          "success": 15
+        }
+      },
+      "runs": [
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_finetuned_vlm_full/vlm_183101",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "5bec2205759e856bbf26ae3c2fac77c77e443d7111716523051de955c8334e46",
+          "manifest_sha256": "f16867d525cea8a1cdbf7319af5650f013f7a7aae2239e91fe21361c555a789b"
+        },
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_finetuned_vlm_full/vlm_183102",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "d8b48d50ff45c9b39c40d3703f7bdfc9cf7748b4dbf1542fbee2eb259390611c",
+          "manifest_sha256": "e361b581eb967e92a69169ba9ddfebd2793bbf5f1c0de882fcc449dad824a4f4"
+        }
+      ],
+      "raw_trials": 40
+    },
+    "rule_vlm_full": {
+      "planned_raw_trials": 40,
+      "observed_trials": 40,
+      "complete": true,
+      "physics_log_valid": true,
+      "physics_checks_pending": [],
+      "physics_issues": [],
+      "success": 16,
+      "failure_subtypes": {
+        "drop_execution": 12,
+        "success": 16,
+        "semantic_wrong_binding": 7,
+        "horizon": 5
+      },
+      "failure_contexts": {
+        "inspection_without_binding": 12,
+        "semantic_wrong_binding": 7,
+        "horizon": 5
+      },
+      "raw_success_rate": 0.4,
+      "raw_wilson_95": [
+        0.2634832568429192,
+        0.5540410633965381
+      ],
+      "recorded_exclusions": 0,
+      "actual_calls": 173,
+      "per_seed": {
+        "183101": {
+          "trials": 20,
+          "success": 6
+        },
+        "183102": {
+          "trials": 20,
+          "success": 10
+        }
+      },
+      "runs": [
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_rule_vlm_full/rule_183101",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "348b2bad78479ade873d3fd8a1560d6cf10eb5821489c1ad26eaa1404d3b4e8a",
+          "manifest_sha256": "d1b06b13334e719481671215ec52fcea08341899f7f4146cbab59e141af17062"
+        },
+        {
+          "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_rule_vlm_full/rule_183102",
+          "records": 20,
+          "fragment_valid": true,
+          "result_status": "completed",
+          "episodes_sha256": "679fdd5c155f8c02fd0c87df9d58e0c5a8e4e84acfe344c67b02951891a7c877",
+          "manifest_sha256": "38a70b0fb07d759e1e7ebe8dfcb4f776eb153f193bd5cc976fff70cc6718d1ee"
+        }
+      ],
+      "raw_trials": 40
+    }
+  },
+  "main_system_comparison": {
+    "conditions": [
+      "astra_full",
+      "finetuned_vlm_bare",
+      "rule_vlm_bare"
+    ],
+    "raw_trials_per_condition": 40,
+    "raw_outcomes": {
+      "astra_full": {
+        "planned_raw_trials": 40,
+        "observed_trials": 40,
+        "complete": true,
+        "physics_log_valid": true,
+        "physics_checks_pending": [],
+        "physics_issues": [],
+        "success": 29,
+        "failure_subtypes": {
+          "success": 29,
+          "drop_execution": 9,
+          "drop_wait": 1,
+          "service_excluded": 1
+        },
+        "failure_contexts": {
+          "inspection_without_binding": 10,
+          "service_excluded": 1
+        },
+        "raw_success_rate": 0.725,
+        "raw_wilson_95": [
+          0.5716504419378943,
+          0.8389198375233267
+        ],
+        "recorded_exclusions": 1,
+        "actual_calls": 94,
+        "per_seed": {
+          "183101": {
+            "trials": 20,
+            "success": 13
+          },
+          "183102": {
+            "trials": 20,
+            "success": 16
+          }
+        },
+        "runs": [
+          {
+            "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_astra_full/astra_183101",
+            "records": 20,
+            "fragment_valid": true,
+            "result_status": "completed",
+            "episodes_sha256": "500afb06c110db83db0eed1dbae28597e7ac328d576e48b3325ab1fa1741cd07",
+            "manifest_sha256": "6c838e6aad2136fa533416b59956e8d1d73082091de2fe5833d8d22fbe661e65"
+          },
+          {
+            "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_astra_full/astra_183102",
+            "records": 12,
+            "fragment_valid": true,
+            "result_status": "service_blocked",
+            "episodes_sha256": "10522239e7fa9e52811b53a98cf3dd842413f6c17c0f81afddfeb2cc66f56646",
+            "manifest_sha256": "f63a85b6c4d7266fecbe368e65aa4817debcfe9358bf6b822b28118361d4f129"
+          },
+          {
+            "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_astra_full/astra_183102_resume12",
+            "records": 8,
+            "fragment_valid": true,
+            "result_status": "completed",
+            "episodes_sha256": "a9ac6945f96ed3d5161e294cdcd939c556898963f96dec59306c4ba4f1ecec43",
+            "manifest_sha256": "9008554cc660bb51a9806496b787689ffd77eb696d319029e30941943d5af945"
+          }
+        ]
+      },
+      "finetuned_vlm_bare": {
+        "planned_raw_trials": 40,
+        "observed_trials": 40,
+        "complete": true,
+        "physics_log_valid": true,
+        "physics_checks_pending": [],
+        "physics_issues": [],
+        "success": 27,
+        "failure_subtypes": {
+          "success": 27,
+          "pose_false_stop": 2,
+          "drop_execution": 9,
+          "semantic_wrong_binding": 2
+        },
+        "failure_contexts": {
+          "pose_false_stop": 2,
+          "inspection_without_binding": 5,
+          "wrong_bound_goal": 1,
+          "correct_bound_goal": 3,
+          "semantic_wrong_binding": 2
+        },
+        "raw_success_rate": 0.675,
+        "raw_wilson_95": [
+          0.5201774618987768,
+          0.799154977682173
+        ],
+        "recorded_exclusions": 0,
+        "actual_calls": 130,
+        "per_seed": {
+          "183101": {
+            "trials": 20,
+            "success": 14
+          },
+          "183102": {
+            "trials": 20,
+            "success": 13
+          }
+        },
+        "runs": [
+          {
+            "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_finetuned_vlm_bare/vlm_183101",
+            "records": 20,
+            "fragment_valid": true,
+            "result_status": "completed",
+            "episodes_sha256": "7cb8c854dc99988924b159c4dd129f4c39009e605fd6aeb7be6970210cf40d91",
+            "manifest_sha256": "c36664c7e3c0a06a55e4ac5eb8aa3d69a5672fb6dcf16839507790b8d16289e5"
+          },
+          {
+            "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_finetuned_vlm_bare/vlm_183102",
+            "records": 20,
+            "fragment_valid": true,
+            "result_status": "completed",
+            "episodes_sha256": "f5275818bbc0f858108712b6e9c8d81b7d58af8b7140fcdcf459c77fadeb9827",
+            "manifest_sha256": "44341fd9fb6fbef6fd70b67c88c1923bc8905a23191b7ab6225064a5ea3285af"
+          }
+        ]
+      },
+      "rule_vlm_bare": {
+        "planned_raw_trials": 40,
+        "observed_trials": 40,
+        "complete": true,
+        "physics_log_valid": true,
+        "physics_checks_pending": [],
+        "physics_issues": [],
+        "success": 14,
+        "failure_subtypes": {
+          "drop_execution": 14,
+          "horizon": 2,
+          "drop_startup_wait": 1,
+          "success": 14,
+          "semantic_wrong_binding": 9
+        },
+        "failure_contexts": {
+          "inspection_without_binding": 14,
+          "horizon": 2,
+          "before_first_skill": 1,
+          "semantic_wrong_binding": 9
+        },
+        "raw_success_rate": 0.35,
+        "raw_wilson_95": [
+          0.2213452887317629,
+          0.5049411916274231
+        ],
+        "recorded_exclusions": 0,
+        "actual_calls": 153,
+        "per_seed": {
+          "183101": {
+            "trials": 20,
+            "success": 5
+          },
+          "183102": {
+            "trials": 20,
+            "success": 9
+          }
+        },
+        "runs": [
+          {
+            "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_rule_vlm_bare/rule_183101",
+            "records": 20,
+            "fragment_valid": true,
+            "result_status": "completed",
+            "episodes_sha256": "832fcf051a07e5cf00163e967542b2cb8193b722682c24580070f3ef0b09e5d2",
+            "manifest_sha256": "37e9ac67d694647383daa0b180a8d168c3ee9f345381fc99f05565d6bd68f26b"
+          },
+          {
+            "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_rule_vlm_bare/rule_183102",
+            "records": 20,
+            "fragment_valid": true,
+            "result_status": "completed",
+            "episodes_sha256": "faea3246d5b0035cb006e0ab709a0a350820df4cd50b64322157b0dd752a5fd7",
+            "manifest_sha256": "657e1ac2b922b5c0dc5184f774406f54c6c3097eec167592c0d8db702b8f2d6e"
+          }
+        ]
+      }
+    },
+    "excluded_trial_seeds": [
+      "183102011"
+    ],
+    "eligible_trials": 39,
+    "outcomes": {
+      "astra_full": {
+        "success": 29,
+        "eligible_trials": 39,
+        "success_rate": 0.7435897435897436,
+        "wilson_95": [
+          0.5891834407831603,
+          0.8543121945900741
+        ]
+      },
+      "finetuned_vlm_bare": {
+        "success": 26,
+        "eligible_trials": 39,
+        "success_rate": 0.6666666666666666,
+        "wilson_95": [
+          0.5097739439934599,
+          0.7936704381040163
+        ]
+      },
+      "rule_vlm_bare": {
+        "success": 13,
+        "eligible_trials": 39,
+        "success_rate": 0.3333333333333333,
+        "wilson_95": [
+          0.20632956189598373,
+          0.4902260560065401
+        ]
+      }
+    },
+    "exclusion_reasons": {
+      "183102011": {
+        "astra_full": "service_error"
+      }
+    },
+    "contrasts": {
+      "astra_full__finetuned_vlm_bare": {
+        "raw": {
+          "paired_trials": 40,
+          "exact_initial_state_matches": 40,
+          "mismatched_trial_seeds": [],
+          "outcomes": {
+            "both_success": 20,
+            "a_only_success": 9,
+            "b_only_success": 7,
+            "both_fail": 4
+          },
+          "complete": true,
+          "raw_exact_mcnemar_p": 0.803619384765625
+        },
+        "matched_eligible": {
+          "paired_trials": 39,
+          "exact_initial_state_matches": 39,
+          "mismatched_trial_seeds": [],
+          "outcomes": {
+            "both_success": 20,
+            "a_only_success": 9,
+            "b_only_success": 6,
+            "both_fail": 4
+          },
+          "complete": true,
+          "exact_mcnemar_p_unadjusted": 0.60723876953125
+        }
+      },
+      "astra_full__rule_vlm_bare": {
+        "raw": {
+          "paired_trials": 40,
+          "exact_initial_state_matches": 40,
+          "mismatched_trial_seeds": [],
+          "outcomes": {
+            "a_only_success": 18,
+            "both_success": 11,
+            "both_fail": 8,
+            "b_only_success": 3
+          },
+          "complete": true,
+          "raw_exact_mcnemar_p": 0.0014896392822265625
+        },
+        "matched_eligible": {
+          "paired_trials": 39,
+          "exact_initial_state_matches": 39,
+          "mismatched_trial_seeds": [],
+          "outcomes": {
+            "a_only_success": 18,
+            "both_success": 11,
+            "both_fail": 8,
+            "b_only_success": 2
+          },
+          "complete": true,
+          "exact_mcnemar_p_unadjusted": 0.0004024505615234375
+        }
+      }
+    }
+  },
+  "auxiliary_module_comparisons": {
+    "finetuned_vlm_bare__finetuned_vlm_full": {
+      "conditions": [
+        "finetuned_vlm_bare",
+        "finetuned_vlm_full"
+      ],
+      "raw_trials_per_condition": 40,
+      "raw_outcomes": {
+        "finetuned_vlm_bare": {
+          "planned_raw_trials": 40,
+          "observed_trials": 40,
+          "complete": true,
+          "physics_log_valid": true,
+          "physics_checks_pending": [],
+          "physics_issues": [],
+          "success": 27,
+          "failure_subtypes": {
+            "success": 27,
+            "pose_false_stop": 2,
+            "drop_execution": 9,
+            "semantic_wrong_binding": 2
+          },
+          "failure_contexts": {
+            "pose_false_stop": 2,
+            "inspection_without_binding": 5,
+            "wrong_bound_goal": 1,
+            "correct_bound_goal": 3,
+            "semantic_wrong_binding": 2
+          },
+          "raw_success_rate": 0.675,
+          "raw_wilson_95": [
+            0.5201774618987768,
+            0.799154977682173
+          ],
+          "recorded_exclusions": 0,
+          "actual_calls": 130,
+          "per_seed": {
+            "183101": {
+              "trials": 20,
+              "success": 14
+            },
+            "183102": {
+              "trials": 20,
+              "success": 13
+            }
+          },
+          "runs": [
+            {
+              "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_finetuned_vlm_bare/vlm_183101",
+              "records": 20,
+              "fragment_valid": true,
+              "result_status": "completed",
+              "episodes_sha256": "7cb8c854dc99988924b159c4dd129f4c39009e605fd6aeb7be6970210cf40d91",
+              "manifest_sha256": "c36664c7e3c0a06a55e4ac5eb8aa3d69a5672fb6dcf16839507790b8d16289e5"
+            },
+            {
+              "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_finetuned_vlm_bare/vlm_183102",
+              "records": 20,
+              "fragment_valid": true,
+              "result_status": "completed",
+              "episodes_sha256": "f5275818bbc0f858108712b6e9c8d81b7d58af8b7140fcdcf459c77fadeb9827",
+              "manifest_sha256": "44341fd9fb6fbef6fd70b67c88c1923bc8905a23191b7ab6225064a5ea3285af"
+            }
+          ]
+        },
+        "finetuned_vlm_full": {
+          "planned_raw_trials": 40,
+          "observed_trials": 40,
+          "complete": true,
+          "physics_log_valid": true,
+          "physics_checks_pending": [],
+          "physics_issues": [],
+          "success": 30,
+          "failure_subtypes": {
+            "success": 30,
+            "drop_execution": 5,
+            "horizon": 3,
+            "semantic_wrong_binding": 2
+          },
+          "failure_contexts": {
+            "correct_bound_goal": 2,
+            "horizon": 3,
+            "inspection_without_binding": 3,
+            "semantic_wrong_binding": 2
+          },
+          "raw_success_rate": 0.75,
+          "raw_wilson_95": [
+            0.5980603857923197,
+            0.858128813609037
+          ],
+          "recorded_exclusions": 0,
+          "actual_calls": 149,
+          "per_seed": {
+            "183101": {
+              "trials": 20,
+              "success": 15
+            },
+            "183102": {
+              "trials": 20,
+              "success": 15
+            }
+          },
+          "runs": [
+            {
+              "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_finetuned_vlm_full/vlm_183101",
+              "records": 20,
+              "fragment_valid": true,
+              "result_status": "completed",
+              "episodes_sha256": "5bec2205759e856bbf26ae3c2fac77c77e443d7111716523051de955c8334e46",
+              "manifest_sha256": "f16867d525cea8a1cdbf7319af5650f013f7a7aae2239e91fe21361c555a789b"
+            },
+            {
+              "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_finetuned_vlm_full/vlm_183102",
+              "records": 20,
+              "fragment_valid": true,
+              "result_status": "completed",
+              "episodes_sha256": "d8b48d50ff45c9b39c40d3703f7bdfc9cf7748b4dbf1542fbee2eb259390611c",
+              "manifest_sha256": "e361b581eb967e92a69169ba9ddfebd2793bbf5f1c0de882fcc449dad824a4f4"
+            }
+          ]
+        }
+      },
+      "excluded_trial_seeds": [],
+      "eligible_trials": 40,
+      "outcomes": {
+        "finetuned_vlm_bare": {
+          "success": 27,
+          "eligible_trials": 40,
+          "success_rate": 0.675,
+          "wilson_95": [
+            0.5201774618987768,
+            0.799154977682173
+          ]
+        },
+        "finetuned_vlm_full": {
+          "success": 30,
+          "eligible_trials": 40,
+          "success_rate": 0.75,
+          "wilson_95": [
+            0.5980603857923197,
+            0.858128813609037
+          ]
+        }
+      },
+      "exclusion_reasons": {},
+      "contrasts": {
+        "finetuned_vlm_bare__finetuned_vlm_full": {
+          "raw": {
+            "paired_trials": 40,
+            "exact_initial_state_matches": 40,
+            "mismatched_trial_seeds": [],
+            "outcomes": {
+              "both_success": 22,
+              "b_only_success": 8,
+              "both_fail": 5,
+              "a_only_success": 5
+            },
+            "complete": true,
+            "raw_exact_mcnemar_p": 0.5810546875
+          },
+          "matched_eligible": {
+            "paired_trials": 40,
+            "exact_initial_state_matches": 40,
+            "mismatched_trial_seeds": [],
+            "outcomes": {
+              "both_success": 22,
+              "b_only_success": 8,
+              "both_fail": 5,
+              "a_only_success": 5
+            },
+            "complete": true,
+            "exact_mcnemar_p_unadjusted": 0.5810546875
+          }
+        }
+      }
+    },
+    "rule_vlm_bare__rule_vlm_full": {
+      "conditions": [
+        "rule_vlm_bare",
+        "rule_vlm_full"
+      ],
+      "raw_trials_per_condition": 40,
+      "raw_outcomes": {
+        "rule_vlm_bare": {
+          "planned_raw_trials": 40,
+          "observed_trials": 40,
+          "complete": true,
+          "physics_log_valid": true,
+          "physics_checks_pending": [],
+          "physics_issues": [],
+          "success": 14,
+          "failure_subtypes": {
+            "drop_execution": 14,
+            "horizon": 2,
+            "drop_startup_wait": 1,
+            "success": 14,
+            "semantic_wrong_binding": 9
+          },
+          "failure_contexts": {
+            "inspection_without_binding": 14,
+            "horizon": 2,
+            "before_first_skill": 1,
+            "semantic_wrong_binding": 9
+          },
+          "raw_success_rate": 0.35,
+          "raw_wilson_95": [
+            0.2213452887317629,
+            0.5049411916274231
+          ],
+          "recorded_exclusions": 0,
+          "actual_calls": 153,
+          "per_seed": {
+            "183101": {
+              "trials": 20,
+              "success": 5
+            },
+            "183102": {
+              "trials": 20,
+              "success": 9
+            }
+          },
+          "runs": [
+            {
+              "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_rule_vlm_bare/rule_183101",
+              "records": 20,
+              "fragment_valid": true,
+              "result_status": "completed",
+              "episodes_sha256": "832fcf051a07e5cf00163e967542b2cb8193b722682c24580070f3ef0b09e5d2",
+              "manifest_sha256": "37e9ac67d694647383daa0b180a8d168c3ee9f345381fc99f05565d6bd68f26b"
+            },
+            {
+              "path": "/home/brainco/agentic_rotation_newton/outputs/pure_vlm_addendum_20261029_rule_vlm_bare/rule_183102",
+              "records": 20,
+              "fragment_valid": true,
+              "result_status": "completed",
+              "episodes_sha256": "faea3246d5b0035cb006e0ab709a0a350820df4cd50b64322157b0dd752a5fd7",
+              "manifest_sha256": "657e1ac2b922b5c0dc5184f774406f54c6c3097eec167592c0d8db702b8f2d6e"
+            }
+          ]
+        },
+        "rule_vlm_full": {
+          "planned_raw_trials": 40,
+          "observed_trials": 40,
+          "complete": true,
+          "physics_log_valid": true,
+          "physics_checks_pending": [],
+          "physics_issues": [],
+          "success": 16,
+          "failure_subtypes": {
+            "drop_execution": 12,
+            "success": 16,
+            "semantic_wrong_binding": 7,
+            "horizon": 5
+          },
+          "failure_contexts": {
+            "inspection_without_binding": 12,
+            "semantic_wrong_binding": 7,
+            "horizon": 5
+          },
+          "raw_success_rate": 0.4,
+          "raw_wilson_95": [
+            0.2634832568429192,
+            0.5540410633965381
+          ],
+          "recorded_exclusions": 0,
+          "actual_calls": 173,
+          "per_seed": {
+            "183101": {
+              "trials": 20,
+              "success": 6
+            },
+            "183102": {
+              "trials": 20,
+              "success": 10
+            }
+          },
+          "runs": [
+            {
+              "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_rule_vlm_full/rule_183101",
+              "records": 20,
+              "fragment_valid": true,
+              "result_status": "completed",
+              "episodes_sha256": "348b2bad78479ade873d3fd8a1560d6cf10eb5821489c1ad26eaa1404d3b4e8a",
+              "manifest_sha256": "d1b06b13334e719481671215ec52fcea08341899f7f4146cbab59e141af17062"
+            },
+            {
+              "path": "/home/brainco/agentic_rotation_newton/outputs/pose_latent_formal_20261029_v1_jsonfix_rule_vlm_full/rule_183102",
+              "records": 20,
+              "fragment_valid": true,
+              "result_status": "completed",
+              "episodes_sha256": "679fdd5c155f8c02fd0c87df9d58e0c5a8e4e84acfe344c67b02951891a7c877",
+              "manifest_sha256": "38a70b0fb07d759e1e7ebe8dfcb4f776eb153f193bd5cc976fff70cc6718d1ee"
+            }
+          ]
+        }
+      },
+      "excluded_trial_seeds": [],
+      "eligible_trials": 40,
+      "outcomes": {
+        "rule_vlm_bare": {
+          "success": 14,
+          "eligible_trials": 40,
+          "success_rate": 0.35,
+          "wilson_95": [
+            0.2213452887317629,
+            0.5049411916274231
+          ]
+        },
+        "rule_vlm_full": {
+          "success": 16,
+          "eligible_trials": 40,
+          "success_rate": 0.4,
+          "wilson_95": [
+            0.2634832568429192,
+            0.5540410633965381
+          ]
+        }
+      },
+      "exclusion_reasons": {},
+      "contrasts": {
+        "rule_vlm_bare__rule_vlm_full": {
+          "raw": {
+            "paired_trials": 40,
+            "exact_initial_state_matches": 40,
+            "mismatched_trial_seeds": [],
+            "outcomes": {
+              "both_fail": 20,
+              "b_only_success": 6,
+              "a_only_success": 4,
+              "both_success": 10
+            },
+            "complete": true,
+            "raw_exact_mcnemar_p": 0.75390625
+          },
+          "matched_eligible": {
+            "paired_trials": 40,
+            "exact_initial_state_matches": 40,
+            "mismatched_trial_seeds": [],
+            "outcomes": {
+              "both_fail": 20,
+              "b_only_success": 6,
+              "a_only_success": 4,
+              "both_success": 10
+            },
+            "complete": true,
+            "exact_mcnemar_p_unadjusted": 0.75390625
+          }
+        }
+      }
+    }
+  },
+  "interpretation": "Astra with the full controller versus bare fine-tuned/rule VLM systems. Differences combine provider and control-module effects and cannot establish intrinsic Astra model superiority.",
+  "statistics": "Raw forty-trial rates and Wilson 95% intervals are preserved. Main matched rates use the symmetric union of service exclusions across all three systems. Exact paired McNemar p values are two-sided and unadjusted across contrasts.",
+  "auxiliary_scope": "Bare versus corresponding parent full VLM uses its own symmetric paired eligibility set. It never changes the main triplet denominator.",
+  "exclusions": "Only service_error and request_latency_over_120s. No performance exclusions, retries, replacement trials, or re-scoring.",
+  "limitations": "Supplement registered after parent outcomes existed. Same cube scene and frozen metric. Matched reset states do not guarantee identical physical trajectories. No multi-object or real-hardware claim.",
+  "source_sha256": "8f55be5f913318e9170725b1b664b9739f23fa62ba6f87cfde3522f05b784bcf",
+  "source_file": "outputs/pose_latent_student_v1/pure_vlm_addendum_20261029/formal_export/summary.json"
+}

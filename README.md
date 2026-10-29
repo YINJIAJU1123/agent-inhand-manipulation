@@ -1,5 +1,45 @@
 # Agentic In-hand Reorientation
 
+## Current pose-latent project — 2026-10-29
+
+
+The current Revo3/RSLCube system uses a **pose-latent student**: calibrated RGB
+→ frozen CNN pose estimate, plus proprioception and a continuous 768D semantic
+goal → recurrent control. Physics continues during high-level inference.
+
+| Frozen cube-v1 system | Raw semantic successes | Drops |
+| --- | ---: | ---: |
+| Astra + learned waiting/execution | 29/40 | 10 |
+| Bare fine-tuned VLM | 27/40 | 9 |
+| Bare rule VLM | 14/40 | 15 |
+
+These results do not establish a reliable Astra advantage over the fine-tuned
+VLM. A separate CNN-pose DAgger candidate reached 40/40 known targets with zero
+drops in development. That is **not** autonomous language-task success and has
+not replaced the frozen student. New experiment queues were paused at the
+user's request on 29 October; no new formal replication result is available.
+
+- [Current status and usage](docs/project_status_and_usage_20261029.md)
+- [VLM audit and ablation design](docs/experiments/vlm_debug_and_ablation_design_20261029.md)
+- [SuperMimic checkpoint compatibility](docs/experiments/supermimic_compatibility_20261029.md)
+- [Pose-latent migration history](docs/experiments/pose_latent_migration_20261029.md)
+
+The new SuperMimic RSLSphere65 release is a different 20 Hz history-MLP
+controller. It cannot replace the current 30 Hz recurrent latent student by
+changing a filename. It has not been deployed.
+
+This is a **source and documentation snapshot**. External assets, trained
+experiment weights, datasets, frozen exports and credentials are provisioned
+separately. The guide lists requirements. Historical results below use different
+protocols and must not be pooled with cube-v1.
+
+
+## Earlier published RGB-D runtime
+
+The following entrypoints and packaged weights belong to the earlier RGB-D backend.
+They are retained for compatibility, not the current pose-latent cube-v1 weights.
+
+
 Language-guided Revo3 in-hand reorientation in Isaac Lab. This snapshot contains
 our VisERDex-style RGB-D reference policy, its VLM/Astra supervisors, and the
 fixed action-adapted student used in the current paper. It is a research implementation built on BrainCo RevoLab, not the

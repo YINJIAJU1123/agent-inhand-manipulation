@@ -1,0 +1,199 @@
+{
+  "version": "cube_mechanism_studies_v2_design_20261029",
+  "status": "replication_and_goal_study_queued_feedback_protocol_under_validation",
+  "parent_evidence": "cube-v1-20261029",
+  "success_contract_sha256": "85da9291e02596910cf0bad1e633b8dd3e5fd6500d7f43e083588b5dbbc3e594",
+  "raw_trials_per_condition": 40,
+  "max_seeds_per_condition": 2,
+  "shared_runtime_selection": "pending; do not silently replace frozen cube-v1 student or controllers",
+  "formal_seed_allocation": "required before launch; preserve old formal cohorts and keep new development seeds separate",
+  "modules": {
+    "W": {
+      "name": "learned_waiting_controller",
+      "inputs": "current measured state, student proposal and belief, active public skill latent, request anchor and elapsed pending time",
+      "output": "waiting interpolation speed and bounded action residual",
+      "baseline": "fixed interpolation coefficient 0.15 with no residual"
+    },
+    "E": {
+      "name": "learned_execution_controller",
+      "inputs": "same sensor/active-skill feature contract as W",
+      "output_in_cube_v1": "bounded action residual; execution speed is fixed at 1",
+      "baseline": "unmodified student proposal",
+      "future_execution_speed_learning": "a new candidate, not implemented by the existing frozen actor"
+    },
+    "G": {
+      "name": "explicit_active_goal_conditioning",
+      "kind": "conditioning factor shared by W and E, not a third standalone controller",
+      "no_goal": "retrain W and E with goal branch input fixed to the training bank center; retain architecture and training budget",
+      "shuffle": "inference intervention using a preregistered nonidentity permutation of the controller skill; retain correct student goal",
+      "caution": "student proposal/belief still contain goal information; this is not removal of all semantic information"
+    },
+    "F": {
+      "name": "agent_feedback_protocol",
+      "kind": "high-level observation/action protocol, not a learned controller",
+      "full": "updated RGB and measured feedback, within-episode history, maximum six calls",
+      "one_call": "one initial observation and a bounded complete skill plan, not only one short inspect action",
+      "shared": "same student, controllers, local measured stopping gate, horizon and success definition"
+    }
+  },
+  "studies": [
+    {
+      "id": "main_five_objects",
+      "paper_section": 1,
+      "conditions": [
+        "astra_full",
+        "finetuned_vlm_bare",
+        "rule_vlm_bare"
+      ],
+      "objects": 5,
+      "total_raw_trials": 600,
+      "status": "cube-v1 complete; remaining objects await colleague assets; common candidate release not yet selected",
+      "aggregation": "per-object rates and object macro-average, with raw counts and matched service-eligible counts"
+    },
+    {
+      "id": "control_factorial",
+      "paper_section": 2,
+      "conditions": [
+        "fixed_wait_student_execute",
+        "learned_wait_student_execute",
+        "fixed_wait_learned_execute",
+        "learned_wait_learned_execute"
+      ],
+      "implementation": "implemented",
+      "status": "cube-v1 four times forty already completed; reuse only within that release",
+      "shared_cells": "full condition may be reused from the same-release main comparison"
+    },
+    {
+      "id": "explicit_controller_goal",
+      "paper_section": 2,
+      "conditions": [
+        "correct_active_goal",
+        "retrained_no_explicit_goal",
+        "shuffled_controller_goal"
+      ],
+      "implementation": "Frozen active/center/shuffle runtime, four trained weights, guard and actor tests passed; online smoke gate pending",
+      "status": "queued_smoke_then_120_formal_trials_waiting_for_idle_gpu",
+      "shared_cells": "Must evaluate newly retrained active reference; original cube-v1 full condition is not interchangeable",
+      "phase_analysis": [
+        "pending",
+        "unbound_execution",
+        "bound_execution"
+      ],
+      "training_evidence": "outputs/pose_latent_student_v1/goal_ablation_20261029/verified_training_completion.json",
+      "release": "outputs/pose_latent_student_v1/goal_study_release_20261029/formal_release.json",
+      "release_sha256": "94242053b068216c6d3babc48a9e056bbbbf8118a9c7819f51ce463a281d4a7e",
+      "seeds": [
+        183421,
+        183422
+      ],
+      "queue_pid": 906449,
+      "formal_calls_start_after": "Primary replication completed and two development replay episodes per condition pass runtime admission"
+    },
+    {
+      "id": "same_state_two_valid_goals",
+      "paper_section": 2,
+      "conditions": [
+        "correct_active_goal",
+        "retrained_no_explicit_goal"
+      ],
+      "states_per_condition": 20,
+      "goals_per_state": 2,
+      "implementation": "offline recurrent feature replay exists; complete simulator state branching required",
+      "status": "not_launched",
+      "metrics": [
+        "both branches progress toward their assigned goals",
+        "goal-angle progress",
+        "drops"
+      ],
+      "scope": "controlled recovery diagnostic, not autonomous Astra semantic success",
+      "restoration": "physical state, recurrent hidden, prior action/control target, anchor, request phase, time and validated solver reproducibility"
+    },
+    {
+      "id": "agent_feedback",
+      "paper_section": 2,
+      "conditions": [
+        "one_initial_bounded_plan",
+        "full_feedback"
+      ],
+      "optional_condition": "repeated_calls_with_frozen_RGB_and_numeric_feedback",
+      "implementation": "Initial-plan schema and bounded executor implemented; unit/schema checks passed; live API check awaiting explicit payload authorization; simulation smoke and registered release remain pending",
+      "status": "implementation_under_validation",
+      "shared_cells": "full feedback may reuse same-release full condition",
+      "report": [
+        "success",
+        "binding success",
+        "drop phase",
+        "actual calls",
+        "simulated and wall duration"
+      ],
+      "caution": "one call and six-call cap are different budgets; report this explicitly",
+      "evidence": "outputs/pose_latent_student_v1/single_plan_protocol_20261029/protocol_checks.json"
+    },
+    {
+      "id": "visual_semantic_intervention",
+      "paper_section": 2,
+      "providers": [
+        "astra_full",
+        "finetuned_vlm_bare",
+        "rule_vlm_bare"
+      ],
+      "conditions": [
+        "held_out_letter_color_mapping",
+        "letter_mask_color_retained"
+      ],
+      "implementation": "render-consistent transformations and updated independent target labels required",
+      "status": "not_launched",
+      "scope": "first isolate upper-model RGB; keep lower pose-estimator image unchanged and label this explicitly",
+      "scoring": "same tolerance, drop and stop contract; transformed correspondence is a separate diagnostic scene version",
+      "shared_cells": "original-layout comparison may reuse same-release main table",
+      "offline_precheck": "vlm_input_audit_20261029 completed 40 cases times four conditions, not task rollouts"
+    },
+    {
+      "id": "predictor_improvement",
+      "paper_section": 3,
+      "owner": "colleague",
+      "status": "awaiting data",
+      "design": "original ViserDex-style predictor vs improved predictor with fixed student/agent first; separate any policy-adaptation arm"
+    },
+    {
+      "id": "real_robot",
+      "paper_section": 4,
+      "owner": "colleague",
+      "status": "awaiting data",
+      "design": "same task and independent success reference, actual method vs both bare VLM baselines"
+    }
+  ],
+  "additional_analysis_without_large_new_suite": [
+    "per-phase failure counts and relation between drop reduction and completion",
+    "actual inference latency, model call count, completion time and inference cost",
+    "retain shared-controller VLM auxiliary results to separate high-level and controller effects",
+    "a controlled delay diagnostic is separate from natural latency main results; a common delay floor is not exactly matched latency"
+  ],
+  "launch_dependencies": [
+    "Finish VLM correctness and input-dependency audit; distinguish fixed-layout shortcut from evaluator bug.",
+    "Select and freeze one shared student and compatible W/E pair using development data.",
+    "Implement and smoke-check new ablation entrypoints in a separate version.",
+    "Freeze identities, initial-state cohorts and manipulation-specific scoring before formal trials.",
+    "Launch independent ready conditions in parallel on confirmed idle authorized GPUs; one simulator per GPU."
+  ],
+  "progress_verified_at": "2026-10-29T13:24:33.877934+00:00",
+  "replication": {
+    "conditions": [
+      "astra_full",
+      "finetuned_vlm_bare",
+      "rule_vlm_bare"
+    ],
+    "trials_per_condition": 40,
+    "total_trials": 120,
+    "seeds": [
+      183411,
+      183412
+    ],
+    "release_sha256": "4aca9923c4ba743e846dda4a6e92327828f99218c590414676de0f7ab4ac147a",
+    "last_verified_status": "waiting_for_idle_gpu",
+    "host": "brainco@10.3.100.20",
+    "queue_pid": 898765,
+    "remote_status_path": "/home/brainco/agentic_rotation_newton/outputs/replication_20261029/queue_status.json",
+    "scope": "Frozen cube-v1 configuration, independent cohort. No completed trials reported yet."
+  }
+}

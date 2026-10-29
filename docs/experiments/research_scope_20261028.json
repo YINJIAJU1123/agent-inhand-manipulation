@@ -1,0 +1,65 @@
+{
+  "version": "research_scope_20261028",
+  "kind": "user_direction_and_proposed_experiment_design",
+  "user_confirmed": {
+    "future_formal_episodes_per_condition": 40,
+    "near_term_scene": "original scene",
+    "new_lighting_and_camera_generalization_experiments": "deprioritized; retain all completed results",
+    "main_comparison": "complete Astra method versus finetuned VLM and rule-supervised VLM, plus module ablations and analysis",
+    "object_expansion_target": "approximately five objects; exact object set not yet frozen",
+    "pose_predictor_collaboration": "colleague improving student-side pose estimation; interface and integration not yet confirmed"
+  },
+  "working_interpretation": {
+    "unit": "40 scheduled raw episodes per method, object and formal condition; integration checks separate",
+    "historical_runs": "retain their original denominators and protocols; do not truncate or relabel as forty",
+    "service_exclusions": "retain the existing symmetric matched service-error or >120s request-latency exclusion and mandatory raw denominator; do not refill to forty eligible cases"
+  },
+  "existing_metric_contract": {
+    "path": "configs/evaluation/autonomous_completion_v1.json",
+    "sha256": "0614802989e275d144f5eac2cdbae914e0c53224f183d00fbb3b5a2a670dbf98",
+    "success": "autonomous system stop, correct semantic binding, full quaternion error <=0.16 rad, no prior drop; no extra hold",
+    "change": false
+  },
+  "training_snapshot": {
+    "status": "completed_and_independently_audited",
+    "result": "outputs/inspection_coverage_fit_v1/train_20261028/result.json",
+    "selected": {
+      "continued": {
+        "epoch": 0,
+        "checkpoint_sha256": "0dd5fcd0f7ffe341ea94ec5265ff4047514f36af49c3115668e6afdab6958702"
+      },
+      "augmented": {
+        "epoch": 42,
+        "checkpoint_sha256": "df610bda6a22f295479769ca648ad77e4c59f033a8d30ed5256cf82f7ba23956"
+      },
+      "phase_balanced": {
+        "epoch": 6,
+        "checkpoint_sha256": "e09b95ee40d8f67746e4e03055884dbe26888e82f33f4b250c5b366292efa344"
+      }
+    },
+    "selection": "already fixed by held-out teacher loss; no subsequent closed-loop test selection of epochs",
+    "deployment": "none of these new candidates has been deployed"
+  },
+  "pending_evaluation": {
+    "old_runner": "scripts/inspection_coverage_eval_v1/run.py",
+    "old_plan": "four arms x36 episodes =144; no integration or formal run launched",
+    "direction": "supersede prospectively with a versioned four-arm x40=160 plan before running; preserve previous plan",
+    "execution_status": "runner remains the old 36-per-arm implementation; this decision record does not change its execution",
+    "new_simulation_or_api_started": false
+  },
+  "proposals_not_yet_final_protocol": {
+    "sampling": "two seed streams x20 resets; shared saved states/instructions across methods; six targets allocated 7,7,7,7,6,6 before any results; rotate extra assignments across objects",
+    "three_methods_five_objects": "3 x5 x40 =600 scheduled raw episodes; object assets and development/test split remain to be chosen",
+    "fair_upper_layer_comparison": "share local student, perception, waiting/recovery and stopping modules, image inputs, horizon and budget; record real latency",
+    "ablations": "Astra full; replace waiting/recovery with a fixed baseline; original versus corrected stopping; remove explicit memory/auxiliary feedback without removing current RGB; original versus adapted actor",
+    "freeze_later": [
+      "final runtime composition",
+      "final student/pose predictor checkpoint",
+      "final stop correction",
+      "object assets and canonical target frames",
+      "final test manifests"
+    ],
+    "pose_interface": "estimated pose, uncertainty and timestamps are a proposed interface; no claim that explicit predicted pose already drives the current student",
+    "paper_claim": "five objects and higher accuracy alone do not establish novelty or CVPR readiness"
+  }
+}

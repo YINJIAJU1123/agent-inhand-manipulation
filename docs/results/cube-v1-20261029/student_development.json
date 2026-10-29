@@ -1,0 +1,32 @@
+{
+  "complete": true,
+  "conditions": {
+    "released_student": {
+      "raw_trials": 40,
+      "reach": 39,
+      "drops": 1
+    },
+    "frozen_latent_student": {
+      "raw_trials": 40,
+      "reach": 38,
+      "drops": 2
+    },
+    "simulated_extra_dagger": {
+      "raw_trials": 40,
+      "reach": 39,
+      "drops": 1
+    },
+    "cnn_extra_dagger": {
+      "raw_trials": 40,
+      "reach": 40,
+      "drops": 0
+    }
+  },
+  "paired_initial_states": 40,
+  "cnn_candidate_meets_development_gate": true,
+  "automatically_deployed": false,
+  "scope": "Fresh development diagnostic only. No autonomous language success or formal generalization claim.",
+  "source_plan_sha256": "6e210b079c16a1739c1f410897b8e42cb9fd9ab07827e09dcd09a356e124d40b",
+  "source_file": "outputs/pose_latent_student_v1/student_pose_adaptation_20261029/completed_export/comparison.json",
+  "source_sha256": "ef7c1975dfb2c2a405fbad48e40cfffcc176b211691e088f6d826ee0b8eb66ad"
+}
