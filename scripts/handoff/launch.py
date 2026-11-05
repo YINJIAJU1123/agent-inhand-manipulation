@@ -39,7 +39,7 @@ def relocate(bundle,obj,cfg,cache):
 def command(a):
     bundle=a.bundle.resolve();cfg=json.loads((ROOT/'configs/objects.json').read_text())[a.object]
     if not (bundle/'BUNDLE.json').exists():raise ValueError('Missing separately delivered artifact bundle')
-    python=str(Path(os.environ.get('VISERDEX_PYTHON',sys.executable)).resolve())
+    python=str(Path(os.environ.get('VISERDEX_PYTHON',sys.executable)).absolute())
     env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(a.gpu),CUDA_DEVICE_ORDER='PCI_BUS_ID',PYGLET_HEADLESS_DEVICE=str(a.gpu),
         ISAACLAB_PATH=str(bundle/'runtime/IsaacLab'),VISERDEX_PYTHON=python,UV_BIN=os.environ.get('UV_BIN','uv'),
         OMP_NUM_THREADS='4',OPENBLAS_NUM_THREADS='1',MAX_JOBS='2',PYTHONDONTWRITEBYTECODE='1',

@@ -1,4 +1,5 @@
-import ast,importlib.util,json,os,tempfile,unittest
+import ast,importlib.util,json,os,sys,tempfile,unittest
+from unittest.mock import patch
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('handoff_launch',ROOT/'scripts/handoff/launch.py');launch=importlib.util.module_from_spec(spec);spec.loader.exec_module(launch)
@@ -29,5 +30,9 @@ class HandoffTests(unittest.TestCase):
      if '--assets_manifest' in argv:
       m=json.loads(Path(argv[argv.index('--assets_manifest')+1]).read_text());self.assertTrue(Path(m['source']).exists())
       for entry in m['conditions'].values():self.assertEqual(launch.sha(Path(entry['asset'])),entry['sha256'])
+   # Resolving a venv's interpreter symlink loses its pyvenv.cfg and packages.
+   fake=Path(td)/'venv/bin/python';fake.parent.mkdir(parents=True);fake.symlink_to(sys.executable)
+   with patch.dict(os.environ,{'VISERDEX_PYTHON':str(fake)}):
+    _,env=launch.command(a);self.assertEqual(env['VISERDEX_PYTHON'],str(fake.absolute()))
    a.output=Path(td);self.assertRaises(FileExistsError,launch.command,a)
 if __name__=='__main__':unittest.main()
