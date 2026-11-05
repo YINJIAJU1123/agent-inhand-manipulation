@@ -1,0 +1,110 @@
+{
+  "cube": {
+    "family": "cube",
+    "runtime": "runtime/cube",
+    "evaluator": "scripts/pose_latent_student_v1/evaluate_agent.py",
+    "frame_size": 120,
+    "control_hz": 30,
+    "stop_mode": "measured",
+    "files": {
+      "student_checkpoint": "objects/cube/prepared_release/student/student_1000.pt",
+      "checkpoint": "objects/cube/latent_student.pt",
+      "text_cache": "objects/cube/text_cache.pt",
+      "original_asset": "runtime/cube/source/viserdex/viserdex/assets/generated/usd/RSLCube/RSLCube_0p9_exact_box_v1.usda",
+      "pose_checkpoint": "objects/cube/pose_estimator.pth",
+      "camera_calibration": "objects/cube/cameras"
+    },
+    "actor_checkpoint": "objects/cube/waiting_actor.pt",
+    "execution_actor_checkpoint": "objects/cube/execution_actor.pt",
+    "grounding": "objects/cube/grounding"
+  },
+  "die": {
+    "family": "die",
+    "runtime": "runtime/die",
+    "evaluator": "scripts/dice_latent_v1/evaluate_agent.py",
+    "frame_size": 512,
+    "control_hz": 20,
+    "stop_mode": "learned_for_astra_measured_for_baselines",
+    "files": {
+      "source_checkpoint": "objects/die/source.pt",
+      "checkpoint": "objects/die/latent_student.pt",
+      "env_config": "objects/die/env.yaml",
+      "bank": "objects/die/goal_bank.pt"
+    },
+    "actor_checkpoint": "objects/die/maintenance_actor.pt",
+    "stop_checkpoint": "objects/die/completion.pt",
+    "grounding": "objects/die/grounding"
+  },
+  "duck": {
+    "family": "inhand4",
+    "runtime": "runtime/inhand4",
+    "evaluator": "scripts/inhand4_q1/evaluate_agent.py",
+    "frame_size": 512,
+    "control_hz": 20,
+    "stop_mode": "learned_for_astra_measured_for_baselines",
+    "object_key": "InhandDuck",
+    "files": {
+      "source_checkpoint": "objects/duck/source.pt",
+      "checkpoint": "objects/duck/latent_student.pt",
+      "env_config": "objects/duck/env.yaml",
+      "bank": "objects/duck/goal_bank.pt"
+    },
+    "actor_checkpoint": "objects/duck/maintenance_actor.pt",
+    "stop_checkpoint": "objects/duck/completion.pt",
+    "grounding": "objects/duck/grounding"
+  },
+  "hedgehog": {
+    "family": "inhand4",
+    "runtime": "runtime/inhand4",
+    "evaluator": "scripts/inhand4_q1/evaluate_agent.py",
+    "frame_size": 512,
+    "control_hz": 20,
+    "stop_mode": "learned_for_astra_measured_for_baselines",
+    "object_key": "InhandHedgehog",
+    "files": {
+      "source_checkpoint": "objects/hedgehog/source.pt",
+      "checkpoint": "objects/hedgehog/latent_student.pt",
+      "env_config": "objects/hedgehog/env.yaml",
+      "bank": "objects/hedgehog/goal_bank.pt"
+    },
+    "actor_checkpoint": "objects/hedgehog/maintenance_actor.pt",
+    "stop_checkpoint": "objects/hedgehog/completion.pt",
+    "grounding": "objects/hedgehog/grounding"
+  },
+  "pig": {
+    "family": "inhand4",
+    "runtime": "runtime/inhand4",
+    "evaluator": "scripts/inhand4_q1/evaluate_agent.py",
+    "frame_size": 512,
+    "control_hz": 20,
+    "stop_mode": "learned_for_astra_measured_for_baselines",
+    "object_key": "InhandPig",
+    "files": {
+      "source_checkpoint": "objects/pig/source.pt",
+      "checkpoint": "objects/pig/latent_student.pt",
+      "env_config": "objects/pig/env.yaml",
+      "bank": "objects/pig/goal_bank.pt"
+    },
+    "actor_checkpoint": "objects/pig/maintenance_actor.pt",
+    "stop_checkpoint": "objects/pig/completion.pt",
+    "grounding": "objects/pig/grounding"
+  },
+  "milk_carton": {
+    "family": "inhand4",
+    "runtime": "runtime/inhand4",
+    "evaluator": "scripts/inhand4_q1/evaluate_agent.py",
+    "frame_size": 512,
+    "control_hz": 20,
+    "stop_mode": "learned_for_astra_measured_for_baselines",
+    "object_key": "InhandMilkCarton",
+    "files": {
+      "source_checkpoint": "objects/milk_carton/source.pt",
+      "checkpoint": "objects/milk_carton/latent_student.pt",
+      "env_config": "objects/milk_carton/env.yaml",
+      "bank": "objects/milk_carton/goal_bank.pt"
+    },
+    "actor_checkpoint": "objects/milk_carton/maintenance_actor.pt",
+    "stop_checkpoint": "objects/milk_carton/completion.pt",
+    "grounding": "objects/milk_carton/grounding"
+  }
+}

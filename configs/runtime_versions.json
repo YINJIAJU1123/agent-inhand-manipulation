@@ -1,0 +1,19 @@
+{
+  "torch": "2.11.0+cu130",
+  "isaacsim": "6.2.0.0",
+  "isaaclab": "28.0.0",
+  "newton": "1.6.1",
+  "warp-lang": "1.17.0",
+  "transformers": "5.10.4",
+  "bitsandbytes": "0.50.2",
+  "peft": "0.21.2",
+  "pyglet": "2.1.15",
+  "numpy": "2.3.1",
+  "requests": "2.32.3",
+  "pillow": "12.3.0",
+  "h5py": "3.16.0",
+  "scipy": "1.17.0",
+  "tensordict": "0.14.2",
+  "imageio": "2.37.2",
+  "trimesh": "4.11.1"
+}

@@ -1,0 +1,16 @@
+{
+  "bundle": "reveal_artifacts_20261106",
+  "manifest_sha256": "f58be2d757ea470022b1696de1e4c481712f73db8790d966d069c0f2f6d24bb5",
+  "files": 6690,
+  "bytes": 2092269651,
+  "objects": [
+    "cube",
+    "die",
+    "duck",
+    "hedgehog",
+    "pig",
+    "milk_carton"
+  ],
+  "checkpoint_bytes_unchanged": true,
+  "base_model_included": false
+}
